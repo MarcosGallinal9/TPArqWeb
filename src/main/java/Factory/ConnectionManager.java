@@ -37,5 +37,12 @@ public final class ConnectionManager {
         return con;
     }
 
+    public void closeConnection() {
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

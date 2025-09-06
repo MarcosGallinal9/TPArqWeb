@@ -1,7 +1,11 @@
 package Factory;
 
-import DAO.PersonaDAO;
-import mysql.MySqlJDBCDAOFactory;
+
+import DAO.ClienteDAO;
+import DAO.FacturaDAO;
+import DAO.Factura_ProductoDAO;
+import DAO.ProductoDAO;
+import mysql.MySQLJDBCDAOFactory;
 
 public abstract class DAOFactory {
     private static volatile DAOFactory instance;
@@ -11,7 +15,7 @@ public abstract class DAOFactory {
                 if (instance == null) {
                     switch (type) {
                         case MYSQL:
-                            instance = new MySqlJDBCDAOFactory();
+                            instance = new MySQLJDBCDAOFactory();
                             break;
                         //case DERBY_JDBC: return new DerbyJDBCDAOFactory();
                         //case JPA_HIBERNATE: return new HibernateJDBCDAOFactory();
@@ -23,6 +27,10 @@ public abstract class DAOFactory {
         }
         return null;
     }
-    public abstract PersonaDAO createPersonaDAO();
+    public abstract ProductoDAO getProductoDAO();
+    public abstract ClienteDAO getClienteDAO();
+    public abstract FacturaDAO getFacturaDAO();
+    public abstract Factura_ProductoDAO getFactura_ProductoDAO();
+
 }
 
