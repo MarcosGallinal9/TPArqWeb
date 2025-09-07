@@ -1,11 +1,13 @@
-package mysql;
+package Factory;
 
 import DAO.ClienteDAO;
 import DAO.FacturaDAO;
 import DAO.Factura_ProductoDAO;
 import DAO.ProductoDAO;
-import Factory.ConnectionManager;
-import Factory.DAOFactory;
+import mysql.MySQLClienteDAO;
+import mysql.MySQLFacturaDAO;
+import mysql.MySQLFactura_ProductoDAO;
+import mysql.MySQLProductoDAO;
 
 public class MySQLJDBCDAOFactory extends DAOFactory {
 
