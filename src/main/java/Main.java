@@ -8,10 +8,10 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        // Datos de conexión a tu base de datos (ajusta según tu config)
+        // Datos de conexión a tu base de datos
         final String url = "jdbc:mysql://localhost:3306/integrador";
         final String user = "root";
-        final String password = "password"; // o la que tengas configurada
+        final String password = "";
 
         try (Connection cn = DriverManager.getConnection(url, user, password)) {
             // Crear el DAO

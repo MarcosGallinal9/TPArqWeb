@@ -7,8 +7,8 @@ public final class ConnectionManager {
     private static volatile ConnectionManager instance;
     private final Connection con;
 
-    private static final String url = "jdbc:mysql://localhost:3306/Entregable1";
-    private static final String user = "user";
+    private static final String url = "jdbc:mysql://localhost:3306/integrador";
+    private static final String user = "root";
     private static final String password = "";
 
     private ConnectionManager() {
