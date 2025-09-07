@@ -32,10 +32,11 @@ public class MySQLClienteDAO implements ClienteDAO {
 
     @Override
     public void crearCliente(Cliente cliente) {
-        final String sql = "INSERT INTO cliente (nombre, email) VALUES (?, ?)";
+        final String sql = "INSERT INTO cliente (idCliente, nombre, email) VALUES (?, ?)";
         try (PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-            ps.setString(1, cliente.getNombre());
-            ps.setString(2, cliente.getEmail());
+            ps.setInt(1, cliente.getIdCliente());
+            ps.setString(2, cliente.getNombre());
+            ps.setString(3, cliente.getEmail());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -18,12 +18,12 @@ public class Main {
             ClienteDAO clienteDAO = new MySQLClienteDAO(cn);
 
             // Crear un cliente de prueba
-            Cliente cliente = new Cliente();
-            cliente.setNombre("Marcos");
-            cliente.setEmail("marcos@example.com");
+            //Cliente cliente = new Cliente();
+            //cliente.setNombre("Marcos");
+            //cliente.setEmail("marcos@example.com");
 
             // Insertar el cliente
-            clienteDAO.crearCliente(cliente);
+            //clienteDAO.crearCliente(cliente);
 
             System.out.println("✅ Cliente insertado correctamente en la BD.");
 

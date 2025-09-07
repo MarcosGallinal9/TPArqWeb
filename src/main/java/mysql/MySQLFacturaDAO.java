@@ -4,6 +4,8 @@ import DAO.FacturaDAO;
 import entities.Factura;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class MySQLFacturaDAO implements FacturaDAO {
     private final Connection cn;
@@ -23,7 +25,7 @@ public class MySQLFacturaDAO implements FacturaDAO {
             ps.setInt(1, factura.getIdFactura());
             ps.setInt(2, factura.getIdCliente());
             ps.executeUpdate();
-            conn.commit();
+            cn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
