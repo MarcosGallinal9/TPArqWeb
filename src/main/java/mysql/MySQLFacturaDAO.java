@@ -18,6 +18,14 @@ public class MySQLFacturaDAO implements FacturaDAO {
 
     @Override
     public void crearFactura(Factura factura) {
-
+        String sql = "INSERT INTO Factura (idFactura,idCliente) VALUES (?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, factura.getIdFactura());
+            ps.setInt(2, factura.getIdCliente());
+            ps.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
