@@ -16,8 +16,6 @@ public class Factura {
         this.idFactura = idFactura;
     }
 
-
-
     public int getIdCliente() {
         return idCliente;
     }

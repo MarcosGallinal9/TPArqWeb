@@ -33,26 +33,5 @@ public class MySQLProductoDAO implements ProductoDAO {
         }
     }
 
-    public Producto getProductoMasRecaudacion() {
-        String sql = "SELECT p.idProducto, p.nombre, p.valor, SUM(fp.cantidad * p.valor) AS recaudacion\n" +
-                "        FROM Producto p\n" +
-                "        JOIN Factura_Producto fp ON p.idProducto = fp.idProducto\n" +
-                "        GROUP BY p.idProducto, p.nombre, p.valor\n" +
-                "        ORDER BY recaudacion DESC\n" +
-                "        LIMIT 1";
 
-        try (PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new Producto(
-                        rs.getInt("idProducto"),
-                        rs.getString("nombre"),
-                        rs.getFloat("valor")
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
