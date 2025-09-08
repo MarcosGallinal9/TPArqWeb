@@ -19,7 +19,7 @@ public class ClienteCsvLoader {
         this.clienteDAO = clienteDAO;
     }
 
-    public void load(String filePath) {
+    public void cargar(String filePath) {
         try (FileReader reader = new FileReader(filePath, StandardCharsets.UTF_8);
              CSVParser parser = CSVFormat.DEFAULT
                      .withFirstRecordAsHeader()

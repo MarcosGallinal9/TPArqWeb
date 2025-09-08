@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CreadorEsquema {
-    public static void createSchema(Connection conn) throws SQLException {
+    public static void crearEsquema(Connection conn) throws SQLException {
 
         try (Statement st = conn.createStatement()) {
 

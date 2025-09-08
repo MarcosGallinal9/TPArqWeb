@@ -1,6 +1,7 @@
-import DAO.ClienteDAO;
-import entities.Cliente;
-import mysql.MySQLClienteDAO;
+import DAO.*;
+import Utils.*;
+import entities.*;
+import mysql.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,24 +12,40 @@ public class Main {
         // Datos de conexión a tu base de datos
         final String url = "jdbc:mysql://localhost:3306/integrador";
         final String user = "root";
-        final String password = "";
+        final String password = ""; //Contraseña vacia
 
         try (Connection cn = DriverManager.getConnection(url, user, password)) {
-            // Crear el DAO
+            System.out.println("Conexión establecida con la BD.");
+
+            // Crear el esquema en la base de datos
+            CreadorEsquema creador = new CreadorEsquema();
+            creador.crearEsquema(cn);
+            System.out.println("Esquema creado correctamente.");
+
+            // Crear DAOs
             ClienteDAO clienteDAO = new MySQLClienteDAO(cn);
+            ProductoDAO productoDAO = new MySQLProductoDAO(cn);
+            FacturaDAO facturaDAO = new MySQLFacturaDAO(cn);
+            Factura_ProductoDAO facturaProductoDAO = new MySQLFactura_ProductoDAO(cn);
 
-            // Crear un cliente de prueba
-            //Cliente cliente = new Cliente();
-            //cliente.setNombre("Marcos");
-            //cliente.setEmail("marcos@example.com");
+            // Cargar datos desde CSV
+            ClienteCsvLoader clienteLoader = new ClienteCsvLoader(clienteDAO);
+            ProductoCsvLoader productoLoader = new ProductoCsvLoader(productoDAO);
+            FacturaCsvLoader facturaLoader = new FacturaCsvLoader(facturaDAO);
+            FacturaProductoCsvLoader facturaProductoLoader = new FacturaProductoCsvLoader(facturaProductoDAO);
 
-            // Insertar el cliente
-            //clienteDAO.crearCliente(cliente);
+            clienteLoader.cargar("resources/data/clientes.csv");
+            productoLoader.cargar("resources/data/productos.csv");
+            facturaLoader.cargar("resources/data/facturas.csv");
+            facturaProductoLoader.cargar("resources/data/facturas-productos.csv");
 
-            System.out.println("✅ Cliente insertado correctamente en la BD.");
+            System.out.println("Datos cargados desde los CSV correctamente.");
 
         } catch (SQLException e) {
-            System.err.println("❌ Error de conexión o SQL: " + e.getMessage());
+            System.err.println("Error de conexión o SQL: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error general: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -16,7 +16,7 @@ public class FacturaProductoCsvLoader {
         this.facturaProductoDAO = facturaProductoDAO;
     }
 
-    public void load(String filePath) {
+    public void cargar(String filePath) {
         try (FileReader reader = new FileReader(filePath, StandardCharsets.UTF_8);
              CSVParser parser = CSVFormat.DEFAULT
                      .withFirstRecordAsHeader()
