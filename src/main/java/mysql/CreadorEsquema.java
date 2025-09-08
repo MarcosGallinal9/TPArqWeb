@@ -9,6 +9,7 @@ public class CreadorEsquema {
 
         try (Statement st = conn.createStatement()) {
 
+            conn.setAutoCommit(false);
             // Borrar tablas si existen (orden correcto por claves foráneas)
             st.execute("DROP TABLE IF EXISTS Factura_Producto");
             st.execute("DROP TABLE IF EXISTS Factura");
@@ -62,6 +63,8 @@ public class CreadorEsquema {
         } catch (SQLException e) {
             conn.rollback();
             throw e;
+        } finally {
+            conn.setAutoCommit(true);
         }
     }
 }

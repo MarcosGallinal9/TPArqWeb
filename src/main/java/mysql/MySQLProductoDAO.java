@@ -27,7 +27,7 @@ public class MySQLProductoDAO implements ProductoDAO {
             ps.setString(2, p.getNombre());
             ps.setDouble(3, p.getPrecio());
             ps.executeUpdate();
-            cn.commit();
+//            cn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }

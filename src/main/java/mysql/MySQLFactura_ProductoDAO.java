@@ -26,7 +26,7 @@ public class MySQLFactura_ProductoDAO implements Factura_ProductoDAO {
             ps.setInt(2, f.getIdProducto());
             ps.setInt(3, f.getCantidad());
             ps.executeUpdate();
-            cn.commit();
+//            cn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -34,10 +34,10 @@ public class Main {
             FacturaCsvLoader facturaLoader = new FacturaCsvLoader(facturaDAO);
             FacturaProductoCsvLoader facturaProductoLoader = new FacturaProductoCsvLoader(facturaProductoDAO);
 
-            clienteLoader.cargar("resources/data/clientes.csv");
-            productoLoader.cargar("resources/data/productos.csv");
-            facturaLoader.cargar("resources/data/facturas.csv");
-            facturaProductoLoader.cargar("resources/data/facturas-productos.csv");
+            clienteLoader.cargar("src/main/resources/data/clientes.csv");
+            facturaLoader.cargar("src/main/resources/data/facturas.csv");
+            productoLoader.cargar("src/main/resources/data/productos.csv");
+            facturaProductoLoader.cargar("src/main/resources/data/facturas-productos.csv");
 
             System.out.println("Datos cargados desde los CSV correctamente.");
 

@@ -13,6 +13,7 @@ public class ProductoCsvLoader {
     private final ProductoDAO productoDAO;
 
     public ProductoCsvLoader(ProductoDAO productoDAO) {
+
         this.productoDAO = productoDAO;
     }
 
@@ -28,9 +29,9 @@ public class ProductoCsvLoader {
                 float valor = Float.parseFloat(row.get("valor"));
 
                 Producto p = new Producto(idProducto, nombre, valor);
-                productoDAO.crearProducto(p); // persistimos en la BD
+                productoDAO.crearProducto(p);
             }
-            System.out.println("Productos cargados desde " + filePath);
+
 
         } catch (Exception e) {
             e.printStackTrace();
