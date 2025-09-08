@@ -5,7 +5,7 @@ import DAO.ClienteDAO;
 import DAO.FacturaDAO;
 import DAO.Factura_ProductoDAO;
 import DAO.ProductoDAO;
-import mysql.*;
+
 
 public abstract class DAOFactory {
     private static volatile DAOFactory instance;

@@ -13,11 +13,9 @@ public class MySQLProductoDAO implements ProductoDAO {
 
     public MySQLProductoDAO(Connection cn) {
         this.cn = cn;
-        crearTablaSiNoExiste();
     }
-    private void crearTablaSiNoExiste() {
 
-    }
+
 
     @Override
     public void crearProducto(Producto p) {
@@ -33,5 +31,22 @@ public class MySQLProductoDAO implements ProductoDAO {
         }
     }
 
+    public String productoMasRecaudado() {
+        String sql = "SELECT p.nombre " +
+                "     FROM Producto p JOIN Factura_Producto f ON p.idProducto= f.idProducto " +
+                "     GROUP BY p.idProducto , p.nombre " +
+                "     ORDER BY SUM(f.cantidad * p.valor) DESC " +
+                "     LIMIT 1;";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+                ResultSet rs= ps.executeQuery();
+                if(rs.next()){
+                    String nombreProducto= rs.getString("nombre");
+                    return nombreProducto;
+                }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

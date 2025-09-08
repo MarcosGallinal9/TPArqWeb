@@ -6,17 +6,17 @@ import mysql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        // Datos de conexión a tu base de datos
+        // Datos de conexión a base de datos
         final String url = "jdbc:mysql://localhost:3306/integrador";
         final String user = "root";
         final String password = ""; //Contraseña vacia
 
         try (Connection cn = DriverManager.getConnection(url, user, password)) {
             System.out.println("Conexión establecida con la BD.");
-
             // Crea el esquema en la base de datos
             CreadorEsquema creador = new CreadorEsquema();
             creador.crearEsquema(cn);
@@ -42,8 +42,17 @@ public class Main {
 
             System.out.println("Datos cargados desde los CSV correctamente.");
 
+//            Escriba un programa JDBC que retorne el producto que más recaudó. Se define
+//            “recaudación” como cantidad de productos vendidos multiplicado por su valor.
 
+            String prod= productoDAO.productoMasRecaudado();
+            System.out.println("Producto mas recaudado:" + prod);
 
+//            Escriba un programa JDBC que imprima una lista de clientes, ordenada por a cuál se le
+//            facturó más.
+
+            ArrayList<ClienteConTotal> listado= clienteDAO.listarClientesMasFacturados();
+            System.out.println("Clientes mas facturados:" + listado);
 
         } catch (SQLException e) {
             System.err.println("Error de conexión o SQL: " + e.getMessage());

@@ -14,7 +14,7 @@ public class Factura_Producto {
     public int getIdFactura() {
         return idFactura;
     }
-    public void setIdFactura(int idFactura) { 
+    public void setIdFactura(int idFactura) {
         this.idFactura = idFactura;
     }
 

@@ -8,9 +8,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+
 
 public class ClienteCsvLoader {
     private final ClienteDAO clienteDAO;

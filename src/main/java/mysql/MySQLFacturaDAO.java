@@ -25,7 +25,7 @@ public class MySQLFacturaDAO implements FacturaDAO {
             ps.setInt(1, factura.getIdFactura());
             ps.setInt(2, factura.getIdCliente());
             ps.executeUpdate();
-//            cn.commit();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
