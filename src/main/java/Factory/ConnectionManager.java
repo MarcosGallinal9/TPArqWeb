@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 public final class ConnectionManager {
     private static volatile ConnectionManager instance;
-    private final Connection con;
+
 
     private static final String url = "jdbc:mysql://localhost:3306/integrador";
     private static final String user = "root";
@@ -14,10 +14,8 @@ public final class ConnectionManager {
     private ConnectionManager() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-
-            this.con = DriverManager.getConnection(url,user,password);
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error cargando el driver de MySQL", e);
         }
     }
 
@@ -33,17 +31,10 @@ public final class ConnectionManager {
     }
 
 
-    public Connection getConnection() {
-
-        return con;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 
-    public void closeConnection() {
-        try {
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }

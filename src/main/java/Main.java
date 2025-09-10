@@ -1,4 +1,5 @@
 import DAO.*;
+import Factory.ConnectionManager;
 import Utils.*;
 import entities.*;
 import mysql.*;
@@ -11,53 +12,56 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         // Datos de conexión a base de datos
-        final String url = "jdbc:mysql://localhost:3306/integrador";
-        final String user = "root";
-        final String password = ""; //Contraseña vacia
+//        url = "jdbc:mysql://localhost:3306/integrador";
+//        user = "root";
+//        password = ""; //Contraseña vacia
 
-        try (Connection cn = DriverManager.getConnection(url, user, password)) {
-            System.out.println("Conexión establecida con la BD.");
-            // Crea el esquema en la base de datos
-            CreadorEsquema creador = new CreadorEsquema();
-            creador.crearEsquema(cn);
+        // Crear esquema
+        Connection cn = null;
+        try {
+            cn = ConnectionManager.getInstance().getConnection();
+            CreadorEsquema.crearEsquema(cn);
             System.out.println("Esquema creado correctamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return; // aborta si falla la creación de tablas
+        } finally {
+            try {
+                if (cn != null) cn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            // DAOs
+            ClienteDAO clienteDAO = new MySQLClienteDAO();
+            ProductoDAO productoDAO = new MySQLProductoDAO();
+            FacturaDAO facturaDAO = new MySQLFacturaDAO();
+            Factura_ProductoDAO facturaProductoDAO = new MySQLFactura_ProductoDAO();
 
-            // Crea DAOs
-            ClienteDAO clienteDAO = new MySQLClienteDAO(cn);
-            ProductoDAO productoDAO = new MySQLProductoDAO(cn);
-            FacturaDAO facturaDAO = new MySQLFacturaDAO(cn);
-            Factura_ProductoDAO facturaProductoDAO = new MySQLFactura_ProductoDAO(cn);
-
-            // Carga datos desde CSV
+            // Loaders CSV
             ClienteCsvLoader clienteLoader = new ClienteCsvLoader(clienteDAO);
             ProductoCsvLoader productoLoader = new ProductoCsvLoader(productoDAO);
             FacturaCsvLoader facturaLoader = new FacturaCsvLoader(facturaDAO);
             FacturaProductoCsvLoader facturaProductoLoader = new FacturaProductoCsvLoader(facturaProductoDAO);
 
-            //Toma los datos desde los archivos
+            // Cargar datos
             clienteLoader.cargar("src/main/resources/data/clientes.csv");
             facturaLoader.cargar("src/main/resources/data/facturas.csv");
             productoLoader.cargar("src/main/resources/data/productos.csv");
             facturaProductoLoader.cargar("src/main/resources/data/facturas-productos.csv");
 
-            System.out.println("Datos cargados desde los CSV correctamente.");
+            System.out.println("Datos cargados correctamente.");
 
-//            Escriba un programa JDBC que retorne el producto que más recaudó. Se define
-//            “recaudación” como cantidad de productos vendidos multiplicado por su valor.
+            // Consultas
 
-            String prod= productoDAO.productoMasRecaudado();
-            System.out.println("Producto mas recaudado:" + prod);
+            String prod = productoDAO.productoMasRecaudado();
+            System.out.println("Producto más recaudado: " + prod);
 
-//            Escriba un programa JDBC que imprima una lista de clientes, ordenada por a cuál se le
-//            facturó más.
+            ArrayList<ClienteConTotal> listado = clienteDAO.listarClientesMasFacturados();
+            System.out.println("Clientes más facturados: " + listado);
 
-            ArrayList<ClienteConTotal> listado= clienteDAO.listarClientesMasFacturados();
-            System.out.println("Clientes mas facturados:" + listado);
-
-        } catch (SQLException e) {
-            System.err.println("Error de conexión o SQL: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Error general: " + e.getMessage());
             e.printStackTrace();
         }
     }

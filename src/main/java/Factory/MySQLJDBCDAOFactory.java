@@ -13,21 +13,21 @@ public class MySQLJDBCDAOFactory extends DAOFactory {
 
     @Override
     public ProductoDAO getProductoDAO() {
-        return new MySQLProductoDAO(ConnectionManager.getInstance().getConnection());
+        return new MySQLProductoDAO();
     }
 
     @Override
     public ClienteDAO getClienteDAO() {
-        return new MySQLClienteDAO(ConnectionManager.getInstance().getConnection());
+        return new MySQLClienteDAO();
     }
 
     @Override
     public FacturaDAO getFacturaDAO() {
-        return new MySQLFacturaDAO(ConnectionManager.getInstance().getConnection());
+        return new MySQLFacturaDAO();
     }
 
     @Override
     public Factura_ProductoDAO getFactura_ProductoDAO() {
-        return new MySQLFactura_ProductoDAO(ConnectionManager.getInstance().getConnection());
+        return new MySQLFactura_ProductoDAO();
     }
 }
