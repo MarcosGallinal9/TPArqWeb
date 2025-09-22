@@ -51,6 +51,7 @@ public class MySQLProductoDAO implements ProductoDAO {
         ResultSet rs = null;
         String nombreProducto = null;
 
+
         try {
             cn = ConnectionManager.getInstance().getConnection();
             String sql = """
@@ -67,6 +68,7 @@ public class MySQLProductoDAO implements ProductoDAO {
 
             if (rs.next()) {
                 nombreProducto = rs.getString("nombre");
+
             }
 
         } catch (SQLException e) {
