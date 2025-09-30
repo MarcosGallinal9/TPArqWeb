@@ -11,11 +11,17 @@ import java.time.Year;
 public class EstudianteCarrera {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id;  // ID autogenerado para la relación
 
-    private int id_estudiante;
-    private int id_carrera;
+    @ManyToOne
+    @JoinColumn(name = "dni_estudiante")
+    private Estudiante estudiante;
+
+    @ManyToOne
+    @JoinColumn(name = "id_carrera")
+    private Carrera carrera;
+
     private Year inscripcion;
     private Year graduacion;
-    private int antiguedad; //En años
+    private int antiguedad; // en años
 }

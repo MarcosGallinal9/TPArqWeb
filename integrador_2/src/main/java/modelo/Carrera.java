@@ -3,8 +3,10 @@ package modelo;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
-@Table(name = "carrera")
+@Table(name = "Carrera")
 @Data
 public class Carrera {
     @Id
@@ -12,5 +14,8 @@ public class Carrera {
     private int id_carrera;
 
     private String carrera;
-    private int duracion; //En años
+    private int duracion; // En años
+
+    @OneToMany(mappedBy = "carrera")
+    private List<EstudianteCarrera> estudiantesCarrera;
 }
