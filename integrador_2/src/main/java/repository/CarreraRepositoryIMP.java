@@ -2,14 +2,18 @@ package repository;
 
 import com.opencsv.CSVReader;
 import dto.CarreraDTO;
+import dto.CarreraReporteDTO;
 import dto.EstudianteDTO;
 import factory.JPAUtil;
 import jakarta.persistence.EntityManager;
 import modelo.Carrera;
 
 import java.io.FileReader;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class CarreraRepositoryIMP implements  CarreraRepository {
 
@@ -55,54 +59,67 @@ public List<CarreraDTO> carrerasConEstudiantesOrdenadas(){
 }
 
 @Override
-public List<String> generarReporte(){
+public void generarReporte() {
     EntityManager em = JPAUtil.getEntityManager();
 
-    // Query de inscriptos
-    List<CarreraDTO> carrerasConInscriptos = em.createQuery(
-            "SELECT new dto.CarreraDTO(c.carrera, ec.inscripcion, COUNT(ec)) " +
+    // Consulta de inscriptos
+    List<Object[]> inscriptos = em.createQuery(
+            "SELECT c.carrera, ec.inscripcion, COUNT(ec) " +
                     "FROM Carrera c JOIN c.estudiantesCarrera ec " +
                     "GROUP BY c.carrera, ec.inscripcion " +
-                    "ORDER BY c.carrera ASC, ec.inscripcion ASC",
-            CarreraDTO.class
+                    "ORDER BY c.carrera ASC, ec.inscripcion ASC"
     ).getResultList();
 
-    // Query de graduados
-    List<CarreraDTO> carrerasConGraduados = em.createQuery(
-            "SELECT new java.dto.CarreraDTO(c.carrera, ec.graduacion, COUNT(ec)) " +
-                    "FROM Carrera c JOIN c.EstudianteCarrera ec " +
+    // Consulta de graduados
+    List<Object[]> graduados = em.createQuery(
+            "SELECT c.carrera, ec.graduacion, COUNT(ec) " +
+                    "FROM Carrera c JOIN c.estudiantesCarrera ec " +
                     "WHERE ec.graduacion IS NOT NULL " +
                     "GROUP BY c.carrera, ec.graduacion " +
-                    "ORDER BY c.carrera ASC, ec.graduacion ASC",
-            CarreraDTO.class
+                    "ORDER BY c.carrera ASC, ec.graduacion ASC"
     ).getResultList();
 
     em.close();
 
-    // Lista de strings con el reporte
-    List<String> generarReporte = new ArrayList<>();
+    // Estructura de datos: carrera -> año -> DTO
+    Map<String, Map<Integer, CarreraReporteDTO>> reporte = new TreeMap<>();
 
-    // Inscriptos
-    for (CarreraDTO dto : carrerasConInscriptos) {
-        generarReporte.add(
-                "Carrera: " + dto.getCarrera() +
-                        " | Año de inscripción: " + dto.getAnio() +
-                        " | Inscriptos: " + dto.getCantidad()
-        );
+    // Procesar inscriptos
+    for (Object[] fila : inscriptos) {
+        String carrera = (String) fila[0];
+        int anio = ((Year) fila[1]).getValue();
+        long cantidad = (Long) fila[2];
+
+        reporte.putIfAbsent(carrera, new TreeMap<>());
+        Map<Integer, CarreraReporteDTO> porAnio = reporte.get(carrera);
+
+        porAnio.putIfAbsent(anio, new CarreraReporteDTO(carrera, anio));
+        porAnio.get(anio).setInscriptos(cantidad);
     }
 
-    // Graduados
-    for (CarreraDTO dto : carrerasConGraduados) {
-        generarReporte.add(
-                "Carrera: " + dto.getCarrera() +
-                        " | Año de graduación: " + dto.getAnio() +
-                        " | Graduados: " + dto.getCantidad()
-        );
+    // Procesar graduados
+    for (Object[] fila : graduados) {
+        String carrera = (String) fila[0];
+        int anio = ((Year) fila[1]).getValue();
+        long cantidad = (Long) fila[2];
+
+        reporte.putIfAbsent(carrera, new TreeMap<>());
+        Map<Integer, CarreraReporteDTO> porAnio = reporte.get(carrera);
+
+        porAnio.putIfAbsent(anio, new CarreraReporteDTO(carrera, anio));
+        porAnio.get(anio).setGraduados(cantidad);
     }
 
-    // Imprimir en consola
-    generarReporte.forEach(System.out::println);
+    // Imprimir reporte
+    for (String carrera : reporte.keySet()) {
+        System.out.println("Carrera: " + carrera);
 
-    return generarReporte;
+        for (CarreraReporteDTO dto : reporte.get(carrera).values()) {
+            System.out.println("  Año: " + dto.getAnio());
+            System.out.println("    Inscriptos: " + dto.getInscriptos());
+            System.out.println("    Graduados: " + dto.getGraduados());
+        }
+        System.out.println(); // línea en blanco entre carreras
+    }
 }
 }
