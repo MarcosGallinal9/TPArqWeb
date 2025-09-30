@@ -43,7 +43,13 @@ public class CarreraRepositoryIMP implements  CarreraRepository {
 @Override
 public List<CarreraDTO> carrerasConEstudiantesOrdenadas(){
     EntityManager em = JPAUtil.getEntityManager();
-    List<CarreraDTO> carreras = em.createQuery("SELECT c.carrera, COUNT(ec.id_estudiante) AS cantidadInscriptos FROM Carrera c JOIN EstudianteCarrera ec GROUP BY c.carrera HAVING COUNT(ec.id_estudiante) > 0 ORDER BY cantidadInscriptos DESC  ", CarreraDTO.class).getResultList();
+    List<CarreraDTO> carreras = em.createQuery("""
+                                                SELECT c.carrera, COUNT(ec.id_estudiante) AS cantidadInscriptos 
+                                                FROM Carrera c 
+                                                JOIN EstudianteCarrera ec 
+                                                GROUP BY c.carrera 
+                                                HAVING COUNT(ec.id_estudiante) > 0 
+                                                ORDER BY cantidadInscriptos DESC  """, CarreraDTO.class).getResultList();
     em.close();
     return carreras;
 }
@@ -54,8 +60,8 @@ public List<String> generarReporte(){
 
     // Query de inscriptos
     List<CarreraDTO> carrerasConInscriptos = em.createQuery(
-            "SELECT new java.dto.CarreraDTO(c.carrera, ec.inscripcion, COUNT(ec)) " +
-                    "FROM Carrera c JOIN c.EstudianteCarrera ec " +
+            "SELECT new dto.CarreraDTO(c.carrera, ec.inscripcion, COUNT(ec)) " +
+                    "FROM Carrera c JOIN c.estudiantesCarrera ec " +
                     "GROUP BY c.carrera, ec.inscripcion " +
                     "ORDER BY c.carrera ASC, ec.inscripcion ASC",
             CarreraDTO.class
