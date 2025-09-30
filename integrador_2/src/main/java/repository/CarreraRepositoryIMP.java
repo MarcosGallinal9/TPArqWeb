@@ -48,78 +48,75 @@ public class CarreraRepositoryIMP implements  CarreraRepository {
 public List<CarreraDTO> carrerasConEstudiantesOrdenadas(){
     EntityManager em = JPAUtil.getEntityManager();
     List<CarreraDTO> carreras = em.createQuery("""
-                                                SELECT c.carrera, COUNT(ec.id_estudiante) AS cantidadInscriptos 
+                                                SELECT c.carrera, COUNT(ec.estudiante) AS cantidadInscriptos 
                                                 FROM Carrera c 
                                                 JOIN EstudianteCarrera ec 
                                                 GROUP BY c.carrera 
-                                                HAVING COUNT(ec.id_estudiante) > 0 
+                                                HAVING COUNT(ec.estudiante) > 0 
                                                 ORDER BY cantidadInscriptos DESC  """, CarreraDTO.class).getResultList();
     em.close();
     return carreras;
 }
 
 @Override
-public void generarReporte() {
+public List<String> generarReporte() {
     EntityManager em = JPAUtil.getEntityManager();
 
-    // Consulta de inscriptos
-    List<Object[]> inscriptos = em.createQuery(
-            "SELECT c.carrera, ec.inscripcion, COUNT(ec) " +
+    // Inscriptos por año
+    List<CarreraReporteDTO> inscriptos = em.createQuery(
+            "SELECT new dto.CarreraReporteDTO(c.carrera, ec.inscripcion, COUNT(ec)) " +
                     "FROM Carrera c JOIN c.estudiantesCarrera ec " +
                     "GROUP BY c.carrera, ec.inscripcion " +
-                    "ORDER BY c.carrera ASC, ec.inscripcion ASC"
+                    "ORDER BY c.carrera ASC, ec.inscripcion ASC",
+            CarreraReporteDTO.class
     ).getResultList();
 
-    // Consulta de graduados
-    List<Object[]> graduados = em.createQuery(
-            "SELECT c.carrera, ec.graduacion, COUNT(ec) " +
+    // Graduados por año
+    List<CarreraReporteDTO> graduados = em.createQuery(
+            "SELECT new dto.CarreraReporteDTO(c.carrera, ec.graduacion, COUNT(ec)) " +
                     "FROM Carrera c JOIN c.estudiantesCarrera ec " +
                     "WHERE ec.graduacion IS NOT NULL " +
                     "GROUP BY c.carrera, ec.graduacion " +
-                    "ORDER BY c.carrera ASC, ec.graduacion ASC"
+                    "ORDER BY c.carrera ASC, ec.graduacion ASC",
+            CarreraReporteDTO.class
     ).getResultList();
 
     em.close();
 
-    // Estructura de datos: carrera -> año -> DTO
-    Map<String, Map<Integer, CarreraReporteDTO>> reporte = new TreeMap<>();
+
+    Map<String, Map<Year, CarreraReporteDTO>> reporteMap = new TreeMap<>();
 
     // Procesar inscriptos
-    for (Object[] fila : inscriptos) {
-        String carrera = (String) fila[0];
-        int anio = ((Year) fila[1]).getValue();
-        long cantidad = (Long) fila[2];
-
-        reporte.putIfAbsent(carrera, new TreeMap<>());
-        Map<Integer, CarreraReporteDTO> porAnio = reporte.get(carrera);
-
-        porAnio.putIfAbsent(anio, new CarreraReporteDTO(carrera, anio));
-        porAnio.get(anio).setInscriptos(cantidad);
+    for (CarreraReporteDTO dto : inscriptos) {
+        reporteMap
+                .computeIfAbsent(dto.getCarrera(), k -> new TreeMap<>())
+                .computeIfAbsent(dto.getAnio(), k -> new CarreraReporteDTO(dto.getCarrera(), dto.getAnio()))
+                .setInscriptos(dto.getInscriptos()); // usa el valor devuelto en la query
     }
 
     // Procesar graduados
-    for (Object[] fila : graduados) {
-        String carrera = (String) fila[0];
-        int anio = ((Year) fila[1]).getValue();
-        long cantidad = (Long) fila[2];
-
-        reporte.putIfAbsent(carrera, new TreeMap<>());
-        Map<Integer, CarreraReporteDTO> porAnio = reporte.get(carrera);
-
-        porAnio.putIfAbsent(anio, new CarreraReporteDTO(carrera, anio));
-        porAnio.get(anio).setGraduados(cantidad);
+    for (CarreraReporteDTO dto : graduados) {
+        reporteMap
+                .computeIfAbsent(dto.getCarrera(), k -> new TreeMap<>())
+                .computeIfAbsent(dto.getAnio(), k -> new CarreraReporteDTO(dto.getCarrera(), dto.getAnio()))
+                .setGraduados(dto.getInscriptos());
     }
 
-    // Imprimir reporte
-    for (String carrera : reporte.keySet()) {
-        System.out.println("Carrera: " + carrera);
-
-        for (CarreraReporteDTO dto : reporte.get(carrera).values()) {
-            System.out.println("  Año: " + dto.getAnio());
-            System.out.println("    Inscriptos: " + dto.getInscriptos());
-            System.out.println("    Graduados: " + dto.getGraduados());
+    // Generar salida
+    List<String> salida = new ArrayList<>();
+    for (String carrera : reporteMap.keySet()) {
+        salida.add("Carrera: " + carrera);
+        for (CarreraReporteDTO fila : reporteMap.get(carrera).values()) {
+            salida.add("\tAño: " + fila.getAnio());
+            salida.add("\t\tInscriptos: " + fila.getInscriptos());
+            salida.add("\t\tGraduados: " + fila.getGraduados());
         }
-        System.out.println(); // línea en blanco entre carreras
+        salida.add("");
     }
+
+
+    salida.forEach(System.out::println);
+
+    return salida;
 }
 }

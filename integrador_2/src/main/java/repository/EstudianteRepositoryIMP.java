@@ -46,7 +46,7 @@ public class EstudianteRepositoryIMP implements EstudianteRepository{
     public void darAltaEstudiante(int dni, String nombre, String apellido, int edad, String genero, String ciudad, int LU) {
         EntityManager em = JPAUtil.getEntityManager();
         em.createQuery(
-                        "INSERT INTO Estudiante (dni, nombre, apellido, edad, genero , ciudad , LU) VALUES (:dni, :nombre, :apellido, :edad, :genero, :ciudad, :LU)")
+                        "INSERT INTO Estudiante (dni, nombre, apellido, edad, genero , ciudadResidencia , nroLibreta) VALUES (:dni, :nombre, :apellido, :edad, :genero, :ciudad, :LU)")
                 .setParameter("dni", dni)
                 .setParameter("nombre", nombre)
                 .setParameter("apellido", apellido)
@@ -71,8 +71,8 @@ public class EstudianteRepositoryIMP implements EstudianteRepository{
     public EstudianteDTO estudiantePorLU(int libretaUniversitaria){
         EntityManager em = JPAUtil.getEntityManager();
         EstudianteDTO estudiante = em.createQuery(
-                        "SELECT e  FROM Estudiante e WHERE e.LU = :libretaUniversitaria", EstudianteDTO.class)
-                .setParameter("LU", libretaUniversitaria)
+                        "SELECT e  FROM Estudiante e WHERE e.nroLibreta = :libretaUniversitaria", EstudianteDTO.class)
+                .setParameter("libretaUniversitaria", libretaUniversitaria)
                 .getSingleResult();
 
         em.close();
@@ -91,7 +91,13 @@ public class EstudianteRepositoryIMP implements EstudianteRepository{
     @Override
     public List<EstudianteDTO> listarEstudiantes(String carrera , String ciudad){
         EntityManager em = JPAUtil.getEntityManager();
-        List<EstudianteDTO> estudiantes = em.createQuery("SELECT e FROM Estudiante e JOIN EstudianteCarrera ec JOIN Carrera  c WHERE e.ciudad = :ciudad AND c.carrera = :carrera", EstudianteDTO.class)
+        List<EstudianteDTO> estudiantes = em.createQuery("""
+                                                                SELECT e 
+                                                                FROM Estudiante e 
+                                                                JOIN EstudianteCarrera ec JOIN Carrera  c 
+                                                                WHERE e.ciudadResidencia = :ciudad 
+                                                                AND c.carrera = :carrera
+                                                                                            """, EstudianteDTO.class)
                 .getResultList();
         em.close();
         return estudiantes;

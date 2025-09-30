@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class EstudianteDTO {
@@ -54,4 +53,6 @@ public class EstudianteDTO {
     public int getLU() {
         return LU;
     }
+
+
 }

@@ -14,7 +14,7 @@ public class EstudianteCarrera {
     private int id;  // ID autogenerado para la relación
 
     @ManyToOne
-    @JoinColumn(name = "dni_estudiante")
+    @JoinColumn(name = "id_estudiante")
     private Estudiante estudiante;
 
     @ManyToOne
@@ -24,4 +24,7 @@ public class EstudianteCarrera {
     private Year inscripcion;
     private Year graduacion;
     private int antiguedad; // en años
+
+
+
 }

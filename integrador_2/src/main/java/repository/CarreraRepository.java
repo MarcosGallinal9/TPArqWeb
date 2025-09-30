@@ -7,5 +7,5 @@ import java.util.List;
 public interface CarreraRepository {
     void insertarCSV(String rutaArchivo);
     List<CarreraDTO> carrerasConEstudiantesOrdenadas();
-    void generarReporte();
+    List<String> generarReporte();
 }

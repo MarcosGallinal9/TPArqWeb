@@ -23,4 +23,6 @@ public class Estudiante {
 
     @OneToMany(mappedBy = "estudiante")
     private List<EstudianteCarrera> carreras;
+
+
 }
