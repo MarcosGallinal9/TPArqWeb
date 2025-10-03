@@ -2,11 +2,11 @@ package dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 
 @Getter
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 public class EstudianteDTO {
     private int dni; //Primary key
     private String nombre;
@@ -16,42 +16,11 @@ public class EstudianteDTO {
     private String ciudad;
     private int LU; //Libreta universitaria
 
-    public EstudianteDTO(int dni, String nombre, String apellido, int edad, String genero, String ciudad, int LU) {
-        this.dni = dni;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.edad = edad;
-        this.genero = genero;
-        this.ciudad = ciudad;
-        this.LU = LU;
-    }
 
-    public int getDni() {
-        return dni;
-    }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public String getCiudad() {
-        return ciudad;
-    }
-
-    public int getLU() {
-        return LU;
+    @Override
+    public String toString() {
+        return dni + " - " + nombre + " " + apellido + " | " + edad + " | " + genero + " | " + ciudad + " | LU: " + LU;
     }
 
 

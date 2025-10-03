@@ -1,6 +1,5 @@
 package modelo;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,10 +18,9 @@ public class Estudiante {
     private int edad;
     private String genero;
     private String ciudadResidencia;
-    private String nroLibreta;  // número de libreta universitaria
+    private int nroLibreta;  // número de libreta universitaria
 
-    @OneToMany(mappedBy = "estudiante")
+    @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL)
     private List<EstudianteCarrera> carreras;
-
-
 }
+

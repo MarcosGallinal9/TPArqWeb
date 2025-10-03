@@ -8,7 +8,6 @@ import modelo.Estudiante;
 import modelo.EstudianteCarrera;
 
 import java.io.FileReader;
-import java.time.Year;
 
 public class EstudianteCarreraRepositoryIMP implements EstudianteCarreraRepository{
 
@@ -16,7 +15,7 @@ public class EstudianteCarreraRepositoryIMP implements EstudianteCarreraReposito
     public void insertarCSV(String rutaArchivo) {
         EntityManager em = JPAUtil.getEntityManager();
 
-        try (CSVReader reader = new CSVReader(new FileReader(rutaArchivo))) {
+        try (CSVReader reader = new CSVReader(new FileReader(getClass().getClassLoader().getResource(rutaArchivo).getFile()))) {
             String[] linea;
             reader.readNext(); // salta cabecera
 
@@ -30,39 +29,69 @@ public class EstudianteCarreraRepositoryIMP implements EstudianteCarreraReposito
                 Estudiante estudiante = em.find(Estudiante.class, idEstudiante);
                 estudianteCarrera.setEstudiante(estudiante);
 
-
                 int idCarrera = Integer.parseInt(linea[2]);
                 Carrera carrera = em.find(Carrera.class, idCarrera);
                 estudianteCarrera.setCarrera(carrera);
 
+                // inscripcion/graduacion pueden estar vacíos
+                if (linea.length > 3 && linea[3] != null && !linea[3].isBlank()) {
+                    estudianteCarrera.setInscripcion(Integer.parseInt(linea[3]));
+                } else {
+                    estudianteCarrera.setInscripcion(null);
+                }
 
-                estudianteCarrera.setInscripcion(Year.parse(linea[3]));
-                estudianteCarrera.setGraduacion(Year.parse(linea[4]));
-                estudianteCarrera.setAntiguedad(Integer.parseInt(linea[5]));
+                if (linea.length > 4 && linea[4] != null && !linea[4].isBlank()) {
+                    estudianteCarrera.setGraduacion(Integer.parseInt(linea[4]));
+                } else {
+                    estudianteCarrera.setGraduacion(null);
+                }
 
-                em.persist(estudianteCarrera);
+                if (linea.length > 5 && linea[5] != null && !linea[5].isBlank()) {
+                    estudianteCarrera.setAntiguedad(Integer.parseInt(linea[5]));
+                } else {
+                    estudianteCarrera.setAntiguedad(0);
+                }
+
+                em.merge(estudianteCarrera);
             }
             em.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
         } finally {
             em.close();
         }
     }
 
     @Override
-    public void matricularEstudiante(Estudiante estudiante, Carrera carrera){
-        int id_estudiante = estudiante.getDni();
-        int id_carrera = carrera.getId_carrera();
+    public void matricularEstudiante(int dniEstudiante, int idCarrera){
         EntityManager em = JPAUtil.getEntityManager();
-        em.createQuery(
-                        """
-                                   INSERT INTO EstudianteCarrera (estudiante, carrera) VALUES (:id_estudiante, :id_carrera)""")
-                .setParameter("id_estudiante", id_estudiante)
-                .setParameter("id_carrera", id_carrera)
-                .executeUpdate();
+        try {
+            em.getTransaction().begin();
 
-        em.close();
+            Estudiante estudiante = em.find(Estudiante.class, dniEstudiante);
+            Carrera carrera = em.find(Carrera.class, idCarrera);
 
+            if (estudiante == null || carrera == null) {
+                throw new IllegalArgumentException("Estudiante o carrera no encontrados para matricular.");
+            }
+
+            EstudianteCarrera ec = new EstudianteCarrera();
+            ec.setEstudiante(estudiante);
+            ec.setCarrera(carrera);
+            ec.setInscripcion(java.time.Year.now().getValue()); // año actual
+            ec.setAntiguedad(0);
+            ec.setGraduacion(null);
+
+            em.persist(ec);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 }

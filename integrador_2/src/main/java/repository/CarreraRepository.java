@@ -1,11 +1,12 @@
 package repository;
 
 import dto.CarreraDTO;
-
+import dto.CarreraInscriptosDTO;
 import java.util.List;
 
 public interface CarreraRepository {
     void insertarCSV(String rutaArchivo);
-    List<CarreraDTO> carrerasConEstudiantesOrdenadas();
+    List<CarreraInscriptosDTO> carrerasConEstudiantesOrdenadas();
     List<String> generarReporte();
 }
+

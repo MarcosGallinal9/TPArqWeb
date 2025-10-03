@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  integrador_db:
+    image: mysql:8.0
+    container_name: integrador2_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: integrador_2
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

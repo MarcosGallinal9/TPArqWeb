@@ -1,42 +1,36 @@
 package dto;
 
-import java.time.Year;
 
+import lombok.Getter;
+
+
+@Getter
 public class CarreraReporteDTO {
     private String carrera;
-    private Year anio;
+    private Integer anio;
     private long inscriptos;
     private long graduados;
 
-    // Constructor usado por la consulta de JPQL
-    public CarreraReporteDTO(String carrera, Year anio, long cantidad) {
+    public CarreraReporteDTO(String carrera, Integer anio, long cantidadInscriptos) {
         this.carrera = carrera;
         this.anio = anio;
-        this.inscriptos = cantidad;
+        this.inscriptos = cantidadInscriptos;
         this.graduados = 0;
     }
 
-    // Constructor vacío para uso interno
-    public CarreraReporteDTO(String carrera, Year anio) {
+    // constructor usado para graduados (mismo tipo)
+    public CarreraReporteDTO(String carrera, Integer anio, boolean isGraduados, long cantidad) {
         this.carrera = carrera;
         this.anio = anio;
-        this.inscriptos = 0;
-        this.graduados = 0;
+        if (isGraduados) {
+            this.graduados = cantidad;
+            this.inscriptos = 0;
+        } else {
+            this.inscriptos = cantidad;
+            this.graduados = 0;
+        }
     }
 
-
-    public String getCarrera() {
-        return carrera;
-    }
-    public Year getAnio() {
-        return anio;
-    }
-    public long getInscriptos() {
-        return inscriptos;
-    }
-    public long getGraduados() {
-        return graduados;
-    }
 
 
     public void setInscriptos(long inscriptos) {
@@ -48,9 +42,6 @@ public class CarreraReporteDTO {
 
     @Override
     public String toString() {
-        return "Carrera: " + carrera +
-                " | Año: " + anio +
-                " | Inscriptos: " + inscriptos +
-                " | Graduados: " + graduados;
+        return "Carrera: " + carrera + " | Año: " + anio + " | Inscriptos: " + inscriptos + " | Graduados: " + graduados;
     }
 }
