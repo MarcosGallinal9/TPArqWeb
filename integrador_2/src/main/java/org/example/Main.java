@@ -1,8 +1,6 @@
 package org.example;
 
-import dto.CarreraDTO;
 import dto.EstudianteDTO;
-import factory.JPAUtil;
 import repository.*;
 
 import java.util.List;
