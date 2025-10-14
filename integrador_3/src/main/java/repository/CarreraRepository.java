@@ -1,11 +1,11 @@
 package repository;
 
 import entity.Carrera;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
-public class CarreraRepository {
-    public List<Carrera> findAll() {
+@Repository
+public interface CarreraRepository extends BaseJPARepository<Carrera, Long> {
 
-    }
+
 }

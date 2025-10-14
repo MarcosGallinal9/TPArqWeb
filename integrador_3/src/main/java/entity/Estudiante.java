@@ -1,5 +1,10 @@
 package entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.List;
+
 @Entity
 @Table(name = "Estudiante")
 @Data

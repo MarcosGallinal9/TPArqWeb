@@ -1,4 +1,6 @@
 package service;
 
-public class EstudianteCarreraService {
+import entity.EstudianteCarrera;
+
+public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
 }
