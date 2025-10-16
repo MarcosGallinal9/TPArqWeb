@@ -22,4 +22,9 @@ public class EstudianteCarrera {
     private Integer inscripcion;
     private Integer graduacion;
     private int antiguedad; // en años
+
+    public EstudianteCarrera(Estudiante estudiante, Carrera carrera) {
+        this.estudiante = estudiante;
+        this.carrera = carrera;
+    }
 }
