@@ -13,7 +13,6 @@ import java.util.Optional;
 public interface CarreraRepository extends BaseJPARepository<Carrera, Long> {
 
 
-
     @Query("""
                 SELECT c, COUNT(ec.estudiante)
                 FROM Carrera c JOIN EstudianteCarrera ec ON c.carrera = ec.carrera 
@@ -23,7 +22,5 @@ public interface CarreraRepository extends BaseJPARepository<Carrera, Long> {
     """)
     List<Carrera> getCarrerasConInscriptosOrdenadas();
 
-
-    @Override
-    List<Carrera> findAll();
 }
+

@@ -1,18 +1,16 @@
 package controller;
 
-import entity.Carrera;
+
 import entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import repository.CarreraRepository;
-import repository.EstudianteRepository;
 import service.EstudianteService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/estudiantes")
+@RequestMapping("/api/estudiantes")
 public class EstudianteController {
     @Qualifier
     @Autowired
@@ -20,23 +18,33 @@ public class EstudianteController {
 
     public EstudianteController(@Qualifier("EstudianteService") EstudianteService service){}
 
+
     @PostMapping("/crearEstudiante")
     public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {
         return estudianteService.add(estudiante);
     }
-
-    @GetMapping("/estudiantesOrdenadosEdad")
-    public List<Estudiante> findAllByOrderByEdad() {
-        return estudianteService.findAllByOrderByEdad();
+    // /api/estudiantes?orden=edad
+    @GetMapping
+    public List<Estudiante> getAll(@RequestParam(required = false) String orden){
+        if("edad".equalsIgnoreCase(orden)){
+            return estudianteService.findAllByOrderByEdad();
+        }
+        return estudianteService.findAll();
     }
 
-    @GetMapping("/estudianteLU")
-    public Estudiante getByNroLibreta(Integer nroLibreta) {
+//    @GetMapping("/estudiantesOrdenadosEdad")
+//    public List<Estudiante> findAllByOrderByEdad() {
+//        return estudianteService.findAllByOrderByEdad();
+//    }
+
+
+    @GetMapping("/{nroLibreta}")
+    public Estudiante getByNroLibreta(@PathVariable Integer nroLibreta) {
         return estudianteService.getByNroLibreta(nroLibreta);
     }
 
-    @GetMapping("/estudianteLU")
-    public List<Estudiante> getByGenero(String genero) {
+    @GetMapping("/genero/{genero}")
+    public List<Estudiante> getByGenero(@PathVariable String genero) {
         return estudianteService.getByGenero(genero);
     }
 

@@ -1,11 +1,13 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
-@Table(name = "EstudianteCarrera")
+@Table(name = "estudianteCarrera")
 @Data
+@AllArgsConstructor
 public class EstudianteCarrera {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +25,5 @@ public class EstudianteCarrera {
     private Integer graduacion;
     private int antiguedad; // en años
 
-    public EstudianteCarrera(Estudiante estudiante, Carrera carrera) {
-        this.estudiante = estudiante;
-        this.carrera = carrera;
-    }
+
 }

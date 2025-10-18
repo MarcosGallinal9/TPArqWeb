@@ -15,12 +15,7 @@ import java.util.List;
 public interface EstudianteRepository extends BaseJPARepository<Estudiante, Long>{
 
 
-    Estudiante save(Estudiante estudiante);
-
-    List<Estudiante> findAll();
-
-
-    List<Estudiante> findAllByOrderByEdad();
+   List<Estudiante> findAllByOrderByEdad();
 
 
     Estudiante getByNroLibreta(Integer nroLibreta);

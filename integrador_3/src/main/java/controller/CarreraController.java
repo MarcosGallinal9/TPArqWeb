@@ -19,12 +19,12 @@ public class CarreraController {
 
     public CarreraController(@Qualifier("CarreraService")CarreraService service) {}
 
-    @GetMapping("/carreras")
+    @GetMapping
     public List<Carrera> findAll() {
         return carreraService.findAll();
     }
 
-    @GetMapping("/carrerasConInscriptosOrdenadas")
+    @GetMapping("/inscriptos")
     public List<Carrera> getCarrerasConInscriptosOrdenadas(){
         return carreraService.getCarrerasConInscriptosOrdenadas();
     }

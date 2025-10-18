@@ -2,12 +2,14 @@ package entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
-@Table(name = "Carrera")
+@Table(name = "carrera")
 @Data
+@NoArgsConstructor
 public class Carrera {
 
     @Id

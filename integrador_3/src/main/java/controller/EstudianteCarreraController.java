@@ -17,18 +17,25 @@ import java.util.List;
 public class EstudianteCarreraController {
     @Qualifier
     @Autowired
-    private EstudianteService  estudianteCarreraService;
+    private EstudianteCarreraService  estudianteCarreraService;
 
     public EstudianteCarreraController(@Qualifier("EstudianteCarreraService") EstudianteCarreraService service) {}
 
-//    @GetMapping("/carreras")
-//    public List<EstudianteCarrera> carrerasConEstudiantes() {
-//        return EstudianteCarreraRepository.findAll();
-//    }
 
-    @PostMapping("/matricularEstudiante")
-    public void matricularEstudiante(@RequestBody Estudiante estudiante, Carrera carrera) {
-        return estudianteCarreraService.matricular(estudiante, carrera);
+    @PostMapping
+    public void matricular(@RequestParam int dniEstudiante @RequestParam int idCarrera) {
+        return estudianteCarreraService.matricular(dniEstudiante , idCarrera);
+    }
+
+    @GetMapping("/carrera/{idCarrera}")
+    public List<EstudianteCarrera> getByCarrera(@PathVariable String idCarrera,
+                                                @RequestParam(required = false) String ciudad) {
+        if (ciudad != null && !ciudad.isBlank()) {
+            return estudianteCarreraService.getByCarreraYCiudad(
+                    estudianteCarreraService.getByCarrera(idCarrera).stream().filter(ec -> ciudad.equalsIgnoreCase(ec.getEstudiante().getCiudadResidencia())).toList()
+            );
+        }
+        return estudianteCarreraService.getByCarrera(idCarrera);
     }
 
 }
