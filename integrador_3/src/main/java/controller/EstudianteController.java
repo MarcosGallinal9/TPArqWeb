@@ -13,10 +13,11 @@ import java.util.List;
 @RequestMapping("/api/estudiantes")
 public class EstudianteController {
     @Qualifier
+    private final EstudianteService estudianteService;
     @Autowired
-    private EstudianteService estudianteService;
-
-    public EstudianteController(@Qualifier("EstudianteService") EstudianteService service){}
+    public EstudianteController(EstudianteService estudianteService){
+        this.estudianteService = estudianteService;
+    }
 
 
     @PostMapping("/crearEstudiante")

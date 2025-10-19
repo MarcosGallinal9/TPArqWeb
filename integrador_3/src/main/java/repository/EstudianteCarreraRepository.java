@@ -1,20 +1,25 @@
 package repository;
 
-import entity.Carrera;
-import entity.Estudiante;
-import entity.EstudianteCarrera;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PostMapping;
-import service.EstudianteCarreraService;
 
+import entity.EstudianteCarrera;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
 public interface EstudianteCarreraRepository extends BaseJPARepository<EstudianteCarrera, Long>{
 
-List<EstudianteCarrera> getByCarrera_Id(Integer carrera_id);
+    List<EstudianteCarrera> getByCarrera_IdCarrera(Long idCarrera);
 
-List<EstudianteCarrera> GetByCarrera_NombreYEstudiante_CiudadResidencia(String carrera_nombre, String ciudad);
+    @Query("""
+        SELECT ec
+        FROM EstudianteCarrera ec
+        WHERE ec.carrera.carrera = :nombreCarrera
+          AND ec.estudiante.ciudadResidencia = :ciudad
+    """)
+    List<EstudianteCarrera> getByCarreraYCiudad(@Param("nombreCarrera") String nombreCarrera,
+                                                @Param("ciudad") String ciudad);
 
 
 }

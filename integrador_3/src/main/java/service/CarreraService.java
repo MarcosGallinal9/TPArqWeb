@@ -1,5 +1,6 @@
 package service;
 
+import dto.CarreraReporteDTO;
 import entity.Carrera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,5 +19,9 @@ public class CarreraService implements BaseService<Carrera>{
 
     public List<Carrera> findAll() {
         return carreraRepository.findAll();
+    }
+
+    public List<CarreraReporteDTO> generarReporteCarreras() {
+        return carreraRepository.generarReporteCarreras();
     }
 }

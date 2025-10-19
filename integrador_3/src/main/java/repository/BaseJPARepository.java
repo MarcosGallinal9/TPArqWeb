@@ -15,13 +15,8 @@ public interface BaseJPARepository<T,ID extends Serializable> extends org.spring
     boolean existsById(Long id);
     void deleteById(Long id);
     T save(T entity); //Dar de alta estudiante, matricular estudiante en carrera
-    List<T> findAllByOrderByEdad(); //estudiantes con criterio de ordenamiento simple
-    List<T> getByGenero(String genero);
-    T getByNroLibreta(Integer nroLibreta);
-    List<T> getCarrerasConInscriptosOrdenadas();
-    List<T> getByCarrera (String ciudad);
-    List<T> getReporte();
-    T matricular(T entity, T entity2);
+
+
 
 
 

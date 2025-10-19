@@ -35,12 +35,17 @@ public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
         return estudianteCarreraRepository.save(ec);
     }
 
-    public List<EstudianteCarrera> getByCarrera(String carrera) {
-        return estudianteCarreraRepository.getByCarrera(carrera);
+    public List<EstudianteCarrera> getByCarrera(Long carrera) {
+        return estudianteCarreraRepository.getByCarrera_IdCarrera(carrera);
     }
 
-    public List<EstudianteCarrera> getByCarreraYCiudad(String carrera, String ciudad) {
-        return estudianteCarreraRepository.GetByCarrera_NombreYEstudiante_CiudadResidencia(carrera, ciudad);
+    public List<EstudianteCarrera> getByCarreraYCiudad(Long idCarrera, String ciudad) {
+        return estudianteCarreraRepository.getByCarreraYCiudad( obtenerNombreCarreraPorId(idCarrera), ciudad);
+    }
+    private String obtenerNombreCarreraPorId(Long idCarrera) {
+        return carreraRepository.findById(idCarrera)
+                .map(Carrera::getCarrera)
+                .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
     }
 
 

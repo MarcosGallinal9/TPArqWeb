@@ -1,5 +1,6 @@
 package controller;
 
+import dto.CarreraReporteDTO;
 import entity.Carrera;
 import entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/carrera")
 public class CarreraController {
-    @Qualifier
-    @Autowired
-    private CarreraService carreraService;
 
-    public CarreraController(@Qualifier("CarreraService")CarreraService service) {}
+    private final CarreraService carreraService;
+    @Autowired
+    public CarreraController(CarreraService carreraService) {
+        this.carreraService = carreraService;
+    }
 
     @GetMapping
     public List<Carrera> findAll() {
@@ -28,5 +30,11 @@ public class CarreraController {
     public List<Carrera> getCarrerasConInscriptosOrdenadas(){
         return carreraService.getCarrerasConInscriptosOrdenadas();
     }
+
+    @GetMapping("/reportes")
+    public List<CarreraReporteDTO> generarReporteCarreras(){
+        return carreraService.generarReporteCarreras();
+    }
+
 
 }

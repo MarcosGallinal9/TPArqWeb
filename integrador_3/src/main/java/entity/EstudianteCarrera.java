@@ -3,11 +3,13 @@ package entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "estudianteCarrera")
+@Table(name = "estudiante_carrera")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EstudianteCarrera {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

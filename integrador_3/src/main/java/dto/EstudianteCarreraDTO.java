@@ -12,8 +12,8 @@ import lombok.ToString;
 
 public class EstudianteCarreraDTO {
     private int id;
-    private int id_estudiante; //DNI
-    private int id_carrera;
+    private int idEstudiante; //DNI
+    private int idCarrera;
     private int inscripcion;
     private int graduacion;
     private int antiguedad;

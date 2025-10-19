@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarreraDTO {
-    private int id_carrera;
+    private int idCarrera;
     private String carrera;
     private int duracion;
 
@@ -16,6 +16,6 @@ public class CarreraDTO {
 
     @Override
     public String toString() {
-        return id_carrera + " - " + carrera + " (" + duracion + " años)";
+        return idCarrera + " - " + carrera + " (" + duracion + " años)";
     }
 }

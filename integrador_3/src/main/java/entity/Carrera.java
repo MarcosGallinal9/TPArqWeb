@@ -14,7 +14,7 @@ public class Carrera {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_carrera;
+    private int idCarrera;
 
     private String carrera;
     private int duracion; // En años
