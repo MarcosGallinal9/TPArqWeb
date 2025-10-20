@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "19cb8bf0-87d4-4524-9159-cbda60521420",
+		"name": "integrador_3 Copy",
+		"description": "Trabajo integrador N°3\n\nArquitecturas web TUDAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24024189"
+	},
+	"item": [
+		{
+			"name": "Dar de alta estudiante",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"dni\": 12345678,\r\n\"nombre\": \"Juan\",\r\n\"apellido\": \"Perez\",\r\n\"edad\": 23,\r\n\"genero\": \"M\",\r\n\"nroLibreta\": 1001,\r\n\"ciudadResidencia\": \"Cordoba\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/estudiantes/crearEstudiante",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudiantes",
+						"crearEstudiante"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dar de alta carrera",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"carrera\": \"TUDAI\",\r\n\"duracion\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/carrera/crearCarrera",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"carrera",
+						"crearCarrera"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matricular estudiante",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/estudianteCarrera?dniEstudiante=12345678&idCarrera=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudianteCarrera"
+					],
+					"query": [
+						{
+							"key": "dniEstudiante",
+							"value": "12345678"
+						},
+						{
+							"key": "idCarrera",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar estudiantes ordenados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/estudiantes?orden=edad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudiantes"
+					],
+					"query": [
+						{
+							"key": "orden",
+							"value": "edad"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar estudiante por LU",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/estudiantes/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudiantes",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar estudiantes por genero",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/estudiantes/genero/M",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudiantes",
+						"genero",
+						"M"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar carreras con inscriptos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/carrera/inscriptos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"carrera",
+						"inscriptos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar estudiantes por carrera",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/estudianteCarrera/carrera/1?ciudad=Cordoba",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"estudianteCarrera",
+						"carrera",
+						"1"
+					],
+					"query": [
+						{
+							"key": "ciudad",
+							"value": "Cordoba"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generar reporte carreras",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/carrera/reportes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"carrera",
+						"reportes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
