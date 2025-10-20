@@ -1,5 +1,6 @@
 package org.example.integrador_3.controller;
 
+import org.example.integrador_3.dto.CarreraConInscriptosDTO;
 import org.example.integrador_3.dto.CarreraDTO;
 import org.example.integrador_3.dto.CarreraReporteDTO;
 import org.example.integrador_3.entity.Carrera;
@@ -35,7 +36,7 @@ public class CarreraController {
     @GetMapping("/inscriptos")
     public ResponseEntity<?> getCarrerasConInscriptosOrdenadas(){
         try{
-            List<CarreraDTO> resultado= carreraService.getCarrerasConInscriptosOrdenadas();
+            List<CarreraConInscriptosDTO> resultado = carreraService.getCarrerasConInscriptosOrdenadas();
             return ResponseEntity.status(HttpStatus.OK).body(resultado);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro ninguna carrera con inscriptos.");

@@ -1,6 +1,7 @@
 package org.example.integrador_3.service;
 
 import jakarta.transaction.Transactional;
+import org.example.integrador_3.dto.CarreraConInscriptosDTO;
 import org.example.integrador_3.dto.CarreraDTO;
 import org.example.integrador_3.dto.CarreraReporteDTO;
 import org.example.integrador_3.entity.Carrera;
@@ -19,13 +20,9 @@ public class CarreraService implements BaseService<Carrera>{
     private EstudianteCarreraRepository estudianteCarreraRepository;
 
     @Transactional
-    public List<CarreraDTO> getCarrerasConInscriptosOrdenadas() throws  Exception {
+    public List<CarreraConInscriptosDTO> getCarrerasConInscriptosOrdenadas() throws  Exception {
         try{
-            var carreras= carreraRepository.findAll();
-            return carreraRepository.getCarrerasConInscriptosOrdenadas()
-                    .stream()
-                    .map(this::toDTO)
-                    .collect(Collectors.toList());
+            return carreraRepository.getCarrerasConInscriptosOrdenadas();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
