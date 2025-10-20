@@ -1,13 +1,11 @@
-package repository;
+package org.example.integrador_3.repository;
 
-import dto.CarreraReporteDTO;
-import entity.Carrera;
+import org.example.integrador_3.dto.CarreraReporteDTO;
+import org.example.integrador_3.entity.Carrera;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import service.CarreraService;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Repository("CarreraRepository")
@@ -26,7 +24,7 @@ public interface CarreraRepository extends BaseJPARepository<Carrera, Long> {
     List<Carrera> getCarrerasConInscriptosOrdenadas();
 
     @Query("""
-               SELECT new dto.CarreraReporteDTO(
+               SELECT new org.example.integrador_3.dto.CarreraReporteDTO(
                                                                     c.carrera,
                                                                     ec.inscripcion,
                                                                     COUNT(ec.estudiante),

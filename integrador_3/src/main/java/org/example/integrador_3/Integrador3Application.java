@@ -7,9 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "service", "repository"})
-@EnableJpaRepositories(basePackages = {"repository"})
-@EntityScan(basePackages = {"entity"})
 public class Integrador3Application {
 
     public static void main(String[] args) {

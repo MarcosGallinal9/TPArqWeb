@@ -1,7 +1,7 @@
-package repository;
+package org.example.integrador_3.repository;
 
 
-import entity.EstudianteCarrera;
+import org.example.integrador_3.entity.EstudianteCarrera;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

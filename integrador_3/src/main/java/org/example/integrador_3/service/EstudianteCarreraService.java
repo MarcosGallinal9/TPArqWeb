@@ -1,15 +1,14 @@
-package service;
+package org.example.integrador_3.service;
 
-import dto.EstudianteCarreraDTO;
-import entity.Carrera;
-import entity.Estudiante;
-import entity.EstudianteCarrera;
+import org.example.integrador_3.entity.Carrera;
+import org.example.integrador_3.entity.Estudiante;
+import org.example.integrador_3.entity.EstudianteCarrera;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.CarreraRepository;
-import repository.EstudianteCarreraRepository;
-import repository.EstudianteRepository;
+import org.example.integrador_3.repository.CarreraRepository;
+import org.example.integrador_3.repository.EstudianteCarreraRepository;
+import org.example.integrador_3.repository.EstudianteRepository;
 import java.util.List;
 
 import java.time.LocalDate;

@@ -1,11 +1,11 @@
-package controller;
+package org.example.integrador_3.controller;
 
 
-import entity.Estudiante;
+import org.example.integrador_3.entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import service.EstudianteService;
+import org.example.integrador_3.service.EstudianteService;
 
 import java.util.List;
 

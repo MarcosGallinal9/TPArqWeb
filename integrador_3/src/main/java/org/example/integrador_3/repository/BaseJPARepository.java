@@ -1,4 +1,4 @@
-package repository;
+package org.example.integrador_3.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
 

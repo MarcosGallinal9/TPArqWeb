@@ -1,10 +1,10 @@
-package service;
+package org.example.integrador_3.service;
 
-import dto.CarreraReporteDTO;
-import entity.Carrera;
+import org.example.integrador_3.dto.CarreraReporteDTO;
+import org.example.integrador_3.entity.Carrera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.CarreraRepository;
+import org.example.integrador_3.repository.CarreraRepository;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package dto;
+package org.example.integrador_3.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

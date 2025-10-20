@@ -1,15 +1,10 @@
-package controller;
+package org.example.integrador_3.controller;
 
-import dto.CarreraReporteDTO;
-import entity.Carrera;
-import entity.Estudiante;
+import org.example.integrador_3.dto.CarreraReporteDTO;
+import org.example.integrador_3.entity.Carrera;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import repository.CarreraRepository;
-import service.CarreraService;
+import org.example.integrador_3.service.CarreraService;
 
 import java.util.List;
 

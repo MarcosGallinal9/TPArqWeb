@@ -1,15 +1,12 @@
-package service;
+package org.example.integrador_3.service;
 
 
-import entity.Estudiante;
-import entity.EstudianteCarrera;
-import jakarta.transaction.Transactional;
+import org.example.integrador_3.entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.EstudianteRepository;
+import org.example.integrador_3.repository.EstudianteRepository;
 
 
-import java.util.Collections;
 import java.util.List;
 @Service
 public class EstudianteService implements BaseService<Estudiante>{

@@ -1,9 +1,4 @@
-package service;
-
-import entity.Carrera;
-import entity.Estudiante;
-
-import java.util.List;
+package org.example.integrador_3.service;
 
 public interface BaseService<T>{
     //public List<T> findAll()throws Exception;
