@@ -14,10 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CarreraService implements BaseService<Carrera>{
-    @Autowired
+public class CarreraService{
+
     private CarreraRepository carreraRepository;
-    private EstudianteCarreraRepository estudianteCarreraRepository;
+
+
+    public CarreraService(CarreraRepository carreraRepository) {
+        this.carreraRepository = carreraRepository;
+    }
 
     @Transactional
     public List<CarreraConInscriptosDTO> getCarrerasConInscriptosOrdenadas() throws  Exception {

@@ -3,6 +3,7 @@ package org.example.integrador_3.repository;
 import org.example.integrador_3.dto.CarreraConInscriptosDTO;
 import org.example.integrador_3.dto.CarreraReporteDTO;
 import org.example.integrador_3.entity.Carrera;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @Repository("CarreraRepository")
-public interface CarreraRepository extends BaseJPARepository<Carrera, Long> {
+public interface CarreraRepository extends JpaRepository<Carrera, Long> {
 
 
 

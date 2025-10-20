@@ -3,15 +3,16 @@ package org.example.integrador_3.repository;
 
 import org.example.integrador_3.entity.Carrera;
 import org.example.integrador_3.entity.EstudianteCarrera;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EstudianteCarreraRepository extends BaseJPARepository<EstudianteCarrera, Long>{
+public interface EstudianteCarreraRepository extends JpaRepository<EstudianteCarrera, Long> {
 
-    List<EstudianteCarrera> getByCarrera_IdCarrera(Long idCarrera);
+    List<EstudianteCarrera> findByCarrera_IdCarrera(Long idCarrera);
 
     @Query("""
         SELECT ec
@@ -24,4 +25,6 @@ public interface EstudianteCarreraRepository extends BaseJPARepository<Estudiant
 
 
     Long countByCarrera(Carrera carrera);
+
+    EstudianteCarrera save(EstudianteCarrera estudianteCarrera);
 }

@@ -5,7 +5,6 @@ import org.example.integrador_3.entity.Carrera;
 import org.example.integrador_3.entity.Estudiante;
 import org.example.integrador_3.entity.EstudianteCarrera;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.integrador_3.repository.CarreraRepository;
 import org.example.integrador_3.repository.EstudianteCarreraRepository;
@@ -16,18 +15,21 @@ import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Service
-public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
-    @Autowired
+public class EstudianteCarreraService {
     private EstudianteCarreraRepository estudianteCarreraRepository;
-    @Autowired
     private CarreraRepository carreraRepository;
-    @Autowired
     private EstudianteRepository estudianteRepository;
+
+    public EstudianteCarreraService(EstudianteCarreraRepository estudianteCarreraRepository, CarreraRepository carreraRepository, EstudianteRepository estudianteRepository) {
+        this.estudianteCarreraRepository = estudianteCarreraRepository;
+        this.carreraRepository = carreraRepository;
+        this.estudianteRepository = estudianteRepository;
+    }
 
     @Transactional
     public EstudianteCarreraDTO matricular(Long dniEstudiante, Long idCarrera) throws Exception {
         try{
-            Estudiante estudiante = estudianteRepository.findById(dniEstudiante).orElseThrow(()-> new RuntimeException("Estudiante no encontrado" + dniEstudiante));
+            Estudiante estudiante = estudianteRepository.findById(dniEstudiante).orElseThrow(()-> new RuntimeException("Estudiante no encontrado" + idCarrera));
             Carrera carrera = carreraRepository.findById(idCarrera).orElseThrow(()-> new RuntimeException("Carrera no encontrada" + idCarrera));
         EstudianteCarrera ec = new EstudianteCarrera();
         ec.setEstudiante(estudiante);
@@ -35,7 +37,7 @@ public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
         ec.setInscripcion(LocalDate.now().getYear());
         ec.setAntiguedad(0);
 
-        EstudianteCarrera saved= estudianteCarreraRepository.save(ec);
+        EstudianteCarrera saved = estudianteCarreraRepository.save(ec);
         return toDTO(saved);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -46,7 +48,7 @@ public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
     @Transactional
     public List<EstudianteCarreraDTO> getByCarrera(Long carrera) throws Exception {
         try{
-            return estudianteCarreraRepository.getByCarrera_IdCarrera(carrera)
+            return estudianteCarreraRepository.findByCarrera_IdCarrera(carrera)
                     .stream()
                     .map(this::toDTO)
                     .collect(Collectors.toList());
@@ -60,7 +62,7 @@ public class EstudianteCarreraService implements BaseService<EstudianteCarrera>{
             String nombreCarrera = carreraRepository.findById(idCarrera)
                     .map(Carrera::getCarrera)
                     .orElseThrow(() -> new RuntimeException("Carrera no encontrada" + idCarrera));
-            return estudianteCarreraRepository.getByCarreraYCiudad( obtenerNombreCarreraPorId(idCarrera), ciudad)
+            return estudianteCarreraRepository.getByCarreraYCiudad(obtenerNombreCarreraPorId(idCarrera), ciudad)
                     .stream()
                     .map(this::toDTO)
                     .collect(Collectors.toList());

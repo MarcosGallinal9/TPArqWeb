@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class EstudianteService implements BaseService<Estudiante>{
-    @Autowired
+public class EstudianteService {
     private  EstudianteRepository estudianteRepository;
 
+    public EstudianteService(EstudianteRepository estudianteRepository) {
+        this.estudianteRepository = estudianteRepository;
+    }
 
     @Transactional
     public EstudianteDTO add(Estudiante estudiante) throws Exception {
