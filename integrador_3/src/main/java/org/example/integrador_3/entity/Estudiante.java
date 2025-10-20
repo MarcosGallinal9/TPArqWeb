@@ -1,6 +1,6 @@
 package org.example.integrador_3.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +24,5 @@ public class Estudiante {
     private int nroLibreta;  // número de libreta universitaria
 
     @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "estudiante-carrera")
     private List<EstudianteCarrera> carreras;
 }

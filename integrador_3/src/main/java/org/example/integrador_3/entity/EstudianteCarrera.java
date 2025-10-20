@@ -1,6 +1,6 @@
 package org.example.integrador_3.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +18,10 @@ public class EstudianteCarrera {
 
     @ManyToOne
     @JoinColumn(name = "id_estudiante")
-    @JsonBackReference(value = "estudiante-carrera")
     private Estudiante estudiante;
 
     @ManyToOne
     @JoinColumn(name = "id_carrera")
-    @JsonBackReference(value = "carrera-estudiante")
     private Carrera carrera;
 
     private Integer inscripcion;

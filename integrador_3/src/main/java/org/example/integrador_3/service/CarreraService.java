@@ -1,31 +1,71 @@
 package org.example.integrador_3.service;
 
+import jakarta.transaction.Transactional;
+import org.example.integrador_3.dto.CarreraDTO;
 import org.example.integrador_3.dto.CarreraReporteDTO;
 import org.example.integrador_3.entity.Carrera;
+import org.example.integrador_3.repository.EstudianteCarreraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.integrador_3.repository.CarreraRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CarreraService implements BaseService<Carrera>{
     @Autowired
     private CarreraRepository carreraRepository;
+    private EstudianteCarreraRepository estudianteCarreraRepository;
 
-    public List<Carrera> getCarrerasConInscriptosOrdenadas() {
-        return carreraRepository.getCarrerasConInscriptosOrdenadas();
+    @Transactional
+    public List<CarreraDTO> getCarrerasConInscriptosOrdenadas() throws  Exception {
+        try{
+            var carreras= carreraRepository.findAll();
+            return carreraRepository.getCarrerasConInscriptosOrdenadas()
+                    .stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<Carrera> findAll() {
-        return carreraRepository.findAll();
+    @Transactional
+    public List<CarreraDTO> findAll() throws Exception{
+        try{
+            return carreraRepository.findAll()
+                    .stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            throw new Exception(e);
+        }
+
+    }
+    @Transactional
+    public List<CarreraReporteDTO> generarReporteCarreras() throws Exception{
+        try{
+            return carreraRepository.generarReporteCarreras();
+        }catch (Exception e){
+            throw new Exception(e);
+        }
     }
 
-    public List<CarreraReporteDTO> generarReporteCarreras() {
-        return carreraRepository.generarReporteCarreras();
+    @Transactional
+    public CarreraDTO add(Carrera carrera) throws Exception {
+        try{
+            Carrera saved= carreraRepository.save(carrera);
+            return toDTO(saved);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Carrera add(Carrera carrera) {
-        return carreraRepository.save(carrera);
+    private CarreraDTO toDTO(Carrera carrera){
+        if(carrera == null){
+            return null;
+        }
+        return new CarreraDTO(carrera.getIdCarrera(), carrera.getCarrera(), carrera.getDuracion());
     }
 }

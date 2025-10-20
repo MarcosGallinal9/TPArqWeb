@@ -1,6 +1,7 @@
 package org.example.integrador_3.repository;
 
 
+import org.example.integrador_3.entity.Carrera;
 import org.example.integrador_3.entity.EstudianteCarrera;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,5 @@ public interface EstudianteCarreraRepository extends BaseJPARepository<Estudiant
                                                 @Param("ciudad") String ciudad);
 
 
+    Long countByCarrera(Carrera carrera);
 }
