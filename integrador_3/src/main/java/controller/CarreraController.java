@@ -5,6 +5,8 @@ import entity.Carrera;
 import entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import repository.CarreraRepository;
 import service.CarreraService;
@@ -12,7 +14,7 @@ import service.CarreraService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/carrera")
+@RequestMapping("api/carrera")
 public class CarreraController {
 
     private final CarreraService carreraService;
@@ -34,6 +36,11 @@ public class CarreraController {
     @GetMapping("/reportes")
     public List<CarreraReporteDTO> generarReporteCarreras(){
         return carreraService.generarReporteCarreras();
+    }
+
+    @PostMapping("/crearCarrera")
+    public Carrera crearCarrera(@RequestBody Carrera carrera) {
+        return carreraService.add(carrera);
     }
 
 

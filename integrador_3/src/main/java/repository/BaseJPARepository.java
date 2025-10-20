@@ -14,7 +14,7 @@ public interface BaseJPARepository<T,ID extends Serializable> extends org.spring
     Optional<T> findById(Long id);
     boolean existsById(Long id);
     void deleteById(Long id);
-    T save(T entity); //Dar de alta estudiante, matricular estudiante en carrera
+    T save(T entity);
 
 
 

@@ -10,7 +10,7 @@ import service.EstudianteCarreraService;
 
 import java.util.List;
 @RestController
-@RequestMapping("/estudianteCarrera")
+@RequestMapping("api/estudianteCarrera")
 public class EstudianteCarreraController {
 
     private final EstudianteCarreraService  estudianteCarreraService;

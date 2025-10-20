@@ -1,5 +1,7 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +22,6 @@ public class Carrera {
     private int duracion; // En años
 
     @OneToMany(mappedBy = "carrera")
+    @JsonManagedReference(value = "carrera-estudiante")
     private List<EstudianteCarrera> estudiantesCarrera;
 }

@@ -24,4 +24,8 @@ public class CarreraService implements BaseService<Carrera>{
     public List<CarreraReporteDTO> generarReporteCarreras() {
         return carreraRepository.generarReporteCarreras();
     }
+
+    public Carrera add(Carrera carrera) {
+        return carreraRepository.save(carrera);
+    }
 }

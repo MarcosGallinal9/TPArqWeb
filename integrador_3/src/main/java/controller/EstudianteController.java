@@ -24,7 +24,7 @@ public class EstudianteController {
     public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {
         return estudianteService.add(estudiante);
     }
-    // /api/estudiantes?orden=edad
+
     @GetMapping
     public List<Estudiante> getAll(@RequestParam(required = false) String orden){
         if("edad".equalsIgnoreCase(orden)){
@@ -32,11 +32,6 @@ public class EstudianteController {
         }
         return estudianteService.findAll();
     }
-
-//    @GetMapping("/estudiantesOrdenadosEdad")
-//    public List<Estudiante> findAllByOrderByEdad() {
-//        return estudianteService.findAllByOrderByEdad();
-//    }
 
 
     @GetMapping("/{nroLibreta}")
@@ -46,6 +41,7 @@ public class EstudianteController {
 
     @GetMapping("/genero/{genero}")
     public List<Estudiante> getByGenero(@PathVariable String genero) {
+
         return estudianteService.getByGenero(genero);
     }
 
