@@ -20,7 +20,7 @@ public class Cuenta {
     private Date fechaAlta;
     private enum tipoCuenta;
     @ManyToMany
-    private List<Usuario> usuarios = new List<>();
+    private List<Usuario> usuarios ;
 
 
 
