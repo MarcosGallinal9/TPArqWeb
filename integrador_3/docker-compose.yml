@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   integrador_db:
     image: mysql:8.0
-    container_name: integrador_3
+    container_name: integrador_3_db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: integrador_3

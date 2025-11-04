@@ -1,0 +1,45 @@
+package org.example.controller;
+
+
+import org.example.entity.Facturacion;
+import org.example.service.FacturacionService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/facturas")
+public class FacturacionController {
+    FacturacionService facturacionService;
+
+    @GetMapping("/")
+    public ResponseEntity<List<Facturacion>> getAllFacturacion() {
+        List<Facturacion> facturas = facturacionService.getAll();
+        if (facturas.isEmpty()) {
+            return  ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(facturas);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Facturacion> getFacturacionById(@PathVariable("id") Long id) {
+        Facturacion factura = facturacionService.findById(id);
+        if (factura == null) {
+            return  ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(factura);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Facturacion> save(@RequestBody Facturacion facturacion) {
+        Facturacion facturaNew = facturacionService.save(facturacion);
+        return ResponseEntity.ok(facturaNew);
+    }
+
+    @GetMapping("/byUser/{userId}")
+    public ResponseEntity<List<Facturacion>> getFacturacionByUserId(@PathVariable("userId") Long userId) {
+        List<Facturacion> facturas = facturacionService.byUserId(userId);
+        return ResponseEntity.ok(facturas);
+    }
+}

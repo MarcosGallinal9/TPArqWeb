@@ -1,0 +1,7 @@
+{
+  "apiUrl": "http://127.0.0.1:8080",
+  "otrosParametros": {
+    "timeout": 5000,
+    "reintentos": 3
+  }
+}
