@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface MonopatinRepository extends JpaRepository<Monopatin, Long> {
-
-
-        List<Monopatin> findByUserId(Long userId);
+    List<Monopatin> findByUserId(Long userId);
 
 }
