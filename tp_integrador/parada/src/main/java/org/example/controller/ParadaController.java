@@ -1,8 +1,11 @@
 package org.example.controller;
 
+import org.example.dto.MonopatinDTO;
 import org.example.entity.Parada;
+import org.example.feignClient.MonopatinFeignClient;
 import org.example.service.ParadaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +44,29 @@ public class ParadaController {
         return ResponseEntity.ok(paradaNew);
     }
 
+    /**
+     * Endpoint para registrar un monopatín en parada.
+     * @param idParada ID de la parada.
+     * @param idMonopatin ID del monopatín a ubicar.
+     * @return Respuesta de éxito.
+     */
+    @PostMapping("/{idParada}/ubicar/{idMonopatin}")
+    public ResponseEntity<String> ubicarMonopatinEnParada(@PathVariable("idParada") String idParada, @PathVariable("idMonopatin") String idMonopatin) {
+
+        try {
+            // Llama al Service, que maneja la lógica de negocio y la comunicación externa
+            MonopatinDTO monopatinActualizado = paradaService.ubicarMonopatin(idParada, idMonopatin);
+
+            return ResponseEntity.ok("Monopatín " + monopatinActualizado.getId() +
+                    " ubicado y disponible en parada " + idParada);
+
+        } catch (RuntimeException e) {
+            // Maneja el error que se lanza desde el Service (ej: Parada no encontrada o error de comunicación)
+            if (e.getMessage().contains("Parada no encontrada")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
 }
