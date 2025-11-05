@@ -2,7 +2,6 @@ package org.example.monopatin.controller;
 
 import org.example.monopatin.entity.Monopatin;
 import org.example.monopatin.service.MonopatinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +41,14 @@ public class MonopatinController {
         return ResponseEntity.ok(monopatinNew);
     }
 
+    @PutMapping("/{id}/evaluar-mantenimiento")
+    public ResponseEntity<String> evaluarMantenimiento(@PathVariable("id") String id) {
+        try {
+            monopatinService.evaluarMantenimiento(id);
+            return ResponseEntity.ok("Evaluación de mantenimiento para monopatín " + id + " completada.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
+    }
 
 }
