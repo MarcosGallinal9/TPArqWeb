@@ -1,25 +1,24 @@
 package org.example.monopatin.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
 import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Document(collection = "monopatines")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Monopatin {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; //Id de MongoDB (String)
     private String estado;
-    private long latitud;
-    private long longitud;
+    private float latitud;
+    private float longitud;
     private float kmRecorridos;
-    private Viaje viaje;
+    private long tiempoUso; //En minutos
+    private String idParadaUbicacion; //ID de la Parada si esta estacionado (referencia a microservicio parada)
 
 }

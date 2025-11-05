@@ -10,8 +10,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/viajes")
 public class ViajeController {
-    @Autowired
+
     ViajeService viajeService;
+
+    public ViajeController(ViajeService viajeService) {
+        this.viajeService = viajeService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Viaje>> getAllViajes() {
@@ -23,7 +27,7 @@ public class ViajeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Viaje> getBikeById(@PathVariable("id") Long id) {
+    public ResponseEntity<Viaje> getViajeById(@PathVariable("id") String id) {
         Viaje viaje = viajeService.findById(id);
         if (viaje == null) {
             return  ResponseEntity.notFound().build();
@@ -38,8 +42,8 @@ public class ViajeController {
     }
 
     @GetMapping("/byUser/{userId}")
-    public ResponseEntity<List<Viaje>> getCarsByUserId(@PathVariable("userId") Long userId) {
-        List<Viaje> bikes = viajeService.byUserId(userId);
-        return ResponseEntity.ok(bikes);
+    public ResponseEntity<List<Viaje>> getViajesByUserId(@PathVariable("userId") Long userId) {
+        List<Viaje> viajes = viajeService.byUserId(userId);
+        return ResponseEntity.ok(viajes);
     }
 }

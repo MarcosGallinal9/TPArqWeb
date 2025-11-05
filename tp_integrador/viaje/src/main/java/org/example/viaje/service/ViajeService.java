@@ -8,23 +8,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class ViajeService {
-    @Autowired
+
     ViajeRepository viajeRepository;
+
+    public ViajeService(ViajeRepository viajeRepository) {
+        this.viajeRepository = viajeRepository;
+    }
 
     public List<Viaje> getAll(){
         return viajeRepository.findAll();
     }
 
     public Viaje save(Viaje viaje){
-        Viaje viajeNew;
-        viajeNew = viajeRepository.save(viaje);
-        return viajeNew;
+        return viajeRepository.save(viaje);
+
     }
     public void delete(Viaje viaje){
         viajeRepository.delete(viaje);
     }
 
-    public Viaje findById(Long id){
+    public Viaje findById(String id){
         return viajeRepository.findById(id).orElse(null);
     }
 
@@ -33,6 +36,6 @@ public class ViajeService {
     }
 
     public List<Viaje> byUserId(Long userid){
-        return viajeRepository.findByUserId(userid);
+        return viajeRepository.findByIdUsuario(userid);
     }
 }

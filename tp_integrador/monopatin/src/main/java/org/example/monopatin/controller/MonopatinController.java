@@ -2,6 +2,7 @@ package org.example.monopatin.controller;
 
 import org.example.monopatin.entity.Monopatin;
 import org.example.monopatin.service.MonopatinService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/monopatines")
 public class MonopatinController {
+
     MonopatinService monopatinService;
+
+    public MonopatinController(MonopatinService monopatinService) {
+        this.monopatinService = monopatinService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Monopatin>> getAllMonopatines() {
@@ -22,7 +28,7 @@ public class MonopatinController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Monopatin> getMonopatinById(@PathVariable("id") Long id) {
+    public ResponseEntity<Monopatin> getMonopatinById(@PathVariable("id") String id) {
         Monopatin monopatin = monopatinService.findById(id);
         if (monopatin == null) {
             return  ResponseEntity.notFound().build();
@@ -36,9 +42,5 @@ public class MonopatinController {
         return ResponseEntity.ok(monopatinNew);
     }
 
-    @GetMapping("/byUser/{userId}")
-    public ResponseEntity<List<Monopatin>> getMonopatinByUserId(@PathVariable("userId") Long userId) {
-        List<Monopatin> bikes = monopatinService.byUserId(userId);
-        return ResponseEntity.ok(bikes);
-    }
+
 }

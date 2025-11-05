@@ -7,24 +7,25 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Entity
+@Document(collection = "viajes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Viaje {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private Date inicio;
     private Date fin;
     private float kmRecorridos;
-    private Parada paradaInicio;
-    private Parada paradaFin;
-    private Tarifa tarifa;
-    private Monopatin monopatin;
-    private Usuario usuario;
+    private String idParadaInicio;
+    private String idParadaFin;
+    private Long idTarifa;
+    private String idMonopatin;
+    private Long idUsuario;
+    private Long idCuenta;
 
 }

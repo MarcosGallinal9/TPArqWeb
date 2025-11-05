@@ -11,9 +11,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/paradas")
 public class ParadaController {
-
-    @Autowired
     ParadaService paradaService;
+
+    public ParadaController(ParadaService paradaService) {
+        this.paradaService = paradaService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Parada>> getAllParadas() {
@@ -25,8 +27,8 @@ public class ParadaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Parada> getParadaById(@PathVariable("id") Long id) {
-        Parada parada = ParadaService.findById(id);
+    public ResponseEntity<Parada> getParadaById(@PathVariable("id") String id) {
+        Parada parada = paradaService.findById(id);
         if (parada == null) {
             return  ResponseEntity.notFound().build();
         }
@@ -39,9 +41,5 @@ public class ParadaController {
         return ResponseEntity.ok(paradaNew);
     }
 
-    @GetMapping("/byUser/{userId}")
-    public ResponseEntity<List<Parada>> getParadasByUserId(@PathVariable("userId") Long userId) {
-        List<Parada> paradas = paradaService.byUserId(userId);
-        return ResponseEntity.ok(paradas);
-    }
+
 }

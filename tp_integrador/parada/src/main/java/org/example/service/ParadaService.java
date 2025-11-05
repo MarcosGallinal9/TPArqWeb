@@ -10,32 +10,30 @@ import java.util.List;
 @Service
 public class ParadaService {
 
-    @Autowired
-    ParadaRepository paradaRepository;
+   ParadaRepository paradaRepository;
+
+    public ParadaService(ParadaRepository paradaRepository) {
+        this.paradaRepository = paradaRepository;
+    }
 
     public List<Parada> getAll(){
         return paradaRepository.findAll();
     }
 
     public Parada save(Parada parada){
-        Parada paradaNew;
-        paradaNew = paradaRepository.save(parada);
-        return paradaNew;
+        return paradaRepository.save(parada);
     }
     public void delete(Parada parada){
-
         paradaRepository.delete(parada);
     }
 
-    public Parada findById(Long id){
+    public Parada findById(String id){
         return paradaRepository.findById(id).orElse(null);
     }
 
-    public Parada update(Parada car){
-        return paradaRepository.save(car);
+    public Parada update(Parada parada){
+        return paradaRepository.save(parada);
     }
 
-    public List<Parada> byUserId(Long userid){
-        return paradaRepository.findByUserId(userid);
-    }
+
 }
