@@ -64,4 +64,29 @@ public class PausaService {
 
         return pausaRepository.save(pausa);
     }
+
+    /**
+     * Calcula el tiempo total acumulado de pausas para un viaje específico.
+     * Solo suma las pausas que tienen fecha de finalización.
+     * @param idViaje ID del viaje.
+     * @return Tiempo total de pausa en segundos (Long).
+     */
+    public Long calcularTiempoTotalPausaSegundos(String idViaje) {
+        // Obtener todas las pausas asociadas a ese viaje
+        List<Pausa> pausas = pausaRepository.findByIdViaje(idViaje);
+        if (pausas.isEmpty()) {
+            return 0L;
+        }
+
+        // Sumar la duración de todas las pausas finalizadas
+        long tiempoTotalSegundos = pausas.stream()
+                .filter(pausa -> pausa.getFin() != null)
+                .mapToLong(pausa -> {
+                    long diffInMillis = pausa.getFin().getTime() - pausa.getInicio().getTime();
+                    return TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
+                })
+                .sum();
+
+        return tiempoTotalSegundos;
+    }
 }

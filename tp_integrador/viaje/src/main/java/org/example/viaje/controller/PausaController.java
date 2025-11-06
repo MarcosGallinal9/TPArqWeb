@@ -40,4 +40,10 @@ public class PausaController {
         List<Pausa> pausas = pausaService.findByViajeId(idViaje);
         return ResponseEntity.ok(pausas);
     }
+
+    @GetMapping("/tiempo-total")
+    public ResponseEntity<Long> getTiempoTotalPausaSegundos(@RequestParam("idViaje") String idViaje) {
+        Long tiempoSegundos = pausaService.calcularTiempoTotalPausaSegundos(idViaje);
+        return ResponseEntity.ok(tiempoSegundos);
+    }
 }
