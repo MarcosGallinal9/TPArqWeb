@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -21,12 +22,12 @@ public class PausaService {
     public Pausa save(Pausa pausa){
         return pausaRepository.save(pausa);
     }
-    public Pausa findById(String idViaje){
-        return pausaRepository.findById(idViaje).orElse(null);
+    public Pausa findById(String id) {
+        return pausaRepository.findById(id).orElse(null);
     }
-//    public Pausa findByIdViaje(String idViaje){
-//        return pausaRepository.findByIdViaje(idViaje);
-//    }
+    public List<Pausa> findByViajeId(String idViaje) {
+        return pausaRepository.findByIdViaje(idViaje);
+    }
 
     /**
      * Inicia una nueva pausa asociada a un viaje.

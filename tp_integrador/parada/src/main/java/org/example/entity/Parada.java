@@ -1,9 +1,7 @@
 package org.example.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -46,4 +46,36 @@ public class ViajeController {
         List<Viaje> viajes = viajeService.byUserId(userId);
         return ResponseEntity.ok(viajes);
     }
+
+    /**
+     * Inicia un viaje. Llama al Monopatín para ponerlo en uso.
+     * URL: POST http://localhost:8083/viajes/iniciar
+     */
+    @PostMapping("/iniciar")
+    public ResponseEntity<Viaje> iniciarViaje(@RequestBody Viaje viaje) {
+        try {
+            Viaje viajeNuevo = viajeService.iniciarViaje(viaje);
+            return ResponseEntity.status(201).body(viajeNuevo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    /**
+     * Finaliza un viaje. Llama a Parada para validar ubicación, actualiza Monopatín y notifica a Facturación.
+     * URL: PUT http://localhost:8083/viajes/finalizar/{id}
+     */
+    @PutMapping("/finalizar/{id}")
+    public ResponseEntity<Viaje> finalizarViaje(
+            @PathVariable("id") String idViaje,
+            @RequestParam("idParadaFin") String idParadaFin,
+            @RequestParam("kmRecorridos") float kmRecorridosFinal) {
+
+        try {
+            Viaje viajeFinalizado = viajeService.finalizarViaje(idViaje, idParadaFin, kmRecorridosFinal);
+            return ResponseEntity.ok(viajeFinalizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }

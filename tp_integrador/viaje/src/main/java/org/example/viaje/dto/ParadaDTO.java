@@ -1,6 +1,6 @@
 package org.example.viaje.dto;
 
-import jakarta.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

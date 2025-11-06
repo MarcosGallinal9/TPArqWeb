@@ -1,9 +1,11 @@
 package org.example.viaje.feignClients;
 
 import org.example.viaje.dto.MonopatinDTO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "microservicio-monopatin", url = "http://localhost:8081/monopatines")
 public interface MonopatinFeignClient {
@@ -12,7 +14,7 @@ public interface MonopatinFeignClient {
      * GET /monopatines/{id}
      */
     @GetMapping("{id}")
-    MonopatinDTO getMonopatin(@PathVariables("id") String id);
+    MonopatinDTO getMonopatin(@PathVariable("id") String id);
 
     /**
      *   Actualiza el estado de un Monopatin
