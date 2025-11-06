@@ -40,6 +40,4 @@ public class PausaController {
         List<Pausa> pausas = pausaService.findByViajeId(idViaje);
         return ResponseEntity.ok(pausas);
     }
-
-    
 }
