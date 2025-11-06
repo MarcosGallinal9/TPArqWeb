@@ -1,6 +1,6 @@
-package Controller;
+package org.example.cuenta.Controller;
 
-import entity.Cuenta;
+import org.example.cuenta.entity.Cuenta;
 import entity.Usuario;
 import service.cuentaService;
 

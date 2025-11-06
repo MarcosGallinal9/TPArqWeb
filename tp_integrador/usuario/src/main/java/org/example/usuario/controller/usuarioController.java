@@ -1,6 +1,6 @@
-package controller;
-import service.UsuarioService;
-import entity.Usuario;
+package org.example.usuario.controller;
+import org.example.usuario.service.UsuarioService;
+import org.example.usuario.entity.Usuario;
 
 import java.util.List;
 import java.util.Map;

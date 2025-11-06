@@ -1,7 +1,7 @@
-package Service;
+package org.example.cuenta.Service;
 
-import Repository.CuentaRepository;
-import entity.Cuenta;
+import org.example.cuenta.Repository.CuentaRepository;
+import org.example.cuenta.entity.Cuenta;
 import entity.Usuario;
 
 import java.util.List;
