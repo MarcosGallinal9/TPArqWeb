@@ -46,13 +46,13 @@ public class ParadaService {
      */
     public MonopatinDTO ubicarMonopatin(String idParada, String idMonopatin) {
 
-        // 1. Validar que la parada exista
+        // Validar que la parada exista
         Parada parada = paradaRepository.findById(idParada).orElse(null);
         if (parada == null) {
             throw new RuntimeException("Parada no encontrada con ID: " + idParada);
         }
 
-        // 2. Crear DTO para actualizar el monopatín
+        // Crear DTO para actualizar el monopatín
         MonopatinDTO updateDTO = new MonopatinDTO();
         updateDTO.setId(idMonopatin);
         updateDTO.setIdParadaUbicacion(idParada);
@@ -61,10 +61,9 @@ public class ParadaService {
         updateDTO.setLongitud(parada.getLongitud());
 
         try {
-            // 3. Llamar al microservicio Monopatín (ORQUESTACIÓN)
+            // Llamar al microservicio Monopatín
             return monopatinFeignClient.updateMonopatin(updateDTO);
         } catch (Exception e) {
-            // Manejo de errores de comunicación o si el monopatín no existe
             throw new RuntimeException("Error al ubicar el Monopatín en el MS Monopatín: " + e.getMessage());
         }
     }

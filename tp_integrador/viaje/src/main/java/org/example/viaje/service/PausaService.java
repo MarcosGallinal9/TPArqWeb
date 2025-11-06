@@ -49,17 +49,16 @@ public class PausaService {
     public Pausa finalizarPausa(String idPausa) {
         Pausa pausa = pausaRepository.findById(idPausa).orElseThrow(() -> new RuntimeException("Pausa no encontrada."));
 
-        // 1. Registrar fin de pausa
+        //Registrar fin de pausa
         pausa.setFin(new Date());
 
-        // 2. Calcular la duración en minutos
-        long diffInMillis = pausa.getFin().getTime() - pausa.getInicio().getTime();
-        long durationMinutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis);
+        // Calcular la duración en minutos
+        long duracionEnSeg = pausa.getFin().getTime() - pausa.getInicio().getTime();
+        long duracionEnminutos = TimeUnit.MILLISECONDS.toMinutes(duracionEnSeg);
 
-        // 3. Aplicar lógica de multa si excede los 15 minutos
-        if (durationMinutes > 15) {
-            //falta logica para la multa cuando la pausa es mayor a 15 mint
-            System.out.println("ADVERTENCIA: Pausa del viaje " + pausa.getIdViaje() + " ha excedido los 15 minutos (" + durationMinutes + " min).");
+        // Aplicar lógica de multa si excede los 15 minutos
+        if (duracionEnminutos > 15) {
+            System.out.println("ADVERTENCIA: Pausa del viaje " + pausa.getIdViaje() + " ha excedido los 15 minutos (" + duracionEnminutos + " min).");
 
         }
 

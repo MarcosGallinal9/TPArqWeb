@@ -1,33 +1,31 @@
 package org.example.viaje.service;
 
-import org.example.viaje.dto.MonopatinDTO;
-import org.example.viaje.dto.ParadaDTO;
+import org.example.viaje.dto.*;
+import org.example.viaje.entity.Pausa;
 import org.example.viaje.entity.Viaje;
-import org.example.viaje.feignClients.MonopatinFeignClient;
-import org.example.viaje.feignClients.TarifaFeignClient;
+import org.example.viaje.feignClients.*;
 import org.example.viaje.repository.ViajeRepository;
-import org.example.viaje.feignClients.ParadaFeingClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class ViajeService {
 
     ViajeRepository viajeRepository;
 
     // Clientes de otros microservicios
-//    @Autowired
     MonopatinFeignClient monopatinFeignClient;
-    @Autowired
     ParadaFeingClient paradaFeignClient;
-    @Autowired
     TarifaFeignClient tarifaFeignClient;
+    FacturacionFeignClient facturacionFeignClient;
+    CuentaFeignClient cuentaFeignClient;
 
     // Servicios locales (para Pausa)
-    @Autowired
-    PausaService pausaService;
+      PausaService pausaService;
 
     public ViajeService(ViajeRepository viajeRepository) {
         this.viajeRepository = viajeRepository;
@@ -63,7 +61,7 @@ public class ViajeService {
      */
     public Viaje iniciarViaje(Viaje viaje) {
 
-        // 1. Validar Monopatín y Parada de inicio
+        //Validar Monopatín y Parada de inicio
         MonopatinDTO monopatin = monopatinFeignClient.getMonopatin(viaje.getIdMonopatin());
         ParadaDTO paradaInicio = paradaFeignClient.getParada(viaje.getIdParadaInicio());
 
@@ -71,15 +69,14 @@ public class ViajeService {
             throw new RuntimeException("No se puede iniciar el viaje. Monopatín no disponible o parada inválida.");
         }
 
-        // 2. Marcar Monopatín como "en_uso"
+        //Marcar Monopatín como "en_uso"
         monopatin.setEstado("en_uso");
         monopatinFeignClient.updateMonopatin(monopatin);
 
-        // 3. Registrar Viaje
+        //Registrar Viaje
         viaje.setInicio(new Date());
         viaje.setKmRecorridos(0); // Inicia en cero
         viaje.setFin(null); // Aún no finaliza
-        // Nota: Asume que idCuenta se obtuvo del MS Usuario/Cuenta
 
         return viajeRepository.save(viaje);
     }
@@ -94,32 +91,87 @@ public class ViajeService {
     public Viaje finalizarViaje(String idViaje, String idParadaFin, float kmRecorridosFinal) {
         Viaje viaje = viajeRepository.findById(idViaje).orElseThrow(() -> new RuntimeException("Viaje no encontrado."));
 
-        // 1. Validar Parada de destino
+        // Validar Parada de destino
         ParadaDTO paradaFin = paradaFeignClient.getParada(idParadaFin);
 
-        // NOTA DE ENUNCIADO: "la app no debe permitir finalizar un viaje si no detecta, mediante el GPS con el que cuenta el monopatín,
-        // que se encuentra en una parada permitida" [cite: 24]
+        // Verificar que el monopatin se encuentra en una parada permitida
         if (paradaFin == null) {
             throw new RuntimeException("No se puede finalizar el viaje. El monopatín no está en una parada permitida.");
         }
 
-        // 2. Finalizar el registro del Viaje
+        // Finalizar el registro del Viaje
         viaje.setFin(new Date());
         viaje.setKmRecorridos(kmRecorridosFinal);
         viaje.setIdParadaFin(idParadaFin);
         Viaje viajeFinalizado = viajeRepository.save(viaje);
 
-        // 3. Marcar Monopatín como "disponible" (o "mantenimiento" si aplica, aunque eso es lógica del MS Monopatín)
+        //Marcar Monopatín como "disponible"
         MonopatinDTO monopatin = new MonopatinDTO();
         monopatin.setId(viaje.getIdMonopatin());
         monopatin.setEstado(viaje.getIdMonopatin());
-        // Aquí se pueden sumar los km/tiempo en el MS Monopatín. Para simplificar, solo actualizamos el estado.
         monopatinFeignClient.updateMonopatin(monopatin);
 
-        //FALTA LOGICA PARA CALCULAR LA TARIFA
+        calcularYCobrarViaje(viajeFinalizado);
 
         return viajeFinalizado;
     }
+
+    /**
+     * Calcula el costo final del viaje y notifica al MS Facturación.
+     * @param viajeFinalizado La entidad Viaje con inicio/fin y IDs.
+     */
+    public void calcularYCobrarViaje(Viaje viajeFinalizado) {
+
+        // Calcular la duracion del viaje
+        long tiempoEnSegundos = viajeFinalizado.getFin().getTime() - viajeFinalizado.getInicio().getTime();
+        long tiempoTotalMinutos = TimeUnit.MILLISECONDS.toMinutes(tiempoEnSegundos); // Incluye pausas
+
+        // Obtener pausas (PausaService)
+        List<Pausa> pausas = pausaService.findByViajeId(viajeFinalizado.getId());
+
+        boolean aplicaRecargoExtraPausa = pausas.stream()
+                .anyMatch(p -> p.getFin() != null &&
+                        TimeUnit.MILLISECONDS.toMinutes(p.getFin().getTime() - p.getInicio().getTime()) > 15);
+
+        //Obtener tarifa y validar la cuenta
+        TarifaDTO tarifa = tarifaFeignClient.getTarifaById(viajeFinalizado.getIdTarifa());
+        CuentaDTO cuenta = cuentaFeignClient.getCuenta(viajeFinalizado.getIdCuenta());
+
+        if (tarifa == null) {
+            throw new RuntimeException("No se puede facturar: Tarifa no encontrada.");
+        }
+        if (cuenta == null || !cuenta.getEstado()) {
+            throw new RuntimeException("No se puede facturar: Cuenta inválida o anulada.");
+        }
+
+          // Tarifa base (común o premium)
+        double costoPorMinutoBase = "PREMIUM".equalsIgnoreCase(cuenta.getTipoCuenta()) ?
+                tarifa.getValorPremium() : tarifa.getValorComun();
+
+        // Declarar e inicializar aquí para que compile
+        double costoTotal = costoPorMinutoBase * tiempoTotalMinutos; // Costo base (tiempo total usado)
+        String detalle = "BÁSICA";
+        if ("PREMIUM".equalsIgnoreCase(cuenta.getTipoCuenta())) {
+            detalle = "PREMIUM"; //Si la cuenta es premium agregar en factura la logica
+        }
+
+        // Aplica cargo por pausa extendida
+        if (aplicaRecargoExtraPausa) {
+            // Se aplica la tarifa extra por el tiempo total de servicio
+            double costoRecargoExtra = tarifa.getValorExtrapausa() * tiempoTotalMinutos;
+            costoTotal += costoRecargoExtra;
+
+        }
+        //Notificar facturacion
+        FacturacionDTO factura = new FacturacionDTO(
+                new Date(),
+                viajeFinalizado.getId(),
+                viajeFinalizado.getIdUsuario(),
+                costoTotal
+        );
+        facturacionFeignClient.registrarCobro(factura);
+    }
+
     public void delete(Viaje viaje){
         viajeRepository.delete(viaje);
     }

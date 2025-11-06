@@ -46,7 +46,7 @@ public class MonopatinService {
         Monopatin monopatin = monopatinRepository.findById(idMonopatin)
                 .orElseThrow(() -> new RuntimeException("Monopatín no encontrado."));
 
-        // 1. Consultar todos los viajes del monopatín
+        // Consultar todos los viajes del monopatín
         List<ViajeDTO> viajes = viajeFeignClient.getViajesByMonopatinId(idMonopatin);
 
         float kmTotales = 0;
@@ -64,12 +64,12 @@ public class MonopatinService {
             }
         }
 
-        // 2. Actualizar las métricas en la entidad
+        // Actualizar las métricas en la entidad
         monopatin.setKmRecorridos(kmTotales);
         // Si el MS Viaje te da el tiempo de uso NETO (sin pausas), úsalo. Si no, necesitarás un PausaFeignClient.
         monopatin.setTiempoUso(tiempoTotalUsoSegundos);
 
-        // 3. Evaluar la necesidad de mantenimiento
+        // Evaluar la necesidad de mantenimiento
         // Mantenimiento si excede 500 km O 500000 segundos (ejemplo de regla)
         if (monopatin.getKmRecorridos() > 500 || monopatin.getTiempoUso() > 500000) {
             monopatin.setEstado("mantenimiento");

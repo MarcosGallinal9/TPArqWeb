@@ -4,7 +4,7 @@ import org.example.viaje.entity.Pausa;
 import org.example.viaje.service.PausaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
+
 
 import java.util.List;
 

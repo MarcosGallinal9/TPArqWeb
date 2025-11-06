@@ -2,7 +2,6 @@ package org.example.viaje.controller;
 
 import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -3,6 +3,7 @@ package org.example.viaje.feignClients;
 import org.example.viaje.dto.TarifaDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "microservicio-tarifa", url = "http://localhost:8083/tarifas")
 public interface TarifaFeignClient {
@@ -14,4 +15,7 @@ public interface TarifaFeignClient {
      */
     @GetMapping("/vigente")
     TarifaDTO getTarifaVigente();
+
+    @GetMapping("/{id}")
+    public TarifaDTO getTarifaById(@PathVariable("id") Long id);
 }
