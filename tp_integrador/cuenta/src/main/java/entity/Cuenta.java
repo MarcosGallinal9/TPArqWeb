@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@Entity
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +19,8 @@ public class Cuenta {
     private double monto;
     private boolean estado;
     private Date fechaAlta;
-    private enum tipoCuenta;
-    @ManyToMany
-    private List<Usuario> usuarios ;
+    private String tipoCuenta;
+    private List<Integer> usuarios ;
 
 
 

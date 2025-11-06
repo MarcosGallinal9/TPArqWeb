@@ -1,11 +1,12 @@
 package Repository;
 
 import entity.Cuenta;
-import entity.Usuario;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CuentaRepository extends JpaRepository<Usuario,Long>{
-    List<Cuenta> findByUserId(Long userId);
+public interface CuentaRepository extends MongoRepository<Cuenta,Long>{
+    List<Integer> findByUserId(Long userId);
 }
