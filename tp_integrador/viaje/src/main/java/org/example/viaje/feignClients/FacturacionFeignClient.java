@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8084/facturas")
+@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturas")
 public interface FacturacionFeignClient {
 
     /**

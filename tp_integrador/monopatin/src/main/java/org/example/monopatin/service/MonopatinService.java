@@ -50,27 +50,41 @@ public class MonopatinService {
         List<ViajeDTO> viajes = viajeFeignClient.getViajesByMonopatinId(idMonopatin);
 
         float kmTotales = 0;
-        long tiempoTotalUsoSegundos = 0;
+        long tiempoTotalUsoNetoSegundos = 0; // Se inicializa para el tiempo REAL de uso
 
         for (ViajeDTO viaje : viajes) {
             // Solo considerar viajes finalizados
             if (viaje.getFin() != null) {
                 kmTotales += viaje.getKmRecorridos();
 
-                long diffInMillis = viaje.getFin().getTime() - viaje.getInicio().getTime();
-                // NOTA: Se necesita la lógica de PAUSAS del MS Viaje para descontar el tiempo de pausa
-                // Asumiremos que el ViajeDTO NO incluye el tiempo de pausa y que los kilómetros son los reportados.
-                tiempoTotalUsoSegundos += TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
+                //Calcular duración BRUTA (Inicio a Fin)
+                long duracionTotalSegundos = TimeUnit.MILLISECONDS.toSeconds(
+                        viaje.getFin().getTime() - viaje.getInicio().getTime()
+                );
+
+                //Consultar el tiempo total de pausa desde Viaje
+                Long tiempoPausaSegundos = 0L;
+                try {
+                    tiempoPausaSegundos = viajeFeignClient.getTiempoTotalPausaSegundos(viaje.getId());
+                } catch (Exception e) {
+                    System.err.println("Advertencia: No se pudo obtener tiempo de pausa para viaje " + viaje.getId());
+                }
+
+                //Calcular el tiempo de uso NETO
+                long tiempoUsoNeto = duracionTotalSegundos - tiempoPausaSegundos;
+                if (tiempoUsoNeto < 0) {
+                    tiempoUsoNeto = 0; // Evitar tiempos negativos si hay errores de registro
+                }
+
+                tiempoTotalUsoNetoSegundos += tiempoUsoNeto;
             }
         }
 
         // Actualizar las métricas en la entidad
         monopatin.setKmRecorridos(kmTotales);
-        // Si el MS Viaje te da el tiempo de uso NETO (sin pausas), úsalo. Si no, necesitarás un PausaFeignClient.
-        monopatin.setTiempoUso(tiempoTotalUsoSegundos);
+        monopatin.setTiempoUso(tiempoTotalUsoNetoSegundos);
 
-        // Evaluar la necesidad de mantenimiento
-        // Mantenimiento si excede 500 km O 500000 segundos (ejemplo de regla)
+        // Mantenimiento si excede X km O Y segundos de uso neto.
         if (monopatin.getKmRecorridos() > 500 || monopatin.getTiempoUso() > 500000) {
             monopatin.setEstado("mantenimiento");
             System.out.println("Monopatín " + idMonopatin + " marcado para mantenimiento.");
