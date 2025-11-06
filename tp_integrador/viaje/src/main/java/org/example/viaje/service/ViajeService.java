@@ -1,5 +1,4 @@
 package org.example.viaje.service;
-
 import org.example.viaje.dto.*;
 import org.example.viaje.entity.Pausa;
 import org.example.viaje.entity.Viaje;

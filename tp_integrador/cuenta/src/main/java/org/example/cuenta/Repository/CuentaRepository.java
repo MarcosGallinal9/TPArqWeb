@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CuentaRepository extends MongoRepository<Cuenta,Long>{
-    List<Integer> findByUserId(Long userId);
+public interface CuentaRepository extends MongoRepository<Cuenta,String>{
+    List<Cuenta> getByUserId(String userId);
 }

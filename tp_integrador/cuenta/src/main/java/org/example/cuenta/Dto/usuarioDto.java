@@ -1,19 +1,15 @@
-package org.example.usuario.entity;
+package org.example.cuenta.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.List;
-
 @Data
-@Document(collection = "usuario")
 @NoArgsConstructor
 @AllArgsConstructor
 
-    public class Usuario {
+public class usuarioDto {
         @Id
         private String id;
         private String nombre;
@@ -23,6 +19,5 @@ import java.util.List;
         private List<String> cuentas; //me devuelve una lista con los id de esas cuentas
         private List<String> monopatines;
         private List<String> viajes;
-    }
 
-
+}
