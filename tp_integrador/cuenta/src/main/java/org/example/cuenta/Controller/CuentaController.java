@@ -40,6 +40,18 @@ public class CuentaController {
         return ResponseEntity.ok(nuevaCuenta);
     }
 
+    @PutMapping("/anular/{id}")
+    public ResponseEntity<Cuenta> anularCuenta(@PathVariable("id") String id) {
+        cuentaService.anularCuenta(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/cargarSaldo/{id}")
+    public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id,  double saldo) {
+        cuentaService.cargarSaldo(id, saldo);
+        return ResponseEntity.noContent().build();
+    }
+
 //    @GetMapping("/cuentas/{usuarioId}")
 //    public ResponseEntity<List<Cuenta>> getCuentas(@PathVariable("usuarioId") Long usuarioId) {
 //        Usuario usuario = cuentaService.getCuentaById(usuarioId);
@@ -65,6 +77,9 @@ public class CuentaController {
 //        Map<String, Object> result = cuentaService.getUsuarioYMonopatines(usuarioId);
 //        return ResponseEntity.ok(result);
 //    }
+
+
+
 
 }
 

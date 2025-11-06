@@ -31,5 +31,20 @@ public class CuentaService {
         return cuentaRepository.save(cuenta);
     }
 
+    public Cuenta findById(String id){
+        return cuentaRepository.findById(id).orElse(null);
+    }
+    public Cuenta anularCuenta(String id){
+        Cuenta cuentaExistente = cuentaRepository.findById(id).orElse(null);
+        cuentaExistente.setEstado(false);
+        return cuentaRepository.save(cuentaExistente);
+    }
+
+    public Cuenta cargarSaldo(String id, double saldo){
+        Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        double montoActual = cuenta.getMonto();
+        cuenta.setMonto(montoActual + saldo);
+        return cuentaRepository.save(cuenta);
+    }
 
 }
