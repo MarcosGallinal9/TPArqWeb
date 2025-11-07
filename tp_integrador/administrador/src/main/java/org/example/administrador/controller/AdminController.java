@@ -19,10 +19,16 @@ public class AdminController {
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
-
-    @GetMapping("/reportes-monopatines")
-    public MonopatinDTO<List<ReporteMonopatinXKm>> getReporteMonopatines() {
-        List<ReporteMonopatinXKm> reportes = adminService.getReportes();
+    /**
+     * Genera el reporte de uso de monopatines por kilómetros/tiempo. (Punto a.)
+     * URL: GET http://localhost:8080/administrador/reportes/mantenimiento-uso
+     */
+    @GetMapping("/reportes/mantenimiento-uso")
+    public ResponseEntity<List<ReporteMonopatinXKm>> getReporteMonopatines() {
+        List<ReporteMonopatinXKm> reportes = adminService.generarReporteUso();
+        if (reportes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(reportes);
     }
 }

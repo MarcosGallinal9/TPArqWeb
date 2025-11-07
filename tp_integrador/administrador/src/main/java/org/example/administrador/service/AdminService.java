@@ -2,8 +2,10 @@ package org.example.administrador.service;
 
 import org.example.administrador.dto.MonopatinDTO;
 import org.example.administrador.dto.ReporteMonopatinXKm;
+import org.example.administrador.dto.ViajeDTO;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.MonopatinFeingClient;
+import org.example.administrador.feingClients.ViajeFeingClient;
 import org.example.administrador.repository.AdminRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,13 @@ import java.util.SequencedCollection;
 public class AdminService {
     //Feing clients
     MonopatinFeingClient monopatinFeingClient;
+    ViajeFeingClient viajeFeingClient;
     AdminRepository adminRepository;
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository,MonopatinFeingClient monopatinFeingClient,ViajeFeingClient viajeFeingClient) {
         this.adminRepository = adminRepository;
+        this.monopatinFeingClient = monopatinFeingClient;
+        this.viajeFeingClient = viajeFeingClient;
     }
-
     public Admin save(Admin admin) {
         return adminRepository.save(admin);
     }
@@ -28,18 +32,59 @@ public class AdminService {
         return adminRepository.findAll();
     }
 
-    public List<ReporteMonopatinXKm> getReportes() {
-        List<ReporteMonopatinXKm> reporteMonopatinXKm = new ArrayList<>();
-        ResponseEntity<List<MonopatinDTO>> monopatines= monopatinFeingClient.getAllMonopatines();
-        String id;
-        float kmRecorridos;
-        Long tiempoDeUsoNeto;
-        Long tiempoDeUsoTotal;
-        for(int i=0;i<monopatines.getBody().size();i++){
-            id = monopatines.getBody().get(i).getId();
-            kmRecorridos= monopatines.getBody().get(i).getKmRecorridos();
-            tiempoDeUsoNeto= monopatines.getBody().get(i).getTiempoUso();
-            tiempoDeUsoTotal= monopatines.getBody().get(i).
+    /**
+     * PUNTO A
+     * Genera el reporte consolidado de uso (Km, Tiempo Neto y Tiempo Total) para todos los monopatines.
+     * Cumple con el requisito: "Este reporte debe poder configurarse para incluir (o no) los tiempos de pausa."
+     *
+     * @return Lista de ReporteMonopatinXKm con las métricas.
+     */
+    public List<ReporteMonopatinXKm> generarReporteUso() {
+
+        ResponseEntity<List<MonopatinDTO>> response = monopatinFeingClient.getAllMonopatines();
+
+        List<MonopatinDTO> monopatines = response.getBody();
+        List<ReporteMonopatinXKm> reportes = new ArrayList<>();
+
+        for (MonopatinDTO monopatin : monopatines) {
+
+            // Obtener métricas NETAS desde la entidad Monopatín
+            Long tiempoUsoNetoSegundos = monopatin.getTiempoUsoSegundos();
+            float kmRecorridosFloat = monopatin.getKmRecorridos();
+            Long kmRecorridos = (long) kmRecorridosFloat;
+
+            //Obtener el listado de VIAJES del Monopatín (MS Viaje)
+            List<ViajeDTO> viajesDelMonopatin = viajeFeingClient.getViajesByMonopatinId(monopatin.getId());
+
+            long tiempoTotalPausaSegundos = 0;
+
+            //Iterar sobre los viajes para sumar el tiempo de pausa
+            for (ViajeDTO viaje : viajesDelMonopatin) {
+                // Solo consulta pausas para viajes finalizados
+                if (viaje.getFin() != null) {
+                    try {
+                        // Obtener la suma de pausas de ESTE viaje
+                        Long pausaSegundosViaje = viajeFeingClient.getTiempoTotalPausaSegundos(viaje.getId());
+                        tiempoTotalPausaSegundos += pausaSegundosViaje;
+                    } catch (Exception e) {
+                        System.err.println("Error al obtener pausa del viaje " + viaje.getId() + ": " + e.getMessage());
+                    }
+                }
+            }
+
+            // Calcular el tiempo TOTAL (incluyendo pausas)
+            Long tiempoDeUsoTotalSegundos = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
+
+            // 5. Crear la entrada del reporte
+            ReporteMonopatinXKm entrada = new ReporteMonopatinXKm(
+                    monopatin.getId(),
+                    kmRecorridos,
+                    tiempoUsoNetoSegundos,
+                    tiempoDeUsoTotalSegundos
+            );
+            reportes.add(entrada);
         }
+
+        return reportes;
     }
 }
