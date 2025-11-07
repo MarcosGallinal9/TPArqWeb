@@ -1,9 +1,6 @@
 package org.example.administrador.service;
 
-import org.example.administrador.dto.CuentaDTO;
-import org.example.administrador.dto.MonopatinDTO;
-import org.example.administrador.dto.ReporteMonopatinXKm;
-import org.example.administrador.dto.ViajeDTO;
+import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.CuentaFeingClient;
 import org.example.administrador.feingClients.MonopatinFeingClient;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SequencedCollection;
 
 @Service
 public class AdminService {
@@ -22,6 +18,7 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
+    
     AdminRepository adminRepository;
 
     public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
@@ -108,5 +105,23 @@ public class AdminService {
             throw new RuntimeException("Error al anular la cuenta " + idCuenta + " en el MS Cuenta. Código de estado: " + response.getStatusCodeValue());
         }
 
+    }
+
+    /**
+     * PUNTO C
+     * Consulta los monopatines con más de X viajes en un cierto año
+     * @param minViajes Mínimo de viajes (X).
+     * @param year Año de filtrado.
+     * @return Lista de Monopatines que superan la cantidad de viajes.
+     */
+    public List<ReporteMonopatinContadorViajes> getMonopatinesConMasDeXViajes(int minViajes, int year) {
+
+        // Obtener de Viaje el conteo agregado de todos los monopatines en ese año
+        List<ReporteMonopatinContadorViajes> todosLosMonopatines = viajeFeingClient.getMonopatinesPorViajes(year);
+
+        // Filtra la lista localmente para obtener solo aquellos con más de X viajes
+        return todosLosMonopatines.stream()
+                .filter(m -> m.getCantidadViajes() > minViajes)
+                .toList();
     }
 }

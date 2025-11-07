@@ -2,6 +2,7 @@ package org.example.administrador.controller;
 
 import org.example.administrador.dto.CuentaDTO;
 import org.example.administrador.dto.MonopatinDTO;
+import org.example.administrador.dto.ReporteMonopatinContadorViajes;
 import org.example.administrador.dto.ReporteMonopatinXKm;
 import org.example.administrador.service.AdminService;
 import org.springframework.http.ResponseEntity;
@@ -49,4 +50,21 @@ public class AdminController {
         }
     }
 
+    /**
+     * PUNTO C
+     * Consulta los monopatines con más de X viajes en un cierto año.
+     * URL: GET /administrador/reportes/top-monopatines?minViajes={X}&year={Año}
+     */
+    @GetMapping("/reportes/top-monopatines")
+    public ResponseEntity<List<ReporteMonopatinContadorViajes>> getMonopatinesConMasDeXViajes(
+                                                            @RequestParam("minViajes") int minViajes,
+                                                            @RequestParam("year") int year) {
+
+        List<ReporteMonopatinContadorViajes> topMonopatines = adminService.getMonopatinesConMasDeXViajes(minViajes, year);
+
+        if (topMonopatines.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(topMonopatines);
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.viaje.controller;
 
+import org.example.viaje.dto.ReporteMonopatinContadorViajes;
 import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
 import org.springframework.http.ResponseEntity;
@@ -76,5 +77,20 @@ public class ViajeController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    /**
+     * Endpoint consultado por Administrador para generar el reporte de monopatines más usados.
+     * URL: GET /viajes/reportes/monopatines-por-viajes?year={year}
+     */
+    @GetMapping("/reportes/monopatines-por-viajes")
+    public ResponseEntity<List<ReporteMonopatinContadorViajes>> getMonopatinesPorViajes(@RequestParam("year") int year) {
+
+        List<ReporteMonopatinContadorViajes> reporte = viajeService.getConteoViajesPorMonopatinYAnio(year);
+
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reporte);
     }
 }

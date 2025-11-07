@@ -171,6 +171,15 @@ public class ViajeService {
         facturacionFeignClient.registrarCobro(factura);
     }
 
+    /**
+     * Realiza la agregación de viajes, contando cuántos viajes tuvo cada monopatín en un año dado.
+     * @param year Año a filtrar.
+     * @return Lista de ReporteMonopatinContadorViajes.
+     */
+    public List<ReporteMonopatinContadorViajes> getConteoViajesPorMonopatinYAnio(int year) {
+        return viajeRepository.contadorViajesXAnio(year);
+    }
+
     public void delete(Viaje viaje){
         viajeRepository.delete(viaje);
     }
