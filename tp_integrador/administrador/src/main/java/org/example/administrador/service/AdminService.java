@@ -1,9 +1,11 @@
 package org.example.administrador.service;
 
+import org.example.administrador.dto.CuentaDTO;
 import org.example.administrador.dto.MonopatinDTO;
 import org.example.administrador.dto.ReporteMonopatinXKm;
 import org.example.administrador.dto.ViajeDTO;
 import org.example.administrador.entity.Admin;
+import org.example.administrador.feingClients.CuentaFeingClient;
 import org.example.administrador.feingClients.MonopatinFeingClient;
 import org.example.administrador.feingClients.ViajeFeingClient;
 import org.example.administrador.repository.AdminRepository;
@@ -19,12 +21,16 @@ public class AdminService {
     //Feing clients
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
+    CuentaFeingClient cuentaFeingClient;
     AdminRepository adminRepository;
-    public AdminService(AdminRepository adminRepository,MonopatinFeingClient monopatinFeingClient,ViajeFeingClient viajeFeingClient) {
-        this.adminRepository = adminRepository;
+
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
+        this.cuentaFeingClient = cuentaFeingClient;
+        this.adminRepository = adminRepository;
     }
+
     public Admin save(Admin admin) {
         return adminRepository.save(admin);
     }
@@ -75,7 +81,6 @@ public class AdminService {
             // Calcular el tiempo TOTAL (incluyendo pausas)
             Long tiempoDeUsoTotalSegundos = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
 
-            // 5. Crear la entrada del reporte
             ReporteMonopatinXKm entrada = new ReporteMonopatinXKm(
                     monopatin.getId(),
                     kmRecorridos,
@@ -86,5 +91,22 @@ public class AdminService {
         }
 
         return reportes;
+    }
+
+    /**
+     * PUNTO B
+     * Anula una cuenta de usuario, inhabilitando su uso.
+     * @param idCuenta ID de la cuenta a anular.
+     * @return El DTO de la Cuenta actualizada.
+     */
+    public void anularCuentaUsuario(String idCuenta) {
+
+        ResponseEntity<Void> response = cuentaFeingClient.anularCuenta(idCuenta);
+
+        // Si Cuenta devuelve 204 (No Content) o 200, es exitoso.
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Error al anular la cuenta " + idCuenta + " en el MS Cuenta. Código de estado: " + response.getStatusCodeValue());
+        }
+
     }
 }

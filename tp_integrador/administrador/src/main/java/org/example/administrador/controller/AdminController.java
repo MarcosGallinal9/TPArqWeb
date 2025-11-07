@@ -1,12 +1,11 @@
 package org.example.administrador.controller;
 
+import org.example.administrador.dto.CuentaDTO;
 import org.example.administrador.dto.MonopatinDTO;
 import org.example.administrador.dto.ReporteMonopatinXKm;
 import org.example.administrador.service.AdminService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +19,8 @@ public class AdminController {
         this.adminService = adminService;
     }
     /**
-     * Genera el reporte de uso de monopatines por kilómetros/tiempo. (Punto a.)
+     * PUNTO A
+     * Genera el reporte de uso de monopatines por kilómetros/tiempo.
      * URL: GET http://localhost:8080/administrador/reportes/mantenimiento-uso
      */
     @GetMapping("/reportes/mantenimiento-uso")
@@ -31,4 +31,22 @@ public class AdminController {
         }
         return ResponseEntity.ok(reportes);
     }
+
+    /**
+     * PUNTO B
+     * Anula una cuenta de usuario.
+     * URL: PUT http://localhost:8080/administrador/cuentas/anular/{id}
+     */
+
+    @PutMapping("/cuentas/anular/{idCuenta}")
+    public ResponseEntity<Void> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
+        try {
+            adminService.anularCuentaUsuario(idCuenta);
+            // 204 No Content para indicar éxito sin cuerpo de respuesta.
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
 }
