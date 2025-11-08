@@ -42,4 +42,15 @@ public class FacturacionController {
         List<Facturacion> facturas = facturacionService.byUserId(userId);
         return ResponseEntity.ok(facturas);
     }
+
+
+    //URL: GET /facturacion/total-facturado?anio={X}&mesInicio={X}&mesFin={X}
+    @GetMapping("/total-facturado")
+    public ResponseEntity<Double> getTotalFacturado(
+            @RequestParam int anio,
+            @RequestParam int mesInicio,
+            @RequestParam int mesFin) {
+        Double total = facturacionService.obtenerTotalFacturado(anio, mesInicio, mesFin);
+        return ResponseEntity.ok(total);
+    }
 }

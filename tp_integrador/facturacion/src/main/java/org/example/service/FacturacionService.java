@@ -5,6 +5,9 @@ import org.example.repository.FacturacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,5 +39,15 @@ public class FacturacionService {
 
     public List<Facturacion> byUserId(Long userId){
         return facturacionRepository.findByUserId(userId);
+    }
+
+    public double  obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
+        LocalDate fechaInicio = LocalDate.of(anio, mesInicio, 1);
+        LocalDate fechaFin = LocalDate.of(anio, mesFin, YearMonth.of(anio, mesFin).lengthOfMonth());
+
+        Date inicio = java.sql.Date.valueOf(fechaInicio);
+        Date fin = java.sql.Date.valueOf(fechaFin);
+
+        return facturacionRepository.findByFechaBetween(inicio, fin);
     }
 }

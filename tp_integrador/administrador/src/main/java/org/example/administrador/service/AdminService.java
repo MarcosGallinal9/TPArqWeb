@@ -3,6 +3,7 @@ package org.example.administrador.service;
 import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.CuentaFeingClient;
+import org.example.administrador.feingClients.FacturacionFeingClient;
 import org.example.administrador.feingClients.MonopatinFeingClient;
 import org.example.administrador.feingClients.ViajeFeingClient;
 import org.example.administrador.repository.AdminRepository;
@@ -18,14 +19,16 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
+    FacturacionFeingClient facturacionFeingClient;
     
     AdminRepository adminRepository;
 
-    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository, FacturacionFeingClient facturacionFeingClient) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
         this.cuentaFeingClient = cuentaFeingClient;
         this.adminRepository = adminRepository;
+        this.facturacionFeingClient = facturacionFeingClient;
     }
 
     public Admin save(Admin admin) {
@@ -123,5 +126,9 @@ public class AdminService {
         return todosLosMonopatines.stream()
                 .filter(m -> m.getCantidadViajes() > minViajes)
                 .toList();
+    }
+
+    public Double consultarTotalFacturado(int anio, int mesInicio, int mesFin) {
+        return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
     }
 }
