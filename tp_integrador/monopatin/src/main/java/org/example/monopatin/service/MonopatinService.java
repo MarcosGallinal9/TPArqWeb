@@ -4,8 +4,12 @@ import org.example.monopatin.dto.ViajeDTO;
 import org.example.monopatin.feignClient.ViajeFeignClient;
 import org.example.monopatin.entity.Monopatin;
 import org.example.monopatin.repository.MonopatinRepository;
+import org.springframework.data.geo.Point;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -91,5 +95,13 @@ public class MonopatinService {
         }
 
         monopatinRepository.save(monopatin);
+    }
+
+
+    public List<Monopatin> buscarCercanos(double lat, double lng, double radiokm){
+        Point ubicacionUsuario = new Point( lng,lat);
+        Distance radio = new Distance(radiokm, Metrics.KILOMETERS);
+
+        return monopatinRepository.findByEstadoAndUbicacionNear("DISPONIBLE", ubicacionUsuario, radio);
     }
 }

@@ -9,6 +9,9 @@ public class CuentaService {
 
     CuentaRepository cuentaRepository;
 
+    public CuentaService(CuentaRepository cuentaRepository) {
+        this.cuentaRepository = cuentaRepository;
+    }
 
     public List<Cuenta> getAll(){
         return cuentaRepository.findAll();
@@ -33,11 +36,6 @@ public class CuentaService {
 
     public Cuenta findById(String id){
         return cuentaRepository.findById(id).orElse(null);
-    }
-    public Cuenta anularCuenta(String id){
-        Cuenta cuentaExistente = cuentaRepository.findById(id).orElse(null);
-        cuentaExistente.setEstado(false);
-        return cuentaRepository.save(cuentaExistente);
     }
 
     public Cuenta cargarSaldo(String id, double saldo){
