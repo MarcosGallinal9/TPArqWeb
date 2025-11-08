@@ -78,11 +78,13 @@ public class AdminController {
      * URL: GET /administrador/total-facturado?anio={X}&mesInicio={X}&mesFin={X}
      */
     @GetMapping("/total-facturado")
-    public Double getTotalFacturado(
+    public ResponseEntity<Double> obtenerTotalFacturado(
             @RequestParam int anio,
             @RequestParam int mesInicio,
             @RequestParam int mesFin) {
-        return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
+
+        Double total = adminService.obtenerTotalFacturado(anio, mesInicio, mesFin);
+        return ResponseEntity.ok(total);
     }
 
 }

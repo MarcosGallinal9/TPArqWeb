@@ -128,7 +128,7 @@ public class AdminService {
                 .toList();
     }
 
-    public Double consultarTotalFacturado(int anio, int mesInicio, int mesFin) {
+    public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
         return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
     }
 }
