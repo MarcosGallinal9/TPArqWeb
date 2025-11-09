@@ -18,7 +18,7 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
-    
+
     AdminRepository adminRepository;
 
     public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
