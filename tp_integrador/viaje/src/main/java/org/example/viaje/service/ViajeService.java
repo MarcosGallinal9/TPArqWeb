@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ViajeService {
@@ -23,6 +23,7 @@ public class ViajeService {
     TarifaFeignClient tarifaFeignClient;
     FacturacionFeignClient facturacionFeignClient;
     CuentaFeignClient cuentaFeignClient;
+    UsuarioFeingClient usuarioFeignClient;
 
     // Servicios locales (para Pausa)
       PausaService pausaService;
@@ -181,8 +182,39 @@ public class ViajeService {
         return viajeRepository.contadorViajesXAnio(year);
     }
 
-    //punto h
-    public reporteUsoDto getReporteUsoDto(List<String> userIds, LocalDate fechaInicio, LocalDate fechaFin) {
+    public List<UsuarioUsoDTO> obtenerUsuariosMasActivos(Date inicio, Date fin, String tipoUsuario) {
+        List<Viaje> viajes = viajeRepository.findByFechaBetween(inicio, fin);
+        // Sumar los km recorridos por usuario
+        Map<String, Double> kmPorUsuario = viajes.stream()
+                .collect(Collectors.groupingBy(
+                        Viaje::getIdUsuario,
+                        Collectors.summingDouble(Viaje::getKmRecorridos)
+                ));
+
+        // Convertir a DTO y agregar info del usuario (desde el microservicio de usuarios)
+        List<UsuarioUsoDTO> lista = kmPorUsuario.entrySet().stream()
+                .map(entry -> {
+                    UsuarioUsoDTO usuario = usuarioFeignClient.getUsuarioById(entry.getKey());
+                    if (usuario != null && usuario.getRol().equalsIgnoreCase(tipoUsuario)) {
+                        return new UsuarioUsoDTO(
+                                usuario.getId(),
+                                usuario.getNombre(),
+                                usuario.getRol(),
+                                entry.getValue()
+                        );
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingDouble(UsuarioUsoDTO::getKmRecorridos).reversed())
+                .collect(Collectors.toList());
+
+        return lista;
+    }
+
+
+        //punto h
+    public ReporteUsoDTO getReporteUsoDto(List<String> userIds, LocalDate fechaInicio, LocalDate fechaFin) {
         return viajeRepository.tiempoUsoUsuario(userIds, fechaInicio, fechaFin);
     }
 
@@ -198,7 +230,7 @@ public class ViajeService {
         return viajeRepository.save(viaje);
     }
 
-    public List<Viaje> byUserId(Long userid){
+    public List<Viaje> byUserId(String userid){
         return viajeRepository.findByIdUsuario(userid);
     }
 }

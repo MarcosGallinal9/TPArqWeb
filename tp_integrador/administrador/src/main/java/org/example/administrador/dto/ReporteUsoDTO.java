@@ -1,6 +1,6 @@
-package org.example.viaje.dto;
+package org.example.administrador.dto;
 
-public class reporteUsoDto {
+public class ReporteUsoDTO {
     private double totalTiempoMinutos;
     private double totalTiempoConPausaMinutos;
     private double totalKilometros;

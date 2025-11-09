@@ -2,14 +2,14 @@ package org.example.administrador.service;
 
 import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
-import org.example.administrador.feingClients.CuentaFeingClient;
-import org.example.administrador.feingClients.FacturacionFeingClient;
-import org.example.administrador.feingClients.MonopatinFeingClient;
-import org.example.administrador.feingClients.ViajeFeingClient;
+import org.example.administrador.feingClients.*;
 import org.example.administrador.repository.AdminRepository;
+import org.example.administrador.dto.ReporteUsoDTO;
+import org.example.viaje.dto.UsuarioUsoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +20,17 @@ public class AdminService {
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
     FacturacionFeingClient facturacionFeingClient;
+    UsuarioFeingClient usuarioFeingClient;
     
     AdminRepository adminRepository;
 
-    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository, FacturacionFeingClient facturacionFeingClient) {
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository, FacturacionFeingClient facturacionFeingClient, UsuarioFeingClient usuarioFeingClient) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
         this.cuentaFeingClient = cuentaFeingClient;
         this.adminRepository = adminRepository;
         this.facturacionFeingClient = facturacionFeingClient;
+        this.usuarioFeingClient = usuarioFeingClient;
     }
 
     public Admin save(Admin admin) {
@@ -127,8 +129,23 @@ public class AdminService {
                 .filter(m -> m.getCantidadViajes() > minViajes)
                 .toList();
     }
-
+    /**
+     * PUNTO D
+     */
     public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
         return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
+    }
+
+    public ReporteUsoDTO getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
+        // 1️⃣ Obtener todos los usuarios con ese rol
+        List<UsuarioUsoDTO> usuarios = usuarioFeingClient.getUsuarios();
+
+        List<String> userIds = usuarios.stream()
+                .filter(u -> u.getRol().equalsIgnoreCase(rol))
+                .map(UsuarioUsoDTO::getId)
+                .toList();
+
+        // 2️⃣ Llamar al MS de viajes para obtener el uso de esos usuarios
+        return viajeFeingClient.getReporteUso(userIds, inicio, fin);
     }
 }
