@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.example.cuenta.Service.CuentaService;
 
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/cuenta")
@@ -40,45 +40,23 @@ public class CuentaController {
         return ResponseEntity.ok(nuevaCuenta);
     }
 
-    @PutMapping("/anular/{id}")
-    public ResponseEntity<Cuenta> anularCuenta(@PathVariable("id") String id) {
-        cuentaService.anularCuenta(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/cargarSaldo/{id}")
     public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id,  double saldo) {
         cuentaService.cargarSaldo(id, saldo);
         return ResponseEntity.noContent().build();
     }
+    //h) opcionalmente si
+    //otros usuarios relacionados a mi cuenta los han usado.
+    @GetMapping("/{id}/usuarios")
+    public ResponseEntity<List<String>> getUsuariosAsociados(@PathVariable("id") String id) {
+        try {
+            List<String> usuarios = cuentaService.getUsuariosAsociados(id);
+            return ResponseEntity.ok(usuarios);
+        } catch (RuntimeException e) {
+        return ResponseEntity.notFound().build();
+    }
 
-//    @GetMapping("/cuentas/{usuarioId}")
-//    public ResponseEntity<List<Cuenta>> getCuentas(@PathVariable("usuarioId") Long usuarioId) {
-//        Usuario usuario = cuentaService.getCuentaById(usuarioId);
-//
-//        if(usuario == null){
-//            return  ResponseEntity.notFound().build();
-//        }
-//        List<Cuenta> cuentas = cuentaService.getCuentas(usuarioId);
-//        return ResponseEntity.ok(cuentas);
-//    }
-//
-//    @PostMapping("/guardarCuenta/{usuarioId}")
-//    public ResponseEntity<Cuenta> guardarCuenta(@PathVariable("usuarioId") Long userId, @RequestBody Cuenta cuenta) {
-//        if(usuarioService.getUserById(usuarioId) == null){
-//            return  ResponseEntity.notFound().build();
-//        }
-//        Cuenta cuenta = cuentaService.guardarCuenta(usuarioId, cuenta);
-//        return ResponseEntity.ok(cuenta);
-//    }
-//
-//    @GetMapping("/getAll/{userId}")
-//    public ResponseEntity<Map<String, Object>> getUsuarioYCuentas(@PathVariable("usuarioId") Long usuarioId) {
-//        Map<String, Object> result = cuentaService.getUsuarioYMonopatines(usuarioId);
-//        return ResponseEntity.ok(result);
-//    }
-
-
+    }
 
 
 }

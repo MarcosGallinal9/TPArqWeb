@@ -51,4 +51,11 @@ public class MonopatinController {
         }
     }
 
+    @GetMapping("/cercanos")
+    public  List<Monopatin> getMonpatinesCercanos(@RequestParam("lat") double lat, @RequestParam("lng") double lng, @RequestParam(value = "radiokm", defaultValue = "1.0") double radiokm) {
+        return monopatinService.buscarCercanos(lat, lng, radiokm);
+    }
+
+
+
 }

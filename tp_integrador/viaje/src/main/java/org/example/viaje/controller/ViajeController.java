@@ -1,11 +1,14 @@
 package org.example.viaje.controller;
 
 import org.example.viaje.dto.ReporteMonopatinContadorViajes;
+import org.example.viaje.dto.ReporteUsoDTO;
 import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("/viajes")
@@ -42,7 +45,7 @@ public class ViajeController {
     }
 
     @GetMapping("/byUser/{userId}")
-    public ResponseEntity<List<Viaje>> getViajesByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<Viaje>> getViajesByUserId(@PathVariable("userId") String userId) {
         List<Viaje> viajes = viajeService.byUserId(userId);
         return ResponseEntity.ok(viajes);
     }
@@ -92,5 +95,10 @@ public class ViajeController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("reporte/uso")
+    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
+        return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
     }
 }

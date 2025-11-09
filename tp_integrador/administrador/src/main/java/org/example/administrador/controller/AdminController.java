@@ -1,13 +1,16 @@
 package org.example.administrador.controller;
-
+import org.example.administrador.dto.ReporteUsoDTO;
 import org.example.administrador.dto.CuentaDTO;
 import org.example.administrador.dto.MonopatinDTO;
 import org.example.administrador.dto.ReporteMonopatinContadorViajes;
 import org.example.administrador.dto.ReporteMonopatinXKm;
+import org.example.administrador.feingClients.FacturacionFeingClient;
 import org.example.administrador.service.AdminService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -15,9 +18,12 @@ import java.util.List;
 public class AdminController {
 
     AdminService adminService;
+    FacturacionFeingClient facturacionFeingClient;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService
+    , FacturacionFeingClient facturacionFeingClient) {
         this.adminService = adminService;
+        this.facturacionFeingClient = facturacionFeingClient;
     }
     /**
      * PUNTO A
@@ -67,4 +73,40 @@ public class AdminController {
         }
         return ResponseEntity.ok(topMonopatines);
     }
+
+    /**
+     * PUNTO D
+     * Consulta el total facturado en un rango de meses en un cierto año-
+     * URL: GET /administrador/total-facturado?anio={X}&mesInicio={X}&mesFin={X}
+     */
+    @GetMapping("/total-facturado")
+    public ResponseEntity<Double> obtenerTotalFacturado(
+            @RequestParam int anio,
+            @RequestParam int mesInicio,
+            @RequestParam int mesFin) {
+
+        Double total = adminService.obtenerTotalFacturado(anio, mesInicio, mesFin);
+        return ResponseEntity.ok(total);
+    }
+
+    /**
+     * PUNTO E
+     * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
+     * URL: GET /api/admin/usuarios-que-mas-usan?rol={X}&inicio={X}&fin={X}
+     */
+    @GetMapping("/usuarios-que-mas-usan")
+    public ResponseEntity<ReporteUsoDTO> getUsuariosQueMasUsanMonopatines(
+            @RequestParam String rol,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
+
+        ReporteUsoDTO reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin);
+
+        if (reporte == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(reporte);
+    }
+
 }

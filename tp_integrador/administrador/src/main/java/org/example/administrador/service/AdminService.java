@@ -18,7 +18,7 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
-
+    
     AdminRepository adminRepository;
 
     public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
@@ -124,4 +124,12 @@ public class AdminService {
                 .filter(m -> m.getCantidadViajes() > minViajes)
                 .toList();
     }
+
+    /**
+     * PUNTO D
+     */
+    public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
+        return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
+    }
+
 }
