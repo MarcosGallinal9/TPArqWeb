@@ -45,4 +45,8 @@ public class CuentaService {
         return cuentaRepository.save(cuenta);
     }
 
+    public List<String> getUsuariosAsociados(String id) {
+        Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        return cuenta.getUsuarios();
+    }
 }

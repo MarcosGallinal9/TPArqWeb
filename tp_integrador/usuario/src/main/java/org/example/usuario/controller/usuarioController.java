@@ -1,10 +1,13 @@
 package org.example.usuario.controller;
 import org.example.usuario.dto.monopatinDto;
+import org.example.usuario.dto.reporteUsoDto;
 import org.example.usuario.service.UsuarioService;
 import org.example.usuario.entity.Usuario;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +62,12 @@ public class usuarioController {
             return ResponseEntity.ok(monopatines);
         }
 
+        @GetMapping("/{userId}/reporteUso")
+        public ResponseEntity<reporteUsoDto> getReporteUso(@PathVariable("userId") String userId, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin, @RequestParam("otrosUsuarios") boolean otrosUsuarios){
+            reporteUsoDto reporte = usuarioService.getReporteUso(userId, fechaInicio, fechaFin, otrosUsuarios);
+            return ResponseEntity.ok(reporte);
+
+        }
 
 
     }

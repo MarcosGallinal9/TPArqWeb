@@ -1,12 +1,15 @@
 package org.example.viaje.repository;
 
 import org.example.viaje.dto.ReporteMonopatinContadorViajes;
+import org.example.viaje.dto.reporteUsoDto;
 import org.example.viaje.entity.Viaje;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -15,6 +18,7 @@ public interface ViajeRepository extends MongoRepository<Viaje,String> {
 
     /**
      * Realiza una agregación para contar los viajes finalizados por monopatín en un año específico.
+     *
      * @param year Año a filtrar.
      */
     @Aggregation(pipeline = {
@@ -33,4 +37,12 @@ public interface ViajeRepository extends MongoRepository<Viaje,String> {
                     "} }"
     })
     List<ReporteMonopatinContadorViajes> contadorViajesXAnio(int year);
+
+
+    //punto h
+    @Query("SELECT new org.example.viaje.dto.ReporteUsoDto(" +
+            "  SUM(v.tiempoUso), SUM(v.tiempoConPausa), SUM(v.kilometros) ) " +
+            "FROM Viaje v " +
+            "WHERE v.usuarioId IN ?1 AND v.fechaInicio BETWEEN ?2 AND ?3")
+    reporteUsoDto tiempoUsoUsuario(List<String> userIds, LocalDate fechaInicio, LocalDate fechaFin);
 }

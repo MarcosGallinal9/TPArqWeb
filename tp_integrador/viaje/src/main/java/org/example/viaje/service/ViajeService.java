@@ -7,6 +7,7 @@ import org.example.viaje.repository.ViajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -178,6 +179,11 @@ public class ViajeService {
      */
     public List<ReporteMonopatinContadorViajes> getConteoViajesPorMonopatinYAnio(int year) {
         return viajeRepository.contadorViajesXAnio(year);
+    }
+
+    //punto h
+    public reporteUsoDto getReporteUsoDto(List<String> userIds, LocalDate fechaInicio, LocalDate fechaFin) {
+        return viajeRepository.tiempoUsoUsuario(userIds, fechaInicio, fechaFin);
     }
 
     public void delete(Viaje viaje){

@@ -1,11 +1,14 @@
 package org.example.viaje.controller;
 
 import org.example.viaje.dto.ReporteMonopatinContadorViajes;
+import org.example.viaje.dto.reporteUsoDto;
 import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.processing.Generated;
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("/viajes")
@@ -93,4 +96,10 @@ public class ViajeController {
         }
         return ResponseEntity.ok(reporte);
     }
+
+    @GetMapping("reporte/uso")
+    public reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
+        return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
+    }
+
 }
