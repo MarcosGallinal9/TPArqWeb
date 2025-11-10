@@ -27,11 +27,20 @@ public class CuentaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Cuenta> getCuentaById(@PathVariable("id") String id) {
-        Cuenta cuenta = cuentaService.getByUserId(id);
+        Cuenta cuenta = cuentaService.findById(id);
         if (cuenta == null) {
             return  ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(cuenta);
+    }
+    //Buscar cuentas por id de usuario
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<List<Cuenta>> getCuentasByUserId(@PathVariable("userId") String userId) {
+        List<Cuenta> cuentas = cuentaService.getCuentasByUserId(userId);
+        if (cuentas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(cuentas);
     }
 
     @PostMapping("")
@@ -41,7 +50,7 @@ public class CuentaController {
     }
 
     @PostMapping("/cargarSaldo/{id}")
-    public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id,  double saldo) {
+    public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id, @RequestParam("saldo") double saldo) {
         cuentaService.cargarSaldo(id, saldo);
         return ResponseEntity.noContent().build();
     }

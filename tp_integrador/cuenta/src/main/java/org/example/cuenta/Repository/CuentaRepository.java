@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CuentaRepository extends MongoRepository<Cuenta,String>{
-    List<Cuenta> getByUserId(String userId);
+    //List<Cuenta> getByUserId(String userId);
+
+    List<Cuenta> findByUsuariosContaining(String userId);
 }
