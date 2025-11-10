@@ -4,6 +4,8 @@ import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.*;
 import org.example.administrador.repository.AdminRepository;
+import org.example.administrador.dto.ReporteUsoDTO;
+import org.example.viaje.dto.UsuarioUsoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +19,17 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
-    FacturacionFeingClient  facturacionFeingClient;
-    AdminRepository adminRepository;
+    FacturacionFeingClient facturacionFeingClient;
     UsuarioFeingClient usuarioFeingClient;
+    
+    AdminRepository adminRepository;
 
-    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, FacturacionFeingClient facturacionFeingClient, AdminRepository adminRepository, UsuarioFeingClient usuarioFeingClient) {
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository, FacturacionFeingClient facturacionFeingClient, UsuarioFeingClient usuarioFeingClient) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
         this.cuentaFeingClient = cuentaFeingClient;
-        this.facturacionFeingClient = facturacionFeingClient;
         this.adminRepository = adminRepository;
+        this.facturacionFeingClient = facturacionFeingClient;
         this.usuarioFeingClient = usuarioFeingClient;
     }
 
@@ -126,7 +129,6 @@ public class AdminService {
                 .filter(m -> m.getCantidadViajes() > minViajes)
                 .toList();
     }
-
     /**
      * PUNTO D
      */
@@ -135,7 +137,7 @@ public class AdminService {
     }
 
     public ReporteUsoDTO getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
-        // ⿡ Obtener todos los usuarios con ese rol
+        // 1️⃣ Obtener todos los usuarios con ese rol
         List<UsuarioUsoDTO> usuarios = usuarioFeingClient.getUsuarios();
 
         List<String> userIds = usuarios.stream()
@@ -143,8 +145,7 @@ public class AdminService {
                 .map(UsuarioUsoDTO::getId)
                 .toList();
 
-        // ⿢ Llamar al MS de viajes para obtener el uso de esos usuarios
-        return viajeFeingClient.getReporteUso(userIds, inicio,fin);
-}
-
+        // 2️⃣ Llamar al MS de viajes para obtener el uso de esos usuarios
+        return viajeFeingClient.getReporteUso(userIds, inicio, fin);
+    }
 }
