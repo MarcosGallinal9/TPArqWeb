@@ -23,7 +23,7 @@ public class TarifaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tarifa> getTarifasById(@PathVariable("id") Long id) {
+    public ResponseEntity<Tarifa> getTarifasById(@PathVariable("id") String id) {
         Tarifa tarifa = tarifaService.findById(id);
         if (tarifa == null) {
             return  ResponseEntity.notFound().build();
