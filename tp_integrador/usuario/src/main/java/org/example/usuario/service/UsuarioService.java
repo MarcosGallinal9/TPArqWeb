@@ -23,12 +23,12 @@ public class UsuarioService {
     monopatinFeignClient monopatinFeignClient;
     viajeFeignClient viajeFeignClient;
 
-//    public UsuarioService(UsuarioRepository usuarioRepository, cuentaFeignClient cuentaFeignClient, monopatinFeignClient monopatinFeignClient, viajeFeignClient viajeFeignClient) {
-//        this.usuarioRepository = usuarioRepository;
-//        this.cuentaFeignClient = cuentaFeignClient;
-//        this.monopatinFeignClient = monopatinFeignClient;
-//        this.viajeFeignClient = viajeFeignClient;
-//    }
+    public UsuarioService(UsuarioRepository usuarioRepository, cuentaFeignClient cuentaFeignClient, monopatinFeignClient monopatinFeignClient, viajeFeignClient viajeFeignClient) {
+        this.usuarioRepository = usuarioRepository;
+        this.cuentaFeignClient = cuentaFeignClient;
+        this.monopatinFeignClient = monopatinFeignClient;
+        this.viajeFeignClient = viajeFeignClient;
+    }
 
     public List<Usuario> getAll() {
         return usuarioRepository.findAll();
@@ -54,6 +54,9 @@ public class UsuarioService {
         cuentaDto cuentaAsociar =  cuentaFeignClient.getCuenta(nroCuenta);
         if (cuentaAsociar == null) {
             throw new RuntimeException();
+        }
+        if (usuario.getCuentas() == null) {
+            usuario.setCuentas(new ArrayList<>());
         }
         usuario.getCuentas().add(nroCuenta);
         return usuarioRepository.save(usuario);

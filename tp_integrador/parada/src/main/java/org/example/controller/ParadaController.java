@@ -2,9 +2,7 @@ package org.example.controller;
 
 import org.example.dto.MonopatinDTO;
 import org.example.entity.Parada;
-import org.example.feignClient.MonopatinFeignClient;
 import org.example.service.ParadaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
