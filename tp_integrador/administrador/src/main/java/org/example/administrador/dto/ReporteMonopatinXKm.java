@@ -10,6 +10,5 @@ import lombok.*;
 public class ReporteMonopatinXKm {
     private String id;
     private Long kmRecorridos;
-    private Long tiempoDeUsoNeto; //Tiempo de uso SIN pausas
-    private Long tiempoDeUsoTotal; //Tiempo de uso contado pausas
+     //Tiempo de uso contado pausas
 }

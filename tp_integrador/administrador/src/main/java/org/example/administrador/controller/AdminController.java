@@ -27,8 +27,8 @@ public class AdminController {
      * URL: GET http://localhost:8080/administrador/reportes/mantenimiento-uso
      */
     @GetMapping("/reportes/mantenimiento-uso")
-    public ResponseEntity<List<ReporteMonopatinXKm>> getReporteMonopatines() {
-        List<ReporteMonopatinXKm> reportes = adminService.generarReporteUso();
+    public ResponseEntity<List<ReporteMonopatinXKm>> getReporteMonopatines(@RequestParam("conPausas") boolean conPausas) {
+        List<ReporteMonopatinXKm> reportes = adminService.generarReporteUso(conPausas);
         if (reportes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

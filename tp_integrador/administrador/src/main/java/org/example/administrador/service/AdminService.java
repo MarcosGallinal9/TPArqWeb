@@ -48,7 +48,7 @@ public class AdminService {
      *
      * @return Lista de ReporteMonopatinXKm con las métricas.
      */
-    public List<ReporteMonopatinXKm> generarReporteUso() {
+    public List<ReporteMonopatinXKm> generarReporteUso(boolean pausas) {
 
         ResponseEntity<List<MonopatinDTO>> response = monopatinFeingClient.getAllMonopatines();
 
@@ -83,14 +83,19 @@ public class AdminService {
 
             // Calcular el tiempo TOTAL (incluyendo pausas)
             Long tiempoDeUsoTotalSegundos = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
+            if(pausas= true){
+                ReporteMonopatinConPausas entrada = new ReporteMonopatinConPausas(
+                monopatin.getId(),
+                kmRecorridos,
+                tiempoDeUsoTotalSegundos);
+                reportes.add(entrada);
+            }else{
+                ReporteMonopatinSinPausas entrada = new ReporteMonopatinSinPausas(
+                        monopatin.getId(), kmRecorridos, tiempoUsoNetoSegundos);
+                reportes.add(entrada);
+            }
 
-            ReporteMonopatinXKm entrada = new ReporteMonopatinXKm(
-                    monopatin.getId(),
-                    kmRecorridos,
-                    tiempoUsoNetoSegundos,
-                    tiempoDeUsoTotalSegundos
-            );
-            reportes.add(entrada);
+
         }
 
         return reportes;
