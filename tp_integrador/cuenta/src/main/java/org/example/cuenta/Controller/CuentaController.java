@@ -35,7 +35,6 @@ public class CuentaController {
         }
         return ResponseEntity.ok(cuenta);
     }
-    //Buscar cuentas por id de usuario
     @GetMapping("/by-user/{userId}")
     public ResponseEntity<List<Cuenta>> getCuentasByUserId(@PathVariable("userId") String userId) {
         List<Cuenta> cuentas = cuentaService.getCuentasByUserId(userId);
@@ -69,16 +68,7 @@ public class CuentaController {
         } catch (RuntimeException e) {
         return ResponseEntity.notFound().build();
     }
-    //h) opcionalmente si
-    //otros usuarios relacionados a mi cuenta los han usado.
-    @GetMapping("/{id}/usuarios")
-    public ResponseEntity<List<String>> getUsuariosAsociados(@PathVariable("id") String id) {
-        try {
-            List<String> usuarios = cuentaService.getUsuariosAsociados(id);
-            return ResponseEntity.ok(usuarios);
-        } catch (RuntimeException e) {
-        return ResponseEntity.notFound().build();
-    }
+
 
     }
 

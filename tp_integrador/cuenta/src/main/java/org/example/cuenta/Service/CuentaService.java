@@ -5,6 +5,12 @@ import org.example.cuenta.entity.Cuenta;
 
 import java.util.List;
 
+
+
+import org.springframework.stereotype.Service;
+
+
+@Service
 public class CuentaService {
 
     CuentaRepository cuentaRepository;
@@ -40,6 +46,9 @@ public class CuentaService {
 
     public Cuenta cargarSaldo(String id, double saldo){
         Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        if (cuenta == null) {
+            return null;
+        }
         double montoActual = cuenta.getMonto();
         cuenta.setMonto(montoActual + saldo);
         return cuentaRepository.save(cuenta);
@@ -48,5 +57,13 @@ public class CuentaService {
     public List<String> getUsuariosAsociados(String id) {
         Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
         return cuenta.getUsuarios();
+    }
+
+    /**
+     * Busca la cuenta a la que pertenece el usuario.
+     * Si un usuario puede tener varias cuentas, retorna la lista.
+     */
+    public List<Cuenta> getCuentasByUserId(String userId){
+        return cuentaRepository.findByUsuariosContaining(userId);
     }
 }

@@ -5,6 +5,7 @@ import org.example.tarifa.repository.TarifaRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.List;
 @Service
 public class TarifaService {
@@ -38,4 +39,16 @@ public class TarifaService {
     }
 
 
+    public void updateConFecha(Tarifa tarifa, LocalDate fechaActivacion) {
+        LocalDate hoy = LocalDate.now();
+
+        if(hoy.equals(fechaActivacion)) {
+            Tarifa tarifaActual = tarifaRepository.findById(tarifa.getId()).orElse(null);
+
+            tarifaActual.setValorComun(tarifa.getValorComun());
+            tarifaActual.setValorPremium(tarifa.getValorPremium());
+            tarifaActual.setValorExtraPausa(tarifa.getValorExtraPausa());
+            this.update(tarifaActual);
+        }
+    }
 }

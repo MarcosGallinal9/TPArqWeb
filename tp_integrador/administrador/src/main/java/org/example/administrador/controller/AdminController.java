@@ -1,9 +1,5 @@
 package org.example.administrador.controller;
-import org.example.administrador.dto.ReporteUsoDTO;
-import org.example.administrador.dto.CuentaDTO;
-import org.example.administrador.dto.MonopatinDTO;
-import org.example.administrador.dto.ReporteMonopatinContadorViajes;
-import org.example.administrador.dto.ReporteMonopatinXKm;
+import org.example.administrador.dto.*;
 import org.example.administrador.feingClients.FacturacionFeingClient;
 import org.example.administrador.service.AdminService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -108,5 +104,16 @@ public class AdminController {
 
         return ResponseEntity.ok(reporte);
     }
+    /**
+     * PUNTO F
+     * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
+     * URL: GET /api/admin/ajuste?fechaActivacion={X}
+     */
+    @PutMapping("/ajuste")
+    public ResponseEntity<String> ajustarTarifas(@RequestBody TarifaDTO tarifaDTO,@RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
+        adminService.ajustarTarifas(tarifaDTO,fechaActivacion);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

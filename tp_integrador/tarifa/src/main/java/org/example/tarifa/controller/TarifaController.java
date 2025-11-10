@@ -3,9 +3,12 @@ package org.example.tarifa.controller;
 
 import org.example.tarifa.entity.Tarifa;
 import org.example.tarifa.service.TarifaService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -41,5 +44,10 @@ public class TarifaController {
         return ResponseEntity.ok(tarifaNew);
     }
 
+    @PutMapping("/ajuste")
+    public ResponseEntity<Tarifa> update(@RequestBody Tarifa tarifa, @RequestParam("fechaActivacion" @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
+      tarifaService.updateConFecha(tarifa,fechaActivacion);
+      return ResponseEntity.ok(tarifa);
+    }
 
 }

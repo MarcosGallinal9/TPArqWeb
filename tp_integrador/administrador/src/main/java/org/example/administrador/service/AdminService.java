@@ -21,6 +21,7 @@ public class AdminService {
     CuentaFeingClient cuentaFeingClient;
     FacturacionFeingClient facturacionFeingClient;
     UsuarioFeingClient usuarioFeingClient;
+    TarifaFeingClient tarifaFeingClient;
     
     AdminRepository adminRepository;
 
@@ -147,5 +148,9 @@ public class AdminService {
 
         // 2️⃣ Llamar al MS de viajes para obtener el uso de esos usuarios
         return viajeFeingClient.getReporteUso(userIds, inicio, fin);
+    }
+
+    public void ajustarTarifas(TarifaDTO tarifaDTO,LocalDate fechaActivacion) {
+        tarifaFeingClient.actualizarTarifas(tarifaDTO, fechaActivacion);
     }
 }
