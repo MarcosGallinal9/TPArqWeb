@@ -12,9 +12,11 @@ import java.util.List;
 @RequestMapping("/cuenta")
 
 public class CuentaController {
-
-
     CuentaService cuentaService;
+
+    public CuentaController(CuentaService cuentaService) {
+        this.cuentaService = cuentaService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Cuenta>> getCuentas() {
@@ -51,8 +53,11 @@ public class CuentaController {
 
     @PostMapping("/cargarSaldo/{id}")
     public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id, @RequestParam("saldo") double saldo) {
-        cuentaService.cargarSaldo(id, saldo);
-        return ResponseEntity.noContent().build();
+        Cuenta cuentaActualizada= cuentaService.cargarSaldo(id, saldo);
+        if (cuentaActualizada == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cuentaActualizada);
     }
     //h) opcionalmente si
     //otros usuarios relacionados a mi cuenta los han usado.

@@ -13,6 +13,10 @@ import java.util.List;
 public class FacturacionController {
     FacturacionService facturacionService;
 
+    public FacturacionController(FacturacionService facturacionService) {
+        this.facturacionService = facturacionService;
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<Facturacion>> getAllFacturacion() {
         List<Facturacion> facturas = facturacionService.getAll();

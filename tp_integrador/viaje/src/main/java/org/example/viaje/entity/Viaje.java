@@ -20,9 +20,9 @@ public class Viaje {
     private float kmRecorridos;
     private String idParadaInicio;
     private String idParadaFin;
-    private Long idTarifa;
+    private String idTarifa;
     private String idMonopatin;
     private String idUsuario;
-    private Long idCuenta;
+    private String idCuenta;
 
 }

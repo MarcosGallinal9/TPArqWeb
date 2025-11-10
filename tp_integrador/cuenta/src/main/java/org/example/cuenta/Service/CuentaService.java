@@ -41,6 +41,9 @@ public class CuentaService {
 
     public Cuenta cargarSaldo(String id, double saldo){
         Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        if (cuenta == null) {
+            return null;
+        }
         double montoActual = cuenta.getMonto();
         cuenta.setMonto(montoActual + saldo);
         return cuentaRepository.save(cuenta);

@@ -72,7 +72,7 @@ public class ViajeService {
         MonopatinDTO monopatin = monopatinFeignClient.getMonopatin(viaje.getIdMonopatin());
         ParadaDTO paradaInicio = paradaFeignClient.getParada(viaje.getIdParadaInicio());
 
-        if (monopatin == null || paradaInicio == null || !"disponible".equals(monopatin.getEstado())) {
+        if (monopatin == null || paradaInicio == null || !"disponible".equalsIgnoreCase(monopatin.getEstado())) {
             throw new RuntimeException("No se puede iniciar el viaje. Monopatín no disponible o parada inválida.");
         }
 

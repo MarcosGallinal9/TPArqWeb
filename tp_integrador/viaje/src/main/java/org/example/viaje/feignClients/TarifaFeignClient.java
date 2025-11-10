@@ -17,5 +17,5 @@ public interface TarifaFeignClient {
     TarifaDTO getTarifaVigente();
 
     @GetMapping("/{id}")
-    public TarifaDTO getTarifaById(@PathVariable("id") Long id);
+    public TarifaDTO getTarifaById(@PathVariable("id") String id);
 }

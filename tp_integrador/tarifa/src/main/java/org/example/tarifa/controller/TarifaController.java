@@ -13,6 +13,10 @@ import java.util.List;
 public class TarifaController {
     TarifaService tarifaService;
 
+    public TarifaController(TarifaService tarifaService) {
+        this.tarifaService = tarifaService;
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<Tarifa>> getAllTarifas() {
         List<Tarifa> tarifas = tarifaService.getAll();

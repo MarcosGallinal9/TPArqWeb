@@ -15,7 +15,7 @@ public interface CuentaFeignClient {
      * @return El DTO de la Cuenta.
      */
     @GetMapping("/{id}")
-    public CuentaDTO getCuenta(@PathVariable("id") Long id);
+    public CuentaDTO getCuenta(@PathVariable("id") String id);
 
 
 }

@@ -2,10 +2,11 @@ package org.example.tarifa.service;
 
 import org.example.tarifa.entity.Tarifa;
 import org.example.tarifa.repository.TarifaRepository;
+import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-
+@Service
 public class TarifaService {
 
     private TarifaRepository tarifaRepository;

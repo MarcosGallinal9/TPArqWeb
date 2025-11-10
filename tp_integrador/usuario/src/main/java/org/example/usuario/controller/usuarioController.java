@@ -18,7 +18,11 @@ public class usuarioController {
 
         UsuarioService usuarioService;
 
-        @GetMapping("/")
+    public usuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @GetMapping("/")
         public ResponseEntity<List<Usuario>> getUsuarios() {
             List<Usuario> usuarios = usuarioService.getAll();
             if (usuarios.isEmpty()) {
