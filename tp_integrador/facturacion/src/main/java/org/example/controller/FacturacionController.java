@@ -23,7 +23,7 @@ public class FacturacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Facturacion> getFacturacionById(@PathVariable("id") Long id) {
+    public ResponseEntity<Facturacion> getFacturacionById(@PathVariable("id") String id) {
         Facturacion factura = facturacionService.findById(id);
         if (factura == null) {
             return  ResponseEntity.notFound().build();
@@ -38,7 +38,7 @@ public class FacturacionController {
     }
 
     @GetMapping("/byUser/{userId}")
-    public ResponseEntity<List<Facturacion>> getFacturacionByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<Facturacion>> getFacturacionByUserId(@PathVariable("userId") String userId) {
         List<Facturacion> facturas = facturacionService.byUserId(userId);
         return ResponseEntity.ok(facturas);
     }

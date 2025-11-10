@@ -12,8 +12,12 @@ import java.util.List;
 
 @Service
 public class FacturacionService {
-    @Autowired
+
     FacturacionRepository facturacionRepository;
+
+    public FacturacionService(FacturacionRepository facturacionRepository) {
+        this.facturacionRepository = facturacionRepository;
+    }
 
     public List<Facturacion> getAll(){
 
@@ -29,7 +33,7 @@ public class FacturacionService {
         facturacionRepository.delete(factura);
     }
 
-    public Facturacion findById(Long id){
+    public Facturacion findById(String id){
         return facturacionRepository.findById(id).orElse(null);
     }
 
@@ -37,8 +41,8 @@ public class FacturacionService {
         return facturacionRepository.save(factura);
     }
 
-    public List<Facturacion> byUserId(Long userId){
-        return facturacionRepository.findByUserId(userId);
+    public List<Facturacion> byUserId(String userId){
+        return facturacionRepository.findByUsuarioId(userId);
     }
 
     public double  obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {

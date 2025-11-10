@@ -2,6 +2,7 @@ package org.example.repository;
 
 
 import org.example.entity.Facturacion;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,9 +11,16 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface FacturacionRepository extends MongoRepository<Facturacion, Long> {
-    List<Facturacion> findByUserId(Long usuarioId);
+public interface FacturacionRepository extends MongoRepository<Facturacion, String> {
+    List<Facturacion> findByUsuarioId(String usuarioId);
 
-    @Query(value = "{ 'fecha': { $gte: ?0, $lte: ?1 } }", fields = "{ 'total': 1 }")
+    @Aggregation(pipeline = {
+            // $match: Filtrar por el rango de fechas
+            "{ '$match': { 'fecha': { $gte: ?0, $lte: ?1 } } }",
+            // $group: Sumar todos los campos 'total' coincidentes
+            "{ '$group': { '_id': null, 'totalFacturado': { $sum: '$total' } } }",
+            // $project: Devolver solo el campo de la suma
+            "{ '$project': { '_id': 0, 'totalFacturado': 1 } }"
+    })
     double findByFechaBetween(Date inicio, Date fin);
 }

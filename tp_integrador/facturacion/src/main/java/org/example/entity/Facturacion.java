@@ -16,7 +16,7 @@ public class Facturacion {
     private String idFactura;
     private Date fecha;
     private Long viajeId;
-    private Long usuarioId;
+    private String usuarioId;
     private double total;
 
 }
