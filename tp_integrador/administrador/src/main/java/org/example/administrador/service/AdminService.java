@@ -2,13 +2,12 @@ package org.example.administrador.service;
 
 import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
-import org.example.administrador.feingClients.CuentaFeingClient;
-import org.example.administrador.feingClients.MonopatinFeingClient;
-import org.example.administrador.feingClients.ViajeFeingClient;
+import org.example.administrador.feingClients.*;
 import org.example.administrador.repository.AdminRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +17,17 @@ public class AdminService {
     MonopatinFeingClient monopatinFeingClient;
     ViajeFeingClient viajeFeingClient;
     CuentaFeingClient cuentaFeingClient;
-    
+    FacturacionFeingClient  facturacionFeingClient;
     AdminRepository adminRepository;
+    UsuarioFeingClient usuarioFeingClient;
 
-    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository) {
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, FacturacionFeingClient facturacionFeingClient, AdminRepository adminRepository, UsuarioFeingClient usuarioFeingClient) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
         this.cuentaFeingClient = cuentaFeingClient;
+        this.facturacionFeingClient = facturacionFeingClient;
         this.adminRepository = adminRepository;
+        this.usuarioFeingClient = usuarioFeingClient;
     }
 
     public Admin save(Admin admin) {
@@ -131,5 +133,18 @@ public class AdminService {
     public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
         return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
     }
+
+    public ReporteUsoDTO getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
+        // ⿡ Obtener todos los usuarios con ese rol
+        List<UsuarioUsoDTO> usuarios = usuarioFeingClient.getUsuarios();
+
+        List<String> userIds = usuarios.stream()
+                .filter(u -> u.getRol().equalsIgnoreCase(rol))
+                .map(UsuarioUsoDTO::getId)
+                .toList();
+
+        // ⿢ Llamar al MS de viajes para obtener el uso de esos usuarios
+        return viajeFeingClient.getReporteUso(userIds, inicio,fin);
+}
 
 }

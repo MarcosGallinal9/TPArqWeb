@@ -9,7 +9,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -19,8 +19,9 @@ public class MonopatinService {
     MonopatinRepository monopatinRepository;
     ViajeFeignClient viajeFeignClient;
 
-    public MonopatinService(MonopatinRepository monopatinRepository) {
+    public MonopatinService(MonopatinRepository monopatinRepository, ViajeFeignClient viajeFeignClient) {
         this.monopatinRepository = monopatinRepository;
+        this.viajeFeignClient = viajeFeignClient;
     }
 
     public List<Monopatin> getAll(){
@@ -102,6 +103,6 @@ public class MonopatinService {
         Point ubicacionUsuario = new Point( lng,lat);
         Distance radio = new Distance(radiokm, Metrics.KILOMETERS);
 
-        return monopatinRepository.findByEstadoAndUbicacionNear("DISPONIBLE", ubicacionUsuario, radio);
+        return monopatinRepository.findByEstadoAndLatitudNear("DISPONIBLE", ubicacionUsuario, radio);
     }
 }

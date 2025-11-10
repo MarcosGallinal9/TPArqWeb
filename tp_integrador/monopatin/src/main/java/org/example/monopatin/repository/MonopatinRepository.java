@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface MonopatinRepository extends MongoRepository<Monopatin, String> {
 
-    List<Monopatin>findByEstadoAndUbicacionNear(String estado, Point ubicacionUsuario, Distance radio);
+    List<Monopatin>findByEstadoAndLatitudNear(String estado, Point ubicacionUsuario, Distance radio);
 
 
 }
