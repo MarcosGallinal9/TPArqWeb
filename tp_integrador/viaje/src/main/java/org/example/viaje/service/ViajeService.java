@@ -22,13 +22,20 @@ public class ViajeService {
     TarifaFeignClient tarifaFeignClient;
     FacturacionFeignClient facturacionFeignClient;
     CuentaFeignClient cuentaFeignClient;
-    UsuarioFeingClient usuarioFeignClient;
+    UsuarioFeignClient usuarioFeignClient;
 
     // Servicios locales (para Pausa)
       PausaService pausaService;
 
-    public ViajeService(ViajeRepository viajeRepository) {
+    public ViajeService(ViajeRepository viajeRepository, MonopatinFeignClient monopatinFeignClient, ParadaFeingClient paradaFeignClient, TarifaFeignClient tarifaFeignClient, FacturacionFeignClient facturacionFeignClient, CuentaFeignClient cuentaFeignClient, UsuarioFeignClient usuarioFeignClient, PausaService pausaService) {
         this.viajeRepository = viajeRepository;
+        this.monopatinFeignClient = monopatinFeignClient;
+        this.paradaFeignClient = paradaFeignClient;
+        this.tarifaFeignClient = tarifaFeignClient;
+        this.facturacionFeignClient = facturacionFeignClient;
+        this.cuentaFeignClient = cuentaFeignClient;
+        this.usuarioFeignClient = usuarioFeignClient;
+        this.pausaService = pausaService;
     }
 
     public List<Viaje> getAll(){
@@ -108,7 +115,7 @@ public class ViajeService {
         //Marcar Monopatín como "disponible"
         MonopatinDTO monopatin = new MonopatinDTO();
         monopatin.setId(viaje.getIdMonopatin());
-        monopatin.setEstado(viaje.getIdMonopatin());
+        monopatin.setEstado("Disponible");
         monopatinFeignClient.updateMonopatin(monopatin);
 
         calcularYCobrarViaje(viajeFinalizado);

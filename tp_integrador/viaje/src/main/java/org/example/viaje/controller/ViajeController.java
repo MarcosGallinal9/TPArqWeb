@@ -38,11 +38,11 @@ public class ViajeController {
         return ResponseEntity.ok(viaje);
     }
 
-    @PostMapping("")
-    public ResponseEntity<Viaje> save(@RequestBody Viaje viaje) {
-        Viaje viajeNew = viajeService.save(viaje);
-        return ResponseEntity.ok(viajeNew);
-    }
+//    @PostMapping("")
+//    public ResponseEntity<Viaje> save(@RequestBody Viaje viaje) {
+//        Viaje viajeNew = viajeService.save(viaje);
+//        return ResponseEntity.ok(viajeNew);
+//    }
 
     @GetMapping("/byUser/{userId}")
     public ResponseEntity<List<Viaje>> getViajesByUserId(@PathVariable("userId") String userId) {

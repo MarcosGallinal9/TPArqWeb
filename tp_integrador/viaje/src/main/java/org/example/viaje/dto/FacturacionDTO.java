@@ -12,6 +12,6 @@ import java.util.Date;
 public class FacturacionDTO {
     private Date fecha;
     private String viajeId; // Cambiar id a String en Facturacion
-    private Long usuarioId;
+    private String usuarioId;
     private double total;
 }
