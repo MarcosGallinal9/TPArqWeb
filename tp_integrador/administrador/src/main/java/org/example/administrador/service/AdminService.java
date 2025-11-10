@@ -5,7 +5,7 @@ import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.*;
 import org.example.administrador.repository.AdminRepository;
 import org.example.administrador.dto.ReporteUsoDTO;
-import org.example.viaje.dto.UsuarioUsoDTO;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
