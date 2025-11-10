@@ -4,10 +4,7 @@ import org.example.administrador.dto.ReporteMonopatinContadorViajes;
 import org.example.administrador.dto.ViajeDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +17,8 @@ public interface ViajeFeingClient {
     @GetMapping("/pausas/tiempo-total")
     Long getTiempoTotalPausaSegundos(@RequestParam("idViaje") String idViaje);
 
-    List<ViajeDTO> getViajesByMonopatinId(String monopatin);
+    @GetMapping("/byMonopatin/{monopatinId}")
+    List<ViajeDTO> getViajesByMonopatinId(@PathVariable("monopatinId") String monopatin);
 
     /**
      * Consulta a Viaje para obtener el conteo de viajes por monopatín, filtrado por año.
