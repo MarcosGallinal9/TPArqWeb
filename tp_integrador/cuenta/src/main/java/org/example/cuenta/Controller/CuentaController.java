@@ -69,6 +69,16 @@ public class CuentaController {
         } catch (RuntimeException e) {
         return ResponseEntity.notFound().build();
     }
+    //h) opcionalmente si
+    //otros usuarios relacionados a mi cuenta los han usado.
+    @GetMapping("/{id}/usuarios")
+    public ResponseEntity<List<String>> getUsuariosAsociados(@PathVariable("id") String id) {
+        try {
+            List<String> usuarios = cuentaService.getUsuariosAsociados(id);
+            return ResponseEntity.ok(usuarios);
+        } catch (RuntimeException e) {
+        return ResponseEntity.notFound().build();
+    }
 
     }
 
