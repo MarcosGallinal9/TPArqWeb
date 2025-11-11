@@ -103,8 +103,10 @@ public class ViajeController {
         return ResponseEntity.ok(reporte);
     }
 
-    @GetMapping("reporte/uso")
-    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
+    @GetMapping("reporte-uso")
+    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds, // <-- Recibe IDs en la URL
+                                       @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio,
+                                       @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
         return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
     }
 }

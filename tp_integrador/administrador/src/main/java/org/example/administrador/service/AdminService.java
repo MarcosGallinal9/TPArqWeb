@@ -26,13 +26,14 @@ public class AdminService {
     
     AdminRepository adminRepository;
 
-    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, AdminRepository adminRepository, FacturacionFeingClient facturacionFeingClient, UsuarioFeingClient usuarioFeingClient) {
+    public AdminService(MonopatinFeingClient monopatinFeingClient, ViajeFeingClient viajeFeingClient, CuentaFeingClient cuentaFeingClient, FacturacionFeingClient facturacionFeingClient, UsuarioFeingClient usuarioFeingClient, TarifaFeingClient tarifaFeingClient, AdminRepository adminRepository) {
         this.monopatinFeingClient = monopatinFeingClient;
         this.viajeFeingClient = viajeFeingClient;
         this.cuentaFeingClient = cuentaFeingClient;
-        this.adminRepository = adminRepository;
         this.facturacionFeingClient = facturacionFeingClient;
         this.usuarioFeingClient = usuarioFeingClient;
+        this.tarifaFeingClient = tarifaFeingClient;
+        this.adminRepository = adminRepository;
     }
 
     public Admin save(Admin admin) {
@@ -185,6 +186,6 @@ public class AdminService {
      */
     public void ajustarTarifas(TarifaDTO tarifaDTO,LocalDate fechaActivacion) {
         tarifaDTO.setFechaActivacion(fechaActivacion);
-        tarifaFeingClient.actualizarTarifas(tarifaDTO);
+        tarifaFeingClient.actualizarTarifas(tarifaDTO, fechaActivacion);
     }
 }

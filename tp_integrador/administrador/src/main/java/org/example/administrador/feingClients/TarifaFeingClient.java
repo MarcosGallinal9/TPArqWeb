@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
-@FeignClient(name = "microservicio-tarifa", url = "http://localhost:8087/tarifa")
+@FeignClient(name = "microservicio-tarifa", url = "http://localhost:8087/tarifas")
 public interface TarifaFeingClient {
 
     @PutMapping("/ajuste")
-    void actualizarTarifas(@RequestBody TarifaDTO tarifaDTO);
+    void actualizarTarifas(@RequestBody TarifaDTO tarifaDTO,
+                           @RequestParam("fechaActivacion") LocalDate fechaActivacion);
 }

@@ -28,9 +28,9 @@ public interface ViajeFeingClient {
     List<ReporteMonopatinContadorViajes> getMonopatinesPorViajes(@RequestParam("year") int year);
 
 
-    @PostMapping("/reporte-uso")
+    @GetMapping("/reporte-uso")
     ReporteUsoDTO getReporteUso(
-            @RequestBody List<String> userIds,
+            @RequestParam("userIds") List<String> userIds, // <-- userIds ahora es un @RequestParam
             @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
     );
