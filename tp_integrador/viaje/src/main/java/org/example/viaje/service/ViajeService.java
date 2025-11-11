@@ -51,7 +51,7 @@ public class ViajeService {
         monopatinUpdate.setId(viaje.getIdMonopatin());
         monopatinUpdate.setEstado("en_uso");
         //Llamar al microservicio Monopatín para actualizar su estado
-        MonopatinDTO monopatinConfirmado = monopatinFeignClient.updateMonopatin(monopatinUpdate);
+        MonopatinDTO monopatinConfirmado = monopatinFeignClient.updateMonopatin(monopatinUpdate.getId(), monopatinUpdate);
 
         if (monopatinConfirmado != null && "en_uso".equals(monopatinConfirmado.getEstado())) {
             //Si la actualización fue exitosa, guardar el viaje.
@@ -78,7 +78,7 @@ public class ViajeService {
 
         //Marcar Monopatín como "en_uso"
         monopatin.setEstado("en_uso");
-        monopatinFeignClient.updateMonopatin(monopatin);
+        monopatinFeignClient.updateMonopatin(monopatin.getId(), monopatin);
 
         //Registrar Viaje
         viaje.setInicio(new Date());
@@ -116,7 +116,7 @@ public class ViajeService {
         MonopatinDTO monopatin = new MonopatinDTO();
         monopatin.setId(viaje.getIdMonopatin());
         monopatin.setEstado("Disponible");
-        monopatinFeignClient.updateMonopatin(monopatin);
+        monopatinFeignClient.updateMonopatin(monopatin.getId(), monopatin);
 
         calcularYCobrarViaje(viajeFinalizado);
 

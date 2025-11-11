@@ -60,7 +60,10 @@ public class ViajeController {
             Viaje viajeNuevo = viajeService.iniciarViaje(viaje);
             return ResponseEntity.status(201).body(viajeNuevo);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+            //return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest()
+                    .header("X-Error-Message", e.getMessage())
+                    .body(null);
         }
     }
 
@@ -78,7 +81,10 @@ public class ViajeController {
             Viaje viajeFinalizado = viajeService.finalizarViaje(idViaje, idParadaFin, kmRecorridosFinal);
             return ResponseEntity.ok(viajeFinalizado);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+            //return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest()
+                    .header("X-Error-Message", e.getMessage())
+                    .body(null);
         }
     }
 

@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class CuentaDTO {
-    public Long id;
+    public String id;
     public String tipoCuenta; //  "BASICA", "PREMIUM")
     public boolean estado;    // True = Activa, False = Anulada
 

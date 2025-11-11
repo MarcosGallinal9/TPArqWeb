@@ -17,9 +17,10 @@ public interface MonopatinFeignClient {
     MonopatinDTO getMonopatin(@PathVariable("id") String id);
 
     /**
-     *   Actualiza el estado de un Monopatin
-     *   POST /PUT en el servicio monopatin para actualizar la entidad
+     * Actualiza el estado de un Monopatin
+     * PUT /monopatines/{id} para actualizar la entidad
      */
-    @PutMapping("")
-    MonopatinDTO updateMonopatin(@RequestBody MonopatinDTO monopatin);
+    @PutMapping("{id}") // <- CORREGIDO: Ahora incluye {id} en el path
+    MonopatinDTO updateMonopatin(@PathVariable("id") String id, @RequestBody MonopatinDTO monopatin);
+
 }

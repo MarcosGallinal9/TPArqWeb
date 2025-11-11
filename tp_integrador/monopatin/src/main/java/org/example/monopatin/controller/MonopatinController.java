@@ -40,6 +40,17 @@ public class MonopatinController {
         Monopatin monopatinNew = monopatinService.save(monopatin);
         return ResponseEntity.ok(monopatinNew);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Monopatin> update(@PathVariable("id") String id, @RequestBody Monopatin monopatin) {
+        if (!id.equals(monopatin.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+        Monopatin monopatinUpdate = monopatinService.update(monopatin);
+        if (monopatinUpdate == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(monopatinUpdate);
+    }
 
     @PutMapping("/{id}/evaluar-mantenimiento")
     public ResponseEntity<String> evaluarMantenimiento(@PathVariable("id") String id) {
