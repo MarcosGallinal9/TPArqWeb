@@ -1,5 +1,6 @@
 package org.example.administrador.service;
 
+import feign.FeignException;
 import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.*;
@@ -51,14 +52,30 @@ public class AdminService {
     public List<ReporteMonopatinXKm> generarReporteUso(boolean pausas) {
 
         ResponseEntity<List<MonopatinDTO>> response = monopatinFeingClient.getAllMonopatines();
+        try {
+            // La llamada que puede fallar
+            response = monopatinFeingClient.getAllMonopatines();
+        } catch (FeignException e) {
+            // Loguear la excepción de Feign (muestra el error de conexión, 404, 500 del otro lado, etc.)
+            System.err.println("Feign Error al obtener monopatines: " + e.status() + " | Mensaje: " + e.getMessage());
+            // Lanza una excepción personalizada o un RuntimeException descriptivo
+            throw new RuntimeException("Error de comunicación con MS-Monopatín (Código: " + e.status() + "). Detalles: " + e.getMessage(), e);
+        } catch (Exception e) {
+            // Captura fallas de conexión (ej. MS no corriendo)
+            System.err.println("Error de conexión al obtener monopatines: " + e.getMessage());
+            throw new RuntimeException("Fallo al conectar con MS-Monopatín.", e);
+        }
 
         List<MonopatinDTO> monopatines = response.getBody();
+        if (monopatines == null || !response.getStatusCode().is2xxSuccessful()) {
+            return new ArrayList<>(); // Devuelve lista vacía
+        }
         List<ReporteMonopatinXKm> reportes = new ArrayList<>();
 
         for (MonopatinDTO monopatin : monopatines) {
 
             // Obtener métricas NETAS desde la entidad Monopatín
-            Long tiempoUsoNetoSegundos = monopatin.getTiempoUsoSegundos();
+            Long tiempoUsoNetoSegundos = monopatin.getTiempoUso();
             float kmRecorridosFloat = monopatin.getKmRecorridos();
             Long kmRecorridos = (long) kmRecorridosFloat;
 
@@ -83,7 +100,7 @@ public class AdminService {
 
             // Calcular el tiempo TOTAL (incluyendo pausas)
             Long tiempoDeUsoTotalSegundos = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
-            if(pausas= true){
+            if(pausas){
                 ReporteMonopatinConPausas entrada = new ReporteMonopatinConPausas(
                 monopatin.getId(),
                 kmRecorridos,
@@ -115,6 +132,7 @@ public class AdminService {
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Error al anular la cuenta " + idCuenta + " en el MS Cuenta. Código de estado: " + response.getStatusCodeValue());
         }
+       
 
     }
 
@@ -155,7 +173,13 @@ public class AdminService {
         return viajeFeingClient.getReporteUso(userIds, inicio, fin);
     }
 
+    /**
+     * PUNTO F
+     * @param tarifaDTO
+     * @param fechaActivacion
+     */
     public void ajustarTarifas(TarifaDTO tarifaDTO,LocalDate fechaActivacion) {
-        tarifaFeingClient.actualizarTarifas(tarifaDTO, fechaActivacion);
+        tarifaDTO.setFechaActivacion(fechaActivacion);
+        tarifaFeingClient.actualizarTarifas(tarifaDTO);
     }
 }

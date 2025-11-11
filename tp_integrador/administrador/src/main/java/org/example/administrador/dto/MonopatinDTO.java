@@ -12,12 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MonopatinDTO {
-    private String id;
+    private String id; //Id de MongoDB (String)
     private String estado;
     private float latitud;
     private float longitud;
     private float kmRecorridos;
-    private long tiempoUsoSegundos;
+    private long tiempoUso; //En minutos
     private String idParadaUbicacion;
 
 

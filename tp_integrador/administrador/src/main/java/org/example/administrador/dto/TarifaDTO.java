@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,4 +16,5 @@ public class TarifaDTO {
     private int valorComun;
     private int valorPremium;
     private int valorExtraPausa;
+    private LocalDate fechaActivacion;
 }

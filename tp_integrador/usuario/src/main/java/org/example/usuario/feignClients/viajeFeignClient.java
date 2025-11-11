@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.util.List;
 
-@FeignClient(name = "microservicio-viaje", url = "http://localhost:8083/viajes")
+@FeignClient(name = "microservicio-viaje", url = "http://localhost:8084/viajes")
 public interface viajeFeignClient {
 
     @GetMapping("/reporte")
-    reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin
+    reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin
     );
 }

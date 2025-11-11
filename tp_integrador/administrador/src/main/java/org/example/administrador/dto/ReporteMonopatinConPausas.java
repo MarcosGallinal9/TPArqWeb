@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+
 
 public class ReporteMonopatinConPausas extends ReporteMonopatinXKm{
     private Long tiempoDeUsoTotal;

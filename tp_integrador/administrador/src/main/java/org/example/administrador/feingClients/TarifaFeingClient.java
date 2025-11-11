@@ -13,5 +13,5 @@ import java.time.LocalDate;
 public interface TarifaFeingClient {
 
     @PutMapping("/ajuste")
-    void actualizarTarifas(@RequestBody TarifaDTO tarifaDTO,@RequestParam("fechaActivacion") LocalDate fechaActivacion);
+    void actualizarTarifas(@RequestBody TarifaDTO tarifaDTO);
 }

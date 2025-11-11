@@ -33,7 +33,7 @@ public class ParadaService {
             paradaRepository.deleteById(id);
             return true;
         }
-        return false; 
+        return false;
     }
 
     public Parada findById(String id){

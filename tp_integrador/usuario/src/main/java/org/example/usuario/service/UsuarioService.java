@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UsuarioService {
@@ -68,21 +70,29 @@ public class UsuarioService {
 
     public reporteUsoDto getReporteUso(String userId, LocalDate fechaInicio, LocalDate fechaFin, boolean otrosUsuarios) {
         Usuario usuario = usuarioRepository.findById(userId).orElse(null);
-        List<String> usuariosConsultar = new ArrayList<>();
+        if (usuario == null) {
+            // Manejar caso no encontrado
+            return null;
+        }
+
+        // Usamos Set para asegurar unicidad de IDs a consultar
+        Set<String> usuariosConsultar = new HashSet<>();
         usuariosConsultar.add(userId);
+
         //si eligio la opcion de cuentas vinculadas
         if (otrosUsuarios){
             //recorre las cuentas del usuario
             for (String nroCuenta: usuario.getCuentas()) {
                 //obtiene los ids asociados
                 List<String> usuariosRelacionados = cuentaFeignClient.getUsuariosAsociados(nroCuenta);
-               //añade los usuarios a la lista final
-                for (String asociadoId: usuariosRelacionados) {
-                    usuariosConsultar.add(asociadoId);
-                }
+
+                //añade los usuarios a la lista final (Set maneja la unicidad automáticamente)
+                usuariosConsultar.addAll(usuariosRelacionados);
             }
         }
-        return viajeFeignClient.getReporteUso(usuariosConsultar, fechaInicio, fechaFin);
+
+        // Convertir el Set a List antes de enviarlo al FeignClient
+        return viajeFeignClient.getReporteUso(new ArrayList<>(usuariosConsultar), fechaInicio, fechaFin);
     }
 
 

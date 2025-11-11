@@ -41,7 +41,7 @@ public class AdminController {
      * URL: PUT http://localhost:8080/administrador/cuentas/anular/{id}
      */
 
-    @PutMapping("/cuentas/anular/{idCuenta}")
+    @PostMapping("/cuentas/anular/{idCuenta}")
     public ResponseEntity<Void> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
         try {
             adminService.anularCuentaUsuario(idCuenta);
@@ -110,8 +110,8 @@ public class AdminController {
      * URL: GET /api/admin/ajuste?fechaActivacion={X}
      */
     @PutMapping("/ajuste")
-    public ResponseEntity<String> ajustarTarifas(@RequestBody TarifaDTO tarifaDTO,@RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
-        adminService.ajustarTarifas(tarifaDTO,fechaActivacion);
+    public ResponseEntity<String> ajustarTarifas(@RequestBody TarifaDTO tarifaDTO) {
+        adminService.ajustarTarifas(tarifaDTO, LocalDate.now());
         return ResponseEntity.ok().build();
     }
 
