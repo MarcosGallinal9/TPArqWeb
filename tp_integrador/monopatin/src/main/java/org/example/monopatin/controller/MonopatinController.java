@@ -80,11 +80,14 @@ public class MonopatinController {
         }
     }
 
-    @GetMapping("/cercanos")
-    public  List<Monopatin> getMonpatinesCercanos(@RequestParam("lat") double lat, @RequestParam("lng") double lng, @RequestParam(value = "radiokm", defaultValue = "1.0") double radiokm) {
-        return monopatinService.buscarCercanos(lat, lng, radiokm);
+    @PostMapping("/en-paradas")
+    public ResponseEntity<List<Monopatin>> getMonopatinesEnParadas(@RequestBody List<String> idParadas) {
+        List<Monopatin> monopatines = monopatinService.findMonopatinesEnParadas(idParadas);
+        if (monopatines.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(monopatines);
     }
-
 
 
 }

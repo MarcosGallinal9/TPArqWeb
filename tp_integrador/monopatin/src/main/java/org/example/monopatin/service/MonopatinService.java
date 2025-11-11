@@ -98,13 +98,14 @@ public class MonopatinService {
         monopatinRepository.save(monopatin);
     }
 
-
-    public List<Monopatin> buscarCercanos(double lat, double lng, double radiokm){
-        Point ubicacionUsuario = new Point( lng,lat);
-        Distance radio = new Distance(radiokm, Metrics.KILOMETERS);
-
-        return monopatinRepository.findByEstadoAndLatitudNear("DISPONIBLE", ubicacionUsuario, radio);
+    /**
+     * Busca monopatines disponibles en una lista de IDs de paradas.
+     */
+    public List<Monopatin> findMonopatinesEnParadas(List<String> idParadas) {
+        // Un monopatín solo es 'cercano' si está 'disponible'
+        return monopatinRepository.findByEstadoAndIdParadaUbicacionIn("disponible", idParadas);
     }
+
     public boolean deleteById(String id){
         if (monopatinRepository.existsById(id)) {
             monopatinRepository.deleteById(id);

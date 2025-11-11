@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface monopatinFeignClient {
 
-    @GetMapping("/cercanos")
-    List<monopatinDto> getMonopatinesCercanos(@RequestParam("lat") double lat, @RequestParam("lng") double lng, @RequestParam("radiokm") double radiok);
+    @PostMapping("/en-paradas")
+    List<monopatinDto> getMonopatinesEnParadas(List<String> idParadas);
 
 
 }
