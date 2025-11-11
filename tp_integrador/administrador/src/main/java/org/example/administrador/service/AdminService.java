@@ -161,8 +161,12 @@ public class AdminService {
         return facturacionFeingClient.getTotalFacturado(anio, mesInicio, mesFin).getBody();
     }
 
+    /**
+     * Punto E
+     */
+
     public ReporteUsoDTO getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
-        // 1️⃣ Obtener todos los usuarios con ese rol
+        // Obtener todos los usuarios con ese rol
         List<UsuarioUsoDTO> usuarios = usuarioFeingClient.getUsuarios();
 
         List<String> userIds = usuarios.stream()
@@ -170,7 +174,7 @@ public class AdminService {
                 .map(UsuarioUsoDTO::getId)
                 .toList();
 
-        // 2️⃣ Llamar al MS de viajes para obtener el uso de esos usuarios
+        // Llamar al MS de viajes para obtener el uso de esos usuarios
         return viajeFeingClient.getReporteUso(userIds, inicio, fin);
     }
 

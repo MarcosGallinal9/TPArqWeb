@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturacion")
+@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturas")
 public interface FacturacionFeingClient {
     @GetMapping("/total-facturado")
     ResponseEntity<Double> getTotalFacturado(

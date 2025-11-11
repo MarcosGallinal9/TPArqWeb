@@ -2,9 +2,9 @@ package org.example.service;
 
 import org.example.entity.Facturacion;
 import org.example.repository.FacturacionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
+import java.time.ZoneId;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
@@ -48,10 +48,15 @@ public class FacturacionService {
     public double  obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
         LocalDate fechaInicio = LocalDate.of(anio, mesInicio, 1);
         LocalDate fechaFin = LocalDate.of(anio, mesFin, YearMonth.of(anio, mesFin).lengthOfMonth());
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Date inicio = Date.from(fechaInicio.atStartOfDay(defaultZoneId).toInstant());
+        Date fin = Date.from(fechaFin.atStartOfDay(defaultZoneId).toInstant());
 
-        Date inicio = java.sql.Date.valueOf(fechaInicio);
-        Date fin = java.sql.Date.valueOf(fechaFin);
+        List<Facturacion> facturas = facturacionRepository.findByFechaBetween(inicio, fin);
+        double total = facturas.stream()
+                .mapToDouble(Facturacion::getTotal)
+                .sum();
 
-        return facturacionRepository.findByFechaBetween(inicio, fin);
+        return total;
     }
 }
