@@ -42,6 +42,15 @@ public class ParadaController {
         return ResponseEntity.ok(paradaNew);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteParada(@PathVariable("id") String id) {
+        boolean eliminado = paradaService.deleteById(id);
+        if (eliminado) {
+            return ResponseEntity.noContent().build(); // 204 No Content para eliminación exitosa
+        }
+        return ResponseEntity.notFound().build(); // 404 Not Found si no existe
+    }
+
     /**
      * Endpoint para registrar un monopatín en parada.
      * @param idParada ID de la parada.
@@ -66,5 +75,6 @@ public class ParadaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
 }

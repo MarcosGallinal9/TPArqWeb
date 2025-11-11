@@ -28,8 +28,12 @@ public class ParadaService {
     public Parada save(Parada parada){
         return paradaRepository.save(parada);
     }
-    public void delete(Parada parada){
-        paradaRepository.delete(parada);
+    public boolean deleteById(String id){
+        if(paradaRepository.existsById(id)){
+            paradaRepository.deleteById(id);
+            return true;
+        }
+        return false; 
     }
 
     public Parada findById(String id){
@@ -69,5 +73,6 @@ public class ParadaService {
             throw new RuntimeException("Error al ubicar el Monopatín en el MS Monopatín: " + e.getMessage());
         }
     }
+
 
 }
