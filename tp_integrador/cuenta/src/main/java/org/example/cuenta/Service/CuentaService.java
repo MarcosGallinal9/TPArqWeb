@@ -28,17 +28,21 @@ public class CuentaService {
         nuevaCuenta = cuentaRepository.save(cuenta);
         return nuevaCuenta;
     }
-    public void delete(Cuenta cuenta){
-        cuentaRepository.delete(cuenta);
-    }
+
 
     public Cuenta getByUserId(String id){
         return cuentaRepository.findById(id).orElse(null);
     }
 
-    public Cuenta update(Cuenta cuenta){
+    public Cuenta update(String id ,Cuenta cuenta){
+        if (cuentaRepository.findById(id).isEmpty()) {
+            return null;
+        }
+        cuenta.setNroCuenta(id);
         return cuentaRepository.save(cuenta);
     }
+
+
 
     public Cuenta findById(String id){
         return cuentaRepository.findById(id).orElse(null);
@@ -65,5 +69,15 @@ public class CuentaService {
      */
     public List<Cuenta> getCuentasByUserId(String userId){
         return cuentaRepository.findByUsuariosContaining(userId);
+    }
+
+    public Cuenta anularCuenta(String id) {
+        Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        if (cuenta == null) {
+            return null;
+        }
+        // Cambia el estado a false (anulada)
+        cuenta.setEstado(false);
+        return cuentaRepository.save(cuenta);
     }
 }

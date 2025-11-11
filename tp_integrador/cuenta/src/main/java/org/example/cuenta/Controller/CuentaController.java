@@ -18,7 +18,7 @@ public class CuentaController {
         this.cuentaService = cuentaService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Cuenta>> getCuentas() {
         List<Cuenta> cuentas = cuentaService.getAll();
         if (cuentas.isEmpty()) {
@@ -50,9 +50,27 @@ public class CuentaController {
         return ResponseEntity.ok(nuevaCuenta);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Cuenta> update(@PathVariable("id") String id, @RequestBody Cuenta cuenta) {
+        Cuenta cuentaUpdate = cuentaService.update(id, cuenta);
+        if (cuentaUpdate == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cuentaUpdate);
+    }
+
     @PostMapping("/cargarSaldo/{id}")
     public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id, @RequestParam("saldo") double saldo) {
         Cuenta cuentaActualizada= cuentaService.cargarSaldo(id, saldo);
+        if (cuentaActualizada == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cuentaActualizada);
+    }
+
+    @PostMapping("/anular/{id}")
+    public ResponseEntity<Cuenta> anular(@PathVariable("id") String id) {
+        Cuenta cuentaActualizada = cuentaService.anularCuenta(id);
         if (cuentaActualizada == null) {
             return ResponseEntity.notFound().build();
         }
