@@ -103,7 +103,7 @@ public class MonopatinService {
         Point ubicacionUsuario = new Point( lng,lat);
         Distance radio = new Distance(radiokm, Metrics.KILOMETERS);
 
-        return monopatinRepository.findByEstadoAndLatitudNear("DISPONIBLE", ubicacionUsuario, radio);
+        return monopatinRepository.findByEstadoAndUbicacionNear("DISPONIBLE", ubicacionUsuario, radio);
     }
     public boolean deleteById(String id){
         if (monopatinRepository.existsById(id)) {
