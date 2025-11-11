@@ -23,6 +23,11 @@ public interface ViajeRepository extends MongoRepository<Viaje,String> {
      * @param year Año a filtrar.
      */
     @Aggregation(pipeline = {
+            // FILTRAR POR AÑO (Usando el campo 'inicio')
+            "{ $match: { " +
+                    // Compara el año extraído del campo 'inicio' con el parámetro 'year'
+                    "$expr: { $eq: [ { $year: '$inicio' }, ?0 ] } " +
+                    "} }",
 
             //Agrupa por el ID del monopatín (idMonopatin)
             "{ $group: { " +

@@ -132,7 +132,7 @@ public class AdminService {
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Error al anular la cuenta " + idCuenta + " en el MS Cuenta. Código de estado: " + response.getStatusCodeValue());
         }
-       
+
 
     }
 
@@ -150,9 +150,10 @@ public class AdminService {
 
         // Filtra la lista localmente para obtener solo aquellos con más de X viajes
         return todosLosMonopatines.stream()
-                .filter(m -> m.getCantidadViajes() > minViajes)
+                .filter(m -> m.getCantidadViajes() >= minViajes)
                 .toList();
     }
+
     /**
      * PUNTO D
      */
