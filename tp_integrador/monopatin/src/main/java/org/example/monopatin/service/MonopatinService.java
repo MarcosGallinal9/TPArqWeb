@@ -105,4 +105,21 @@ public class MonopatinService {
 
         return monopatinRepository.findByEstadoAndLatitudNear("DISPONIBLE", ubicacionUsuario, radio);
     }
+    public boolean deleteById(String id){
+        if (monopatinRepository.existsById(id)) {
+            monopatinRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public Monopatin updateEstado(String id, String nuevoEstado) {
+        Monopatin monopatin = monopatinRepository.findById(id).orElse(null);
+        if (monopatin == null) {
+            return null;
+        }
+        monopatin.setEstado(nuevoEstado);
+        return monopatinRepository.save(monopatin);
+    }
+
 }

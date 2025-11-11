@@ -17,7 +17,7 @@ public class MonopatinController {
         this.monopatinService = monopatinService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Monopatin>> getAllMonopatines() {
         List<Monopatin> monopatines = monopatinService.getAll();
         if (monopatines.isEmpty()) {
@@ -50,6 +50,24 @@ public class MonopatinController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(monopatinUpdate);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMonopatin(@PathVariable("id") String id) {
+        boolean eliminado = monopatinService.deleteById(id);
+        if (eliminado) {
+            return ResponseEntity.noContent().build(); // 204 No Content para eliminación exitosa
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/estado/{estado}")
+    public ResponseEntity<Monopatin> updateEstadoMonopatin(@PathVariable("id") String id, @PathVariable("estado") String estado) {
+        Monopatin monopatinActualizado = monopatinService.updateEstado(id, estado);
+        if (monopatinActualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(monopatinActualizado);
     }
 
     @PutMapping("/{id}/evaluar-mantenimiento")

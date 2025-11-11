@@ -15,7 +15,9 @@ public class ParadaService {
    ParadaRepository paradaRepository;
 
    MonopatinFeignClient monopatinFeignClient;
-    public ParadaService(ParadaRepository paradaRepository) {
+
+    public ParadaService(MonopatinFeignClient monopatinFeignClient, ParadaRepository paradaRepository) {
+        this.monopatinFeignClient = monopatinFeignClient;
         this.paradaRepository = paradaRepository;
     }
 
@@ -62,7 +64,7 @@ public class ParadaService {
 
         try {
             // Llamar al microservicio Monopatín
-            return monopatinFeignClient.updateMonopatin(updateDTO);
+            return monopatinFeignClient.updateMonopatin(idMonopatin,updateDTO);
         } catch (Exception e) {
             throw new RuntimeException("Error al ubicar el Monopatín en el MS Monopatín: " + e.getMessage());
         }

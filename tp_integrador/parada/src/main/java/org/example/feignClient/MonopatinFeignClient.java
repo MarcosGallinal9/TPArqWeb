@@ -2,6 +2,7 @@ package org.example.feignClient;
 
 import org.example.dto.MonopatinDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,6 +15,6 @@ public interface MonopatinFeignClient {
      * @param MonopatinDTO con id y la nueva ubicacon y estado
      * @return MonopatinDTO actualizado
      */
-    @PutMapping("")
-    MonopatinDTO updateMonopatin (@RequestBody MonopatinDTO monopatin);
+    @PutMapping("/{id}")
+    MonopatinDTO updateMonopatin (@PathVariable("id") String id, @RequestBody MonopatinDTO monopatinDTO);
 }
