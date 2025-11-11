@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -15,7 +16,10 @@ public interface MonopatinFeingClient {
 
     @GetMapping("/")
     ResponseEntity<List<MonopatinDTO>> getAllMonopatines();
+
     @PutMapping("/{id}/evaluar-mantenimiento")
     ResponseEntity<String> evaluarMantenimiento(@PathVariable("id") String id);
+
+
 
 }

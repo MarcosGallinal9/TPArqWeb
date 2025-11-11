@@ -38,11 +38,18 @@ public class ViajeController {
         return ResponseEntity.ok(viaje);
     }
 
-//    @PostMapping("")
-//    public ResponseEntity<Viaje> save(@RequestBody Viaje viaje) {
-//        Viaje viajeNew = viajeService.save(viaje);
-//        return ResponseEntity.ok(viajeNew);
-//    }
+    /**
+     * Endpoint consultado por Administrador/Monopatín para obtener viajes de un Monopatín.
+     * URL: GET http://localhost:8084/viajes/byMonopatin/{monopatinId}
+     */
+    @GetMapping("/byMonopatin/{monopatinId}")
+    public ResponseEntity<List<Viaje>> getViajesByMonopatinId(@PathVariable("monopatinId") String monopatinId) {
+        List<Viaje> viajes = viajeService.byMonopatinId(monopatinId);
+        if (viajes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(viajes);
+    }
 
     @GetMapping("/byUser/{userId}")
     public ResponseEntity<List<Viaje>> getViajesByUserId(@PathVariable("userId") String userId) {

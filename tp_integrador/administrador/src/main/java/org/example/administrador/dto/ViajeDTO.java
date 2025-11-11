@@ -15,9 +15,9 @@ public class ViajeDTO {
         private float kmRecorridos;
         private String idParadaInicio;
         private String idParadaFin;
-        private Long idTarifa;
+        private String idTarifa;
         private String idMonopatin;
-        private Long idUsuario;
-        private Long idCuenta;
+        private String idUsuario;
+        private String idCuenta;
 }
 

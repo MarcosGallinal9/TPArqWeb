@@ -52,67 +52,71 @@ public class AdminService {
      */
     public List<ReporteMonopatinXKm> generarReporteUso(boolean pausas) {
 
-        ResponseEntity<List<MonopatinDTO>> response = monopatinFeingClient.getAllMonopatines();
+        // Manejo de Feign y obtención de monopatines (Se mantiene)
+        ResponseEntity<List<MonopatinDTO>> response;
         try {
-            // La llamada que puede fallar
             response = monopatinFeingClient.getAllMonopatines();
         } catch (FeignException e) {
-            // Loguear la excepción de Feign (muestra el error de conexión, 404, 500 del otro lado, etc.)
             System.err.println("Feign Error al obtener monopatines: " + e.status() + " | Mensaje: " + e.getMessage());
-            // Lanza una excepción personalizada o un RuntimeException descriptivo
-            throw new RuntimeException("Error de comunicación con MS-Monopatín (Código: " + e.status() + "). Detalles: " + e.getMessage(), e);
+            throw new RuntimeException("Error de comunicación con MS-Monopatín (Código: " + e.status() + ").", e);
         } catch (Exception e) {
-            // Captura fallas de conexión (ej. MS no corriendo)
             System.err.println("Error de conexión al obtener monopatines: " + e.getMessage());
             throw new RuntimeException("Fallo al conectar con MS-Monopatín.", e);
         }
 
         List<MonopatinDTO> monopatines = response.getBody();
         if (monopatines == null || !response.getStatusCode().is2xxSuccessful()) {
-            return new ArrayList<>(); // Devuelve lista vacía
+            return new ArrayList<>();
         }
+
         List<ReporteMonopatinXKm> reportes = new ArrayList<>();
 
         for (MonopatinDTO monopatin : monopatines) {
 
-            // Obtener métricas NETAS desde la entidad Monopatín
+
+            // 1. Obtener métricas NETAS desde la entidad Monopatín
             Long tiempoUsoNetoSegundos = monopatin.getTiempoUso();
-            float kmRecorridosFloat = monopatin.getKmRecorridos();
-            Long kmRecorridos = (long) kmRecorridosFloat;
+            Long kmRecorridos = (long) monopatin.getKmRecorridos();
 
-            //Obtener el listado de VIAJES del Monopatín (MS Viaje)
-            List<ViajeDTO> viajesDelMonopatin = viajeFeingClient.getViajesByMonopatinId(monopatin.getId());
-
+            // 2. Calcular tiempo total de pausa (Necesario para el reporte 'con pausas')
             long tiempoTotalPausaSegundos = 0;
+            if (pausas) {
 
-            //Iterar sobre los viajes para sumar el tiempo de pausa
-            for (ViajeDTO viaje : viajesDelMonopatin) {
-                // Solo consulta pausas para viajes finalizados
-                if (viaje.getFin() != null) {
-                    try {
-                        // Obtener la suma de pausas de ESTE viaje
-                        Long pausaSegundosViaje = viajeFeingClient.getTiempoTotalPausaSegundos(viaje.getId());
-                        tiempoTotalPausaSegundos += pausaSegundosViaje;
-                    } catch (Exception e) {
-                        System.err.println("Error al obtener pausa del viaje " + viaje.getId() + ": " + e.getMessage());
+                List<ViajeDTO> viajesDelMonopatin = viajeFeingClient.getViajesByMonopatinId(monopatin.getId());
+                if (viajesDelMonopatin != null) {
+                    for (ViajeDTO viaje : viajesDelMonopatin) {
+                        if (viaje.getFin() != null) {
+                            try {
+                                Long pausaSegundosViaje = viajeFeingClient.getTiempoTotalPausaSegundos(viaje.getId());
+                                if (pausaSegundosViaje != null) {
+                                    tiempoTotalPausaSegundos += pausaSegundosViaje;
+                                }
+                            } catch (Exception e) {
+                                System.err.println("Advertencia: No se pudo obtener pausa del viaje " + viaje.getId() + ". Continuando...");
+                            }
+                        }
                     }
                 }
             }
 
-            // Calcular el tiempo TOTAL (incluyendo pausas)
-            Long tiempoDeUsoTotalSegundos = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
-            if(pausas){
-                ReporteMonopatinConPausas entrada = new ReporteMonopatinConPausas(
-                monopatin.getId(),
-                kmRecorridos,
-                tiempoDeUsoTotalSegundos);
-                reportes.add(entrada);
-            }else{
-                ReporteMonopatinSinPausas entrada = new ReporteMonopatinSinPausas(
-                        monopatin.getId(), kmRecorridos, tiempoUsoNetoSegundos);
-                reportes.add(entrada);
+
+            // 3. Determinar el valor FINAL a reportar (Neto o Total)
+            Long tiempoReporte;
+            if (pausas) {
+                // Si 'pausas' es true, reportamos Tiempo NETO + Tiempo PAUSAS
+                tiempoReporte = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
+            } else {
+                // Si 'pausas' es false, reportamos solo Tiempo NETO
+                tiempoReporte = tiempoUsoNetoSegundos;
             }
 
+            // 4. Crear el DTO de reporte utilizando el ReporteMonopatinXKm base
+            ReporteMonopatinXKm entrada = new ReporteMonopatinXKm(
+                    monopatin.getId(),
+                    kmRecorridos,
+                    tiempoReporte // Este valor es el que cambia según 'pausas'
+            );
+            reportes.add(entrada);
 
         }
 

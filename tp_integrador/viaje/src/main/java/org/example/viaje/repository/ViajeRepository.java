@@ -17,6 +17,8 @@ import java.util.List;
 public interface ViajeRepository extends MongoRepository<Viaje,String> {
     List<Viaje> findByIdUsuario(String idUsuario);
 
+    // Buscar todos los viajes de un monopatin
+    List<Viaje> findByIdMonopatin(String idMonopatin);
     /**
      * Realiza una agregación para contar los viajes finalizados por monopatín en un año específico.
      *

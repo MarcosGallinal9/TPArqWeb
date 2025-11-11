@@ -122,6 +122,9 @@ public class ViajeService {
 
         return viajeFinalizado;
     }
+    public List<Viaje> byMonopatinId(String idMonopatin){
+        return viajeRepository.findByIdMonopatin(idMonopatin);
+    }
 
     /**
      * Calcula el costo final del viaje y notifica al MS Facturación.
