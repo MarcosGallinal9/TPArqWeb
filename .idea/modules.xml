@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/TPArqWeb.iml" filepath="$PROJECT_DIR$/.idea/TPArqWeb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/integrador_2/integrador_2.iml" filepath="$PROJECT_DIR$/integrador_2/integrador_2.iml" />
     </modules>
   </component>
 </project>
