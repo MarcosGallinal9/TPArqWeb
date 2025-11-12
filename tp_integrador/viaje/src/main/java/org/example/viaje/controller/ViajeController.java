@@ -2,6 +2,7 @@ package org.example.viaje.controller;
 
 import org.example.viaje.dto.ReporteMonopatinContadorViajes;
 import org.example.viaje.dto.ReporteUsoDTO;
+import org.example.viaje.dto.UsuarioUsoDTO;
 import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 @RestController
 @RequestMapping("/viajes")
@@ -115,5 +117,24 @@ public class ViajeController {
                                        @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio,
                                        @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
         return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
+    }
+
+    /**
+     * Endpoint para el Punto E
+     * URL: GET /viajes/reportes/usuarios-uso?inicio={X}&fin={X}&tipoUsuario={X}
+     */
+    @GetMapping("/reportes/usuarios-uso")
+    public ResponseEntity<List<UsuarioUsoDTO>> obtenerUsuariosMasActivos(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
+            @RequestParam("userIds") List<String> userIds) { // <-- El tercer parámetro es String
+
+        // ✅ La llamada debe pasar la variable como String:
+        List<UsuarioUsoDTO> reporte = viajeService.obtenerUsuariosMasActivos(inicio, fin, userIds);
+
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reporte);
     }
 }

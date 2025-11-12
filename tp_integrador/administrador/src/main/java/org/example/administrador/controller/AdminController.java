@@ -90,15 +90,17 @@ public class AdminController {
      * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
      * URL: GET /api/admin/usuarios-que-mas-usan?rol={X}&inicio={X}&fin={X}
      */
+    // En org.example.administrador.controller.AdminController
+
     @GetMapping("/usuarios-que-mas-usan")
-    public ResponseEntity<ReporteUsoDTO> getUsuariosQueMasUsanMonopatines(
-            @RequestParam String rol,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
+    public ResponseEntity<List<UsuarioUsoDTO>> getUsuariosQueMasUsanMonopatines(
+                                                                                 @RequestParam String rol,
+                                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+                                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 
-        ReporteUsoDTO reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin);
+        List<UsuarioUsoDTO> reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin); // <-- CAMBIO DE TIPO DE RETORNO
 
-        if (reporte == null) {
+        if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 

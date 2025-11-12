@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -167,20 +168,33 @@ public class AdminService {
     }
 
     /**
-     * Punto E
+     * Punto E: Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
+     * @param rol Rol a filtrar.
+     * @param inicio Fecha de inicio del periodo.
+     * @param fin Fecha de fin del periodo.
+     * @return Lista de UsuarioUsoDTO (ID, Nombre, Rol, KmRecorridos).
      */
+    public List<UsuarioUsoDTO> getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
 
-    public ReporteUsoDTO getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
-        // Obtener todos los usuarios con ese rol
-        List<UsuarioUsoDTO> usuarios = usuarioFeingClient.getUsuarios();
+        // 1. Obtener todos los usuarios y FILTRAR POR ROL (MS Usuario)
+        List<UsuarioUsoDTO> todosLosUsuarios = usuarioFeingClient.getUsuarios();
 
-        List<String> userIds = usuarios.stream()
-                .filter(u -> u.getRol().equalsIgnoreCase(rol))
+        List<String> userIdsFiltrados = todosLosUsuarios.stream()
+                .filter(u -> u.getRol() != null && u.getRol().equalsIgnoreCase(rol))
                 .map(UsuarioUsoDTO::getId)
                 .toList();
 
-        // Llamar al MS de viajes para obtener el uso de esos usuarios
-        return viajeFeingClient.getReporteUso(userIds, inicio, fin);
+        if (userIdsFiltrados.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 2. Convertir LocalDate a Date (para MS Viaje)
+        Date fechaInicio = java.sql.Date.valueOf(inicio);
+        Date fechaFin = java.sql.Date.valueOf(fin);
+
+        // 3. Llamar al MS Viaje con los IDs FILTRADOS
+        // (Asegúrate de actualizar el ViajeFeingClient con la nueva firma)
+        return viajeFeingClient.obtenerUsuariosMasActivos(fechaInicio, fechaFin, userIdsFiltrados);
     }
 
     /**

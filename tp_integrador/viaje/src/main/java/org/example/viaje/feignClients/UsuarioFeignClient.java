@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "microservicio-usuario", url = "http://localhost:8081/usuarios")
 public interface UsuarioFeignClient {
 
-    @GetMapping("/usuarios/{id}")
+    @GetMapping("/{id}")
     UsuarioUsoDTO getUsuarioById(@PathVariable("id") String id);
 
 }

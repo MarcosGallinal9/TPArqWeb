@@ -1,4 +1,5 @@
 package org.example.viaje.service;
+import feign.FeignException;
 import org.example.viaje.dto.*;
 import org.example.viaje.entity.Pausa;
 import org.example.viaje.entity.Viaje;
@@ -191,25 +192,47 @@ public class ViajeService {
         return viajeRepository.contadorViajesXAnio(year);
     }
 
-    public List<UsuarioUsoDTO> obtenerUsuariosMasActivos(Date inicio, Date fin, String tipoUsuario) {
+    public List<UsuarioUsoDTO> obtenerUsuariosMasActivos(Date inicio, Date fin, List<String> userIds) {
+
+        // 1. Obtener los viajes filtrados por FECHA.
         List<Viaje> viajes = viajeRepository.findByFechaBetween(inicio, fin);
-        // Sumar los km recorridos por usuario
-        Map<String, Double> kmPorUsuario = viajes.stream()
+
+        // 2. FILTRAR por los IDs de usuario proporcionados (los que cumplen con el rol)
+        List<Viaje> viajesFiltradosPorUsuario = viajes.stream()
+                .filter(viaje -> userIds.contains(viaje.getIdUsuario()))
+                .toList();
+
+        // 3. Sumar los km recorridos por usuario
+        Map<String, Double> kmPorUsuario = viajesFiltradosPorUsuario.stream()
                 .collect(Collectors.groupingBy(
                         Viaje::getIdUsuario,
                         Collectors.summingDouble(Viaje::getKmRecorridos)
                 ));
 
-        // Convertir a DTO y agregar info del usuario (desde el microservicio de usuarios)
+        // 4. Obtener los detalles del usuario y construir el DTO final
         List<UsuarioUsoDTO> lista = kmPorUsuario.entrySet().stream()
                 .map(entry -> {
-                    UsuarioUsoDTO usuario = usuarioFeignClient.getUsuarioById(entry.getKey());
-                    if (usuario != null && usuario.getRol().equalsIgnoreCase(tipoUsuario)) {
+                    UsuarioUsoDTO usuario = null;
+                    try {
+                        // Llama al microservicio Usuario
+                        usuario = usuarioFeignClient.getUsuarioById(entry.getKey());
+                    } catch (FeignException e) {
+                        // Capturamos el error (ej: 404 Not Found si el usuario fue borrado)
+                        System.err.println("Advertencia: Usuario " + entry.getKey() + " no encontrado en MS Usuario. Skipping.");
+                        return null; // Saltamos este usuario.
+                    } catch (Exception e) {
+                        // Capturar otros errores de conexión o genéricos
+                        System.err.println("Error de conexión con MS Usuario para ID " + entry.getKey() + ": " + e.getMessage());
+                        return null;
+                    }
+
+                    if (usuario != null) {
+                        // Ya no necesitas el filtro de rol aquí, ¡el MS Admin lo hizo!
                         return new UsuarioUsoDTO(
                                 usuario.getId(),
                                 usuario.getNombre(),
                                 usuario.getRol(),
-                                entry.getValue()
+                                entry.getValue() // Kilómetros
                         );
                     }
                     return null;

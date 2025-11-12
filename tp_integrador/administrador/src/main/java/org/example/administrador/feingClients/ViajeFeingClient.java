@@ -1,12 +1,14 @@
 package org.example.administrador.feingClients;
 import org.example.administrador.dto.ReporteUsoDTO;
 import org.example.administrador.dto.ReporteMonopatinContadorViajes;
+import org.example.administrador.dto.UsuarioUsoDTO;
 import org.example.administrador.dto.ViajeDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @FeignClient(name = "microservicio-viaje", url = "http://localhost:8084/viajes")
@@ -33,5 +35,12 @@ public interface ViajeFeingClient {
             @RequestParam("userIds") List<String> userIds, // <-- userIds ahora es un @RequestParam
             @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
+    );
+
+    @GetMapping("/reportes/usuarios-uso")
+    List<UsuarioUsoDTO> obtenerUsuariosMasActivos(
+            @RequestParam("inicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
+            @RequestParam("fin") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
+            @RequestParam("userIds") List<String> userIds
     );
 }
