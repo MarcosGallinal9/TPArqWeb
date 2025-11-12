@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name = "microservicio-viaje", url = "http://localhost:8084/viajes")
 public interface viajeFeignClient {
 
-    @GetMapping("/reporte")
+    @GetMapping("/reporte-uso")
     reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin);
 }

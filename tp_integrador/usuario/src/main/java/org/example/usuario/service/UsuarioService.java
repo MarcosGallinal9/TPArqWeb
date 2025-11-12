@@ -1,5 +1,6 @@
 package org.example.usuario.service;
 
+import feign.FeignException;
 import org.example.usuario.dto.ParadaDTO;
 import org.example.usuario.dto.cuentaDto;
 import org.example.usuario.dto.reporteUsoDto;
@@ -89,12 +90,11 @@ public class UsuarioService {
             todasLasParadas = paradaFeignClient.getAllParadas();
         } catch (Exception e) {
             System.err.println("Error al obtener paradas: " + e.getMessage());
-            return new ArrayList<>();
+            return new ArrayList<>(); // Si falla obtener paradas, devolver lista vacía.
         }
 
         List<String> paradasCercanasIds = new ArrayList<>();
 
-        // Filtrar las paradas cercanas usando Haversine
         for (ParadaDTO parada : todasLasParadas) {
             double distancia = calcularDistanciaHaversine(
                     lat, lng,
@@ -112,7 +112,15 @@ public class UsuarioService {
         }
 
         // Consultar al microservicio Monopatín por los monopatines en esas paradas
-        return monopatinFeignClient.getMonopatinesEnParadas(paradasCercanasIds);
+        try {
+            return monopatinFeignClient.getMonopatinesEnParadas(paradasCercanasIds);
+        } catch (FeignException e) {
+            System.err.println("Error de comunicación con MS Monopatín: " + e.getMessage());
+            return new ArrayList<>();
+        } catch (Exception e) {
+            System.err.println("Error inesperado al buscar monopatines: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public reporteUsoDto getReporteUso(String userId, LocalDate fechaInicio, LocalDate fechaFin, boolean otrosUsuarios) {

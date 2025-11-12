@@ -57,14 +57,15 @@ public class usuarioController {
         //g. Como usuario quiero buscar un listado de los monopatines cercanos a mi zona, para poder
         //encontrar un monopatín cerca de mi ubicación
 
-        @GetMapping("/cercanos")
-        public ResponseEntity<List<monopatinDto>> getMonopatinesCercanos(@RequestParam("lat") double lat, @RequestParam("lng") double lng, @RequestParam("radiokm") double radiokm){
-            List<monopatinDto> monopatines = usuarioService.buscarMonopatinesCercanos(lat, lng, radiokm);
-            if (monopatines.isEmpty()) {
-                return  ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(monopatines);
+    @GetMapping("/cercanos")
+    public ResponseEntity<List<monopatinDto>> getMonopatinesCercanos(@RequestParam("lat") double lat, @RequestParam("lng") double lng, @RequestParam("radiokm") double radiokm){
+        List<monopatinDto> monopatines = usuarioService.buscarMonopatinesCercanos(lat, lng, radiokm);
+
+        if (monopatines == null || monopatines.isEmpty()) {
+            return  ResponseEntity.noContent().build();
         }
+        return ResponseEntity.ok(monopatines);
+    }
 
         @GetMapping("/{userId}/reporteUso")
         public ResponseEntity<reporteUsoDto> getReporteUso(@PathVariable("userId") String userId, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin, @RequestParam("otrosUsuarios") boolean otrosUsuarios){
