@@ -3,6 +3,7 @@ import org.example.administrador.dto.*;
 import org.example.administrador.feingClients.FacturacionFeingClient;
 import org.example.administrador.service.AdminService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +42,10 @@ public class AdminController {
      */
 
     @PostMapping("/cuentas/anular/{idCuenta}")
-    public ResponseEntity<Void> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
+    public ResponseEntity<String> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
         try {
             adminService.anularCuentaUsuario(idCuenta);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Cuenta anulada con éxito.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).build();
         }
