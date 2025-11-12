@@ -51,4 +51,21 @@ public class TarifaController {
       return ResponseEntity.ok(tarifa);
     }
 
+    @GetMapping("/vigente")
+    public ResponseEntity<Tarifa> getTarifaVigente(@RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaConsulta) {
+        Tarifa tarifaVigente = tarifaService.findVigenteByDate(fechaConsulta);
+
+        if (tarifaVigente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tarifaVigente);
+    }
+
+    @PostMapping("/ajuste")
+    public ResponseEntity<Tarifa> registrarAjusteTarifas(   @RequestBody Tarifa tarifa,
+                                                            @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
+        Tarifa nuevaTarifa = tarifaService.registrarNuevaTarifa(tarifa, fechaActivacion);
+        return ResponseEntity.status(201).body(nuevaTarifa);
+    }
+
 }

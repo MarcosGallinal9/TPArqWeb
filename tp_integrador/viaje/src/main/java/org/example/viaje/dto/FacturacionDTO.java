@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class FacturacionDTO {
     private Date fecha;
-    private String viajeId; // Cambiar id a String en Facturacion
+    private String viajeId;
     private String usuarioId;
     private double total;
 }

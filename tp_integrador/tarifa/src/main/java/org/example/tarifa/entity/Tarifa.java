@@ -1,22 +1,25 @@
 package org.example.tarifa.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDate;
 
 @Document(collection= "tarifas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Tarifa {
     @Id
     private String id;
     private int valorComun;
     private int valorPremium;
     private int valorExtraPausa;
+    private LocalDate fechaActivacion;
 }
 
 //En una cuenta premium, el usuario paga un valor

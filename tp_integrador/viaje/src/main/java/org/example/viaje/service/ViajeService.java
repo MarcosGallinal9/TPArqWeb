@@ -8,6 +8,7 @@ import org.example.viaje.repository.ViajeRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -45,20 +46,16 @@ public class ViajeService {
 
     public Viaje save(Viaje viaje) {
 
-        //Obtener la información actual del monopatín
         MonopatinDTO monopatinActual = monopatinFeignClient.getMonopatin(viaje.getIdMonopatin());
-        //Crear el DTO con el nuevo estado
         MonopatinDTO monopatinUpdate = new MonopatinDTO();
         monopatinUpdate.setId(viaje.getIdMonopatin());
         monopatinUpdate.setEstado("en_uso");
-        //Llamar al microservicio Monopatín para actualizar su estado
+
         MonopatinDTO monopatinConfirmado = monopatinFeignClient.updateMonopatin(monopatinUpdate.getId(), monopatinUpdate);
 
         if (monopatinConfirmado != null && "en_uso".equals(monopatinConfirmado.getEstado())) {
-            //Si la actualización fue exitosa, guardar el viaje.
             return viajeRepository.save(viaje);
         } else {
-            // Manejar la excepción (ej: Monopatín ya en uso o error de servicio)
             throw new RuntimeException("No se pudo iniciar el viaje: Monopatín no disponible.");
         }
     }
@@ -69,7 +66,6 @@ public class ViajeService {
      */
     public Viaje iniciarViaje(Viaje viaje) {
 
-        //Validar Monopatín y Parada de inicio
         MonopatinDTO monopatin = monopatinFeignClient.getMonopatin(viaje.getIdMonopatin());
         ParadaDTO paradaInicio = paradaFeignClient.getParada(viaje.getIdParadaInicio());
 
@@ -144,8 +140,13 @@ public class ViajeService {
                 .anyMatch(p -> p.getFin() != null &&
                         TimeUnit.MILLISECONDS.toMinutes(p.getFin().getTime() - p.getInicio().getTime()) > 15);
 
-        //Obtener tarifa y validar la cuenta
-        TarifaDTO tarifa = tarifaFeignClient.getTarifaById(viajeFinalizado.getIdTarifa());
+        LocalDate fechaInicioViaje = viajeFinalizado.getInicio()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+
+        TarifaDTO tarifa = tarifaFeignClient.getTarifaVigente(fechaInicioViaje);
         CuentaDTO cuenta = cuentaFeignClient.getCuenta(viajeFinalizado.getIdCuenta());
 
         if (tarifa == null) {
@@ -155,20 +156,19 @@ public class ViajeService {
             throw new RuntimeException("No se puede facturar: Cuenta inválida o anulada.");
         }
 
-          // Tarifa base (común o premium)
+
         double costoPorMinutoBase = "PREMIUM".equalsIgnoreCase(cuenta.getTipoCuenta()) ?
                 tarifa.getValorPremium() : tarifa.getValorComun();
 
-        // Declarar e inicializar aquí para que compile
-        double costoTotal = costoPorMinutoBase * tiempoTotalMinutos; // Costo base (tiempo total usado)
+
+        double costoTotal = costoPorMinutoBase * tiempoTotalMinutos;
         String detalle = "BÁSICA";
         if ("PREMIUM".equalsIgnoreCase(cuenta.getTipoCuenta())) {
-            detalle = "PREMIUM"; //Si la cuenta es premium agregar en factura la logica
+            detalle = "PREMIUM";
         }
 
-        // Aplica cargo por pausa extendida
+
         if (aplicaRecargoExtraPausa) {
-            // Se aplica la tarifa extra por el tiempo total de servicio
             double costoRecargoExtra = tarifa.getValorExtrapausa() * tiempoTotalMinutos;
             costoTotal += costoRecargoExtra;
 
@@ -194,40 +194,32 @@ public class ViajeService {
 
     public List<UsuarioUsoDTO> obtenerUsuariosMasActivos(Date inicio, Date fin, List<String> userIds) {
 
-        // 1. Obtener los viajes filtrados por FECHA.
         List<Viaje> viajes = viajeRepository.findByFechaBetween(inicio, fin);
 
-        // 2. FILTRAR por los IDs de usuario proporcionados (los que cumplen con el rol)
         List<Viaje> viajesFiltradosPorUsuario = viajes.stream()
                 .filter(viaje -> userIds.contains(viaje.getIdUsuario()))
                 .toList();
 
-        // 3. Sumar los km recorridos por usuario
         Map<String, Double> kmPorUsuario = viajesFiltradosPorUsuario.stream()
                 .collect(Collectors.groupingBy(
                         Viaje::getIdUsuario,
                         Collectors.summingDouble(Viaje::getKmRecorridos)
                 ));
 
-        // 4. Obtener los detalles del usuario y construir el DTO final
         List<UsuarioUsoDTO> lista = kmPorUsuario.entrySet().stream()
                 .map(entry -> {
                     UsuarioUsoDTO usuario = null;
                     try {
-                        // Llama al microservicio Usuario
                         usuario = usuarioFeignClient.getUsuarioById(entry.getKey());
                     } catch (FeignException e) {
-                        // Capturamos el error (ej: 404 Not Found si el usuario fue borrado)
                         System.err.println("Advertencia: Usuario " + entry.getKey() + " no encontrado en MS Usuario. Skipping.");
-                        return null; // Saltamos este usuario.
+                        return null;
                     } catch (Exception e) {
-                        // Capturar otros errores de conexión o genéricos
                         System.err.println("Error de conexión con MS Usuario para ID " + entry.getKey() + ": " + e.getMessage());
                         return null;
                     }
 
                     if (usuario != null) {
-                        // Ya no necesitas el filtro de rol aquí, ¡el MS Admin lo hizo!
                         return new UsuarioUsoDTO(
                                 usuario.getId(),
                                 usuario.getNombre(),

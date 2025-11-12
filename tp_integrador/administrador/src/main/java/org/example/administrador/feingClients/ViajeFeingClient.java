@@ -19,6 +19,10 @@ public interface ViajeFeingClient {
     @GetMapping("/pausas/tiempo-total")
     Long getTiempoTotalPausaSegundos(@RequestParam("idViaje") String idViaje);
 
+    /**
+     * @param monopatin id
+     * @return viajes de un determinado monopatin
+     */
     @GetMapping("/byMonopatin/{monopatinId}")
     List<ViajeDTO> getViajesByMonopatinId(@PathVariable("monopatinId") String monopatin);
 
@@ -32,10 +36,11 @@ public interface ViajeFeingClient {
 
     @GetMapping("/reporte-uso")
     ReporteUsoDTO getReporteUso(
-            @RequestParam("userIds") List<String> userIds, // <-- userIds ahora es un @RequestParam
+            @RequestParam("userIds") List<String> userIds,
             @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
     );
+
 
     @GetMapping("/reportes/usuarios-uso")
     List<UsuarioUsoDTO> obtenerUsuariosMasActivos(

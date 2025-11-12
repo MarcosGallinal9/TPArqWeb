@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 @Service
 public class TarifaService {
@@ -40,15 +41,42 @@ public class TarifaService {
 
 
     public void updateConFecha(Tarifa tarifa, LocalDate fechaActivacion) {
-        LocalDate hoy = LocalDate.now();
+        Tarifa tarifaActual = tarifaRepository.findById(tarifa.getId()).orElse(tarifa);
 
-        if(hoy.equals(fechaActivacion)) {
-            Tarifa tarifaActual = tarifaRepository.findById(tarifa.getId()).orElse(null);
-
-            tarifaActual.setValorComun(tarifa.getValorComun());
-            tarifaActual.setValorPremium(tarifa.getValorPremium());
-            tarifaActual.setValorExtraPausa(tarifa.getValorExtraPausa());
-            this.update(tarifaActual);
+        if (tarifaActual == null) {
+            throw new RuntimeException("Recurso no encontrado: La tarifa con ID " + tarifa.getId() + " no existe.");
         }
+
+        tarifaActual.setValorComun(tarifa.getValorComun());
+        tarifaActual.setValorPremium(tarifa.getValorPremium());
+        tarifaActual.setValorExtraPausa(tarifa.getValorExtraPausa());
+        tarifaActual.setFechaActivacion(fechaActivacion);
+
+        this.update(tarifaActual);
+    }
+    public Tarifa registrarNuevaTarifa(Tarifa tarifa, LocalDate fechaActivacion) {
+      Tarifa nuevaTarifa = new Tarifa(
+                null, // Id debe ser null para que MongoDB genere uno nuevo.
+                tarifa.getValorComun(),
+                tarifa.getValorPremium(),
+                tarifa.getValorExtraPausa(),
+                fechaActivacion // Se guarda la fecha de activación futura.
+        );
+        return tarifaRepository.save(nuevaTarifa); // Guarda una nueva tarifa.
+    }
+
+    public Tarifa findVigenteByDate(LocalDate fechaConsulta) {
+
+        List<Tarifa> tarifasActivas = tarifaRepository.findByFechaActivacionLessThanEqual(fechaConsulta);
+
+
+        if (tarifasActivas.isEmpty()) {
+            return null;
+        }
+
+        return tarifasActivas.stream()
+                .max(Comparator.comparing(Tarifa::getFechaActivacion))
+                .orElse(null);
     }
 }
+

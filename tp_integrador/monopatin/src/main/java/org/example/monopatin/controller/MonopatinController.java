@@ -40,6 +40,7 @@ public class MonopatinController {
         Monopatin monopatinNew = monopatinService.save(monopatin);
         return ResponseEntity.ok(monopatinNew);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Monopatin> update(@PathVariable("id") String id, @RequestBody Monopatin monopatin) {
         if (!id.equals(monopatin.getId())) {

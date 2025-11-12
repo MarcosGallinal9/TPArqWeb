@@ -12,5 +12,5 @@ public interface FacturacionFeignClient {
      * POST /facturas en Facturación para registrar un cobro.
      */
     @PostMapping("")
-    public FacturacionDTO registrarCobro(@RequestBody FacturacionDTO facturacion);
+    FacturacionDTO registrarCobro(@RequestBody FacturacionDTO facturacion);
 }

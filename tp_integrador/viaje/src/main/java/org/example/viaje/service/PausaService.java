@@ -16,9 +16,11 @@ public class PausaService {
 
     TarifaFeignClient tarifaFeignClient;
 
-    public PausaService(PausaRepository pausaRepository) {
+    public PausaService(PausaRepository pausaRepository, TarifaFeignClient tarifaFeignClient) {
         this.pausaRepository = pausaRepository;
+        this.tarifaFeignClient = tarifaFeignClient;
     }
+
     public Pausa save(Pausa pausa){
         return pausaRepository.save(pausa);
     }

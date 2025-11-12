@@ -16,8 +16,7 @@ public class AdminController {
     AdminService adminService;
     FacturacionFeingClient facturacionFeingClient;
 
-    public AdminController(AdminService adminService
-    , FacturacionFeingClient facturacionFeingClient) {
+    public AdminController(AdminService adminService, FacturacionFeingClient facturacionFeingClient) {
         this.adminService = adminService;
         this.facturacionFeingClient = facturacionFeingClient;
     }
@@ -45,7 +44,6 @@ public class AdminController {
     public ResponseEntity<Void> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
         try {
             adminService.anularCuentaUsuario(idCuenta);
-            // 204 No Content para indicar éxito sin cuerpo de respuesta.
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).build();
@@ -90,15 +88,14 @@ public class AdminController {
      * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
      * URL: GET /api/admin/usuarios-que-mas-usan?rol={X}&inicio={X}&fin={X}
      */
-    // En org.example.administrador.controller.AdminController
+
 
     @GetMapping("/usuarios-que-mas-usan")
-    public ResponseEntity<List<UsuarioUsoDTO>> getUsuariosQueMasUsanMonopatines(
-                                                                                 @RequestParam String rol,
+    public ResponseEntity<List<UsuarioUsoDTO>> getUsuariosQueMasUsanMonopatines( @RequestParam String rol,
                                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
                                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 
-        List<UsuarioUsoDTO> reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin); // <-- CAMBIO DE TIPO DE RETORNO
+        List<UsuarioUsoDTO> reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin);
 
         if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -106,14 +103,16 @@ public class AdminController {
 
         return ResponseEntity.ok(reporte);
     }
+
     /**
      * PUNTO F
      * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
      * URL: GET /api/admin/ajuste?fechaActivacion={X}
      */
-    @PutMapping("/ajuste")
-    public ResponseEntity<String> ajustarTarifas(@RequestBody TarifaDTO tarifaDTO) {
-        adminService.ajustarTarifas(tarifaDTO, LocalDate.now());
+    @PostMapping("/ajuste")
+    public ResponseEntity<String> ajustarTarifas(   @RequestBody TarifaDTO tarifaDTO,
+                                                    @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
+        adminService.ajustarTarifas(tarifaDTO, fechaActivacion);
         return ResponseEntity.ok().build();
     }
 

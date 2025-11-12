@@ -69,7 +69,6 @@ public class UsuarioService {
     }
 
     private double calcularDistanciaHaversine(double lat1, double lon1, double lat2, double lon2) {
-        // Radio de la Tierra en kilómetros
         final int R = 6371;
 
         double latDistance = Math.toRadians(lat2 - lat1);
@@ -85,7 +84,6 @@ public class UsuarioService {
 
     public List<monopatinDto> buscarMonopatinesCercanos(double lat, double lng, double radiokm) {
 
-        // Obtener todas las paradas
         List<ParadaDTO> todasLasParadas;
         try {
             todasLasParadas = paradaFeignClient.getAllParadas();
@@ -120,27 +118,18 @@ public class UsuarioService {
     public reporteUsoDto getReporteUso(String userId, LocalDate fechaInicio, LocalDate fechaFin, boolean otrosUsuarios) {
         Usuario usuario = usuarioRepository.findById(userId).orElse(null);
         if (usuario == null) {
-            // Manejar caso no encontrado
             return null;
         }
 
-        // Usamos Set para asegurar unicidad de IDs a consultar
         Set<String> usuariosConsultar = new HashSet<>();
         usuariosConsultar.add(userId);
 
-        //si eligio la opcion de cuentas vinculadas
         if (otrosUsuarios){
-            //recorre las cuentas del usuario
             for (String nroCuenta: usuario.getCuentas()) {
-                //obtiene los ids asociados
                 List<String> usuariosRelacionados = cuentaFeignClient.getUsuariosAsociados(nroCuenta);
-
-                //añade los usuarios a la lista final (Set maneja la unicidad automáticamente)
                 usuariosConsultar.addAll(usuariosRelacionados);
             }
         }
-
-        // Convertir el Set a List antes de enviarlo al FeignClient
         return viajeFeignClient.getReporteUso(new ArrayList<>(usuariosConsultar), fechaInicio, fechaFin);
     }
 

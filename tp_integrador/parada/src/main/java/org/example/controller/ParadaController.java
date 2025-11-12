@@ -61,14 +61,12 @@ public class ParadaController {
     public ResponseEntity<String> ubicarMonopatinEnParada(@PathVariable("idParada") String idParada, @PathVariable("idMonopatin") String idMonopatin) {
 
         try {
-            // Llama al Service, que maneja la lógica de negocio y la comunicación externa
             MonopatinDTO monopatinActualizado = paradaService.ubicarMonopatin(idParada, idMonopatin);
 
             return ResponseEntity.ok("Monopatín " + monopatinActualizado.getId() +
                     " ubicado y disponible en parada " + idParada);
 
         } catch (RuntimeException e) {
-            // Maneja el error que se lanza desde el Service (ej: Parada no encontrada o error de comunicación)
             if (e.getMessage().contains("Parada no encontrada")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }

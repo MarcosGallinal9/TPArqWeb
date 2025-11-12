@@ -15,7 +15,7 @@ public class MonopatinDTO {
     private float latitud;
     private float longitud;
     private float kmRecorridos;
-    private long tiempoUso; //En minutos
+    private long tiempoUso;
     private String idParadaUbicacion;
 
 

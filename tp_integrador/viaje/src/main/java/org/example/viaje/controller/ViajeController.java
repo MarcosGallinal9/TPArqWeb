@@ -69,7 +69,6 @@ public class ViajeController {
             Viaje viajeNuevo = viajeService.iniciarViaje(viaje);
             return ResponseEntity.status(201).body(viajeNuevo);
         } catch (RuntimeException e) {
-            //return ResponseEntity.badRequest().body(null);
             return ResponseEntity.badRequest()
                     .header("X-Error-Message", e.getMessage())
                     .body(null);
@@ -90,7 +89,6 @@ public class ViajeController {
             Viaje viajeFinalizado = viajeService.finalizarViaje(idViaje, idParadaFin, kmRecorridosFinal);
             return ResponseEntity.ok(viajeFinalizado);
         } catch (RuntimeException e) {
-            //return ResponseEntity.badRequest().body(null);
             return ResponseEntity.badRequest()
                     .header("X-Error-Message", e.getMessage())
                     .body(null);
@@ -113,7 +111,7 @@ public class ViajeController {
     }
 
     @GetMapping("reporte-uso")
-    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds, // <-- Recibe IDs en la URL
+    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds,
                                        @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio,
                                        @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
         return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
@@ -127,9 +125,8 @@ public class ViajeController {
     public ResponseEntity<List<UsuarioUsoDTO>> obtenerUsuariosMasActivos(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
-            @RequestParam("userIds") List<String> userIds) { // <-- El tercer parámetro es String
+            @RequestParam("userIds") List<String> userIds) {
 
-        // ✅ La llamada debe pasar la variable como String:
         List<UsuarioUsoDTO> reporte = viajeService.obtenerUsuariosMasActivos(inicio, fin, userIds);
 
         if (reporte.isEmpty()) {

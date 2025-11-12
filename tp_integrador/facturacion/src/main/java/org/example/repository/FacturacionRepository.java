@@ -14,13 +14,5 @@ import java.util.List;
 public interface FacturacionRepository extends MongoRepository<Facturacion, String> {
     List<Facturacion> findByUsuarioId(String usuarioId);
 
-   // @Aggregation(pipeline = {
-            // $match: Filtrar por el rango de fechas
-       //     "{ '$match': { 'fecha': { $gte: ?0, $lte: ?1 } } }",
-            // $group: Sumar todos los campos 'total' coincidentes
-     //       "{ '$group': { '_id': null, 'totalFacturado': { $sum: '$total' } } }",
-            // $project: Devolver solo el campo de la suma
-      //      "{ '$project': { '_id': 0, 'totalFacturado': 1 } }"
-   // })
     List<Facturacion> findByFechaBetween(Date inicio, Date fin);
 }

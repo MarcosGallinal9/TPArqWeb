@@ -3,7 +3,7 @@ package org.example.administrador.dto;
 import lombok.*;
 
 @Data
-@AllArgsConstructor // <-- Generará el constructor con los 3 campos
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

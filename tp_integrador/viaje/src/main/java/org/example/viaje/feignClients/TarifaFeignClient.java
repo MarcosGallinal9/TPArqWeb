@@ -4,6 +4,9 @@ import org.example.viaje.dto.TarifaDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
 
 @FeignClient(name = "microservicio-tarifa", url = "http://localhost:8087/tarifas")
 public interface TarifaFeignClient {
@@ -17,5 +20,8 @@ public interface TarifaFeignClient {
     TarifaDTO getTarifaVigente();
 
     @GetMapping("/{id}")
-    public TarifaDTO getTarifaById(@PathVariable("id") String id);
+    TarifaDTO getTarifaById(@PathVariable("id") String id);
+
+    @GetMapping("/vigente")
+    TarifaDTO getTarifaVigente(@RequestParam("fecha") LocalDate fecha);
 }

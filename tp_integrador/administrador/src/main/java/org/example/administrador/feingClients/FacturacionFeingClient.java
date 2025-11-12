@@ -10,6 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturas")
 public interface FacturacionFeingClient {
+
+    /**
+     * GET Obtiene el total facturado en un rango por parametro
+     * @param anio
+     * @param mesInicio
+     * @param mesFin
+     * @return El total facturado en un rango de fecha
+     */
     @GetMapping("/total-facturado")
     ResponseEntity<Double> getTotalFacturado(
             @RequestParam("anio") int anio,

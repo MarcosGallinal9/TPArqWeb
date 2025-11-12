@@ -58,7 +58,6 @@ public class ParadaService {
             throw new RuntimeException("Parada no encontrada con ID: " + idParada);
         }
 
-        // Crear DTO para actualizar el monopatín
         MonopatinDTO updateDTO = new MonopatinDTO();
         updateDTO.setId(idMonopatin);
         updateDTO.setIdParadaUbicacion(idParada);
@@ -67,7 +66,6 @@ public class ParadaService {
         updateDTO.setLongitud(parada.getLongitud());
 
         try {
-            // Llamar al microservicio Monopatín
             return monopatinFeignClient.updateMonopatin(idMonopatin,updateDTO);
         } catch (Exception e) {
             throw new RuntimeException("Error al ubicar el Monopatín en el MS Monopatín: " + e.getMessage());

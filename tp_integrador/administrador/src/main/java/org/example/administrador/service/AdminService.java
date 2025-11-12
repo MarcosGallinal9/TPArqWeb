@@ -5,7 +5,7 @@ import org.example.administrador.dto.*;
 import org.example.administrador.entity.Admin;
 import org.example.administrador.feingClients.*;
 import org.example.administrador.repository.AdminRepository;
-import org.example.administrador.dto.ReporteUsoDTO;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -74,12 +74,9 @@ public class AdminService {
 
         for (MonopatinDTO monopatin : monopatines) {
 
-
-            // 1. Obtener métricas NETAS desde la entidad Monopatín
             Long tiempoUsoNetoSegundos = monopatin.getTiempoUso();
             Long kmRecorridos = (long) monopatin.getKmRecorridos();
 
-            // 2. Calcular tiempo total de pausa (Necesario para el reporte 'con pausas')
             long tiempoTotalPausaSegundos = 0;
             if (pausas) {
 
@@ -93,25 +90,21 @@ public class AdminService {
                                     tiempoTotalPausaSegundos += pausaSegundosViaje;
                                 }
                             } catch (Exception e) {
-                                System.err.println("Advertencia: No se pudo obtener pausa del viaje " + viaje.getId() + ". Continuando...");
+                                System.err.println("No se pudo obtener pausa del viaje " + viaje.getId());
                             }
                         }
                     }
                 }
             }
 
-
-            // 3. Determinar el valor FINAL a reportar (Neto o Total)
             Long tiempoReporte;
             if (pausas) {
-                // Si 'pausas' es true, reportamos Tiempo NETO + Tiempo PAUSAS
                 tiempoReporte = tiempoUsoNetoSegundos + tiempoTotalPausaSegundos;
             } else {
-                // Si 'pausas' es false, reportamos solo Tiempo NETO
                 tiempoReporte = tiempoUsoNetoSegundos;
             }
 
-            // 4. Crear el DTO de reporte utilizando el ReporteMonopatinXKm base
+
             ReporteMonopatinXKm entrada = new ReporteMonopatinXKm(
                     monopatin.getId(),
                     kmRecorridos,
@@ -133,8 +126,6 @@ public class AdminService {
     public void anularCuentaUsuario(String idCuenta) {
 
         ResponseEntity<Void> response = cuentaFeingClient.anularCuenta(idCuenta);
-
-        // Si Cuenta devuelve 204 (No Content) o 200, es exitoso.
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Error al anular la cuenta " + idCuenta + " en el MS Cuenta. Código de estado: " + response.getStatusCodeValue());
         }
@@ -150,11 +141,8 @@ public class AdminService {
      * @return Lista de Monopatines que superan la cantidad de viajes.
      */
     public List<ReporteMonopatinContadorViajes> getMonopatinesConMasDeXViajes(int minViajes, int year) {
-
-        // Obtener de Viaje el conteo agregado de todos los monopatines en ese año
         List<ReporteMonopatinContadorViajes> todosLosMonopatines = viajeFeingClient.getMonopatinesPorViajes(year);
 
-        // Filtra la lista localmente para obtener solo aquellos con más de X viajes
         return todosLosMonopatines.stream()
                 .filter(m -> m.getCantidadViajes() >= minViajes)
                 .toList();
@@ -176,7 +164,6 @@ public class AdminService {
      */
     public List<UsuarioUsoDTO> getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
 
-        // 1. Obtener todos los usuarios y FILTRAR POR ROL (MS Usuario)
         List<UsuarioUsoDTO> todosLosUsuarios = usuarioFeingClient.getUsuarios();
 
         List<String> userIdsFiltrados = todosLosUsuarios.stream()
@@ -188,12 +175,9 @@ public class AdminService {
             return new ArrayList<>();
         }
 
-        // 2. Convertir LocalDate a Date (para MS Viaje)
         Date fechaInicio = java.sql.Date.valueOf(inicio);
         Date fechaFin = java.sql.Date.valueOf(fin);
 
-        // 3. Llamar al MS Viaje con los IDs FILTRADOS
-        // (Asegúrate de actualizar el ViajeFeingClient con la nueva firma)
         return viajeFeingClient.obtenerUsuariosMasActivos(fechaInicio, fechaFin, userIdsFiltrados);
     }
 
@@ -203,7 +187,6 @@ public class AdminService {
      * @param fechaActivacion
      */
     public void ajustarTarifas(TarifaDTO tarifaDTO,LocalDate fechaActivacion) {
-        tarifaDTO.setFechaActivacion(fechaActivacion);
         tarifaFeingClient.actualizarTarifas(tarifaDTO, fechaActivacion);
     }
 }

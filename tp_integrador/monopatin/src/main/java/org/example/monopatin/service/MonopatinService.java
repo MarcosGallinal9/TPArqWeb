@@ -4,9 +4,6 @@ import org.example.monopatin.dto.ViajeDTO;
 import org.example.monopatin.feignClient.ViajeFeignClient;
 import org.example.monopatin.entity.Monopatin;
 import org.example.monopatin.repository.MonopatinRepository;
-import org.springframework.data.geo.Point;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
 import org.springframework.stereotype.Service;
 
 
@@ -48,14 +45,12 @@ public class MonopatinService {
      * @param idMonopatin ID del monopatín a evaluar.
      */
     public void evaluarMantenimiento(String idMonopatin) {
-        Monopatin monopatin = monopatinRepository.findById(idMonopatin)
-                .orElseThrow(() -> new RuntimeException("Monopatín no encontrado."));
+        Monopatin monopatin = monopatinRepository.findById(idMonopatin).orElseThrow(() -> new RuntimeException("Monopatín no encontrado."));
 
-        // Consultar todos los viajes del monopatín
         List<ViajeDTO> viajes = viajeFeignClient.getViajesByMonopatinId(idMonopatin);
 
         float kmTotales = 0;
-        long tiempoTotalUsoNetoSegundos = 0; // Se inicializa para el tiempo REAL de uso
+        long tiempoTotalUsoNetoSegundos = 0;
 
         for (ViajeDTO viaje : viajes) {
             // Solo considerar viajes finalizados

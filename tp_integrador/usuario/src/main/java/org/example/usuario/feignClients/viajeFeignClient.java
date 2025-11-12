@@ -12,6 +12,5 @@ import java.util.List;
 public interface viajeFeignClient {
 
     @GetMapping("/reporte")
-    reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin
-    );
+    reporteUsoDto getReporteUso(@RequestParam("userIds") List<String> userIds, @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaFin);
 }

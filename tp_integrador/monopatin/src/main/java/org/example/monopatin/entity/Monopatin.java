@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Monopatin {
     @Id
-    private String id; //Id de MongoDB (String)
+    private String id;
     private String estado;
     private float latitud;
     private float longitud;
