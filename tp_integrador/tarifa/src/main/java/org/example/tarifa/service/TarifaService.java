@@ -49,7 +49,7 @@ public class TarifaService {
 
         tarifaActual.setValorComun(tarifa.getValorComun());
         tarifaActual.setValorPremium(tarifa.getValorPremium());
-        tarifaActual.setValorExtraPausa(tarifa.getValorExtraPausa());
+        tarifaActual.setValorExtrapausa(tarifa.getValorExtrapausa());
         tarifaActual.setFechaActivacion(fechaActivacion);
 
         this.update(tarifaActual);
@@ -59,7 +59,7 @@ public class TarifaService {
                 null, // Id debe ser null para que MongoDB genere uno nuevo.
                 tarifa.getValorComun(),
                 tarifa.getValorPremium(),
-                tarifa.getValorExtraPausa(),
+                tarifa.getValorExtrapausa(),
                 fechaActivacion // Se guarda la fecha de activación futura.
         );
         return tarifaRepository.save(nuevaTarifa); // Guarda una nueva tarifa.

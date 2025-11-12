@@ -18,7 +18,7 @@ public class Tarifa {
     private String id;
     private int valorComun;
     private int valorPremium;
-    private int valorExtraPausa;
+    private int valorExtrapausa;
     private LocalDate fechaActivacion;
 }
 

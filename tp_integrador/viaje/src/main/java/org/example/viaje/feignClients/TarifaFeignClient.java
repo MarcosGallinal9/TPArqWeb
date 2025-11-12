@@ -19,5 +19,5 @@ public interface TarifaFeignClient {
     TarifaDTO getTarifaById(@PathVariable("id") String id);
 
     @GetMapping("/vigente")
-    TarifaDTO getTarifaVigente(@RequestParam("fecha")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha);
+    TarifaDTO getTarifaVigente(@RequestParam("fecha")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaConsulta);
 }
