@@ -59,13 +59,19 @@ public class CuentaController {
         return ResponseEntity.ok(cuentaUpdate);
     }
 
+    //Recibe x parametro token pago para Mock de mercado pago
     @PostMapping("/cargarSaldo/{id}")
-    public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id, @RequestParam("saldo") double saldo) {
-        Cuenta cuentaActualizada= cuentaService.cargarSaldo(id, saldo);
-        if (cuentaActualizada == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Cuenta> cargarSaldo(@PathVariable ("id") String id, @RequestParam("saldo") double saldo, @RequestParam("tokenPago") String tokenPago) {
+        try {
+         Cuenta cuentaActualizada = cuentaService.cargarSaldo(id, saldo, tokenPago);
+            if (cuentaActualizada == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(cuentaActualizada);
+        } catch (RuntimeException e) {
+            // Maneja el error lanzado por el Service/Mock (pago rechazado)
+            return ResponseEntity.status(400).body(null);
         }
-        return ResponseEntity.ok(cuentaActualizada);
     }
 
     @PostMapping("/anular/{id}")

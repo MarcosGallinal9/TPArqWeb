@@ -5,8 +5,7 @@ import org.example.cuenta.entity.Cuenta;
 
 import java.util.List;
 
-
-
+import org.example.cuenta.feignClients.MercadoPagoClient;
 import org.springframework.stereotype.Service;
 
 
@@ -14,9 +13,11 @@ import org.springframework.stereotype.Service;
 public class CuentaService {
 
     CuentaRepository cuentaRepository;
+    MercadoPagoClient mercadoPagoClient;
 
-    public CuentaService(CuentaRepository cuentaRepository) {
+    public CuentaService(CuentaRepository cuentaRepository, MercadoPagoClient mercadoPagoClient) {
         this.cuentaRepository = cuentaRepository;
+        this.mercadoPagoClient = mercadoPagoClient;
     }
 
     public List<Cuenta> getAll(){
@@ -48,8 +49,12 @@ public class CuentaService {
         return cuentaRepository.findById(id).orElse(null);
     }
 
-    public Cuenta cargarSaldo(String id, double saldo){
+    // MOCK DE MERCADO PAGO.
+    public Cuenta cargarSaldo(String id, double saldo, String tokenPago){
         Cuenta cuenta = cuentaRepository.findById(id).orElse(null);
+        if (!mercadoPagoClient.validarPago(saldo, tokenPago)) {
+            throw new RuntimeException("El pago fue rechazado.");
+        }
         if (cuenta == null) {
             return null;
         }
