@@ -1,0 +1,25 @@
+package org.example.apigateway.security;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Component;
+import io.jsonwebtoken.security.Keys; // Nuevo import
+import java.security.Key;
+
+@Component
+public class JwtUtil {
+    private final String SECRET = "ClaveSecretaSuperLarga";
+    private final Key key;
+
+    public JwtUtil() {
+        this.key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    }
+
+    public Jws<Claims> parse(String token) {
+        return Jwts.parser()
+                .setSigningKey(key) // Usa la variable Key
+                .build()           // Nuevo método obligatorio
+                .parseClaimsJws(token);
+    }
+}
