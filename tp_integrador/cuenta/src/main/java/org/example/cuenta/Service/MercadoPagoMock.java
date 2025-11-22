@@ -2,7 +2,10 @@ package org.example.cuenta.Service;
 
 
 import org.example.cuenta.feignClients.MercadoPagoClient;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
 
+@FeignClient
 public class MercadoPagoMock implements MercadoPagoClient {
 
     @Override

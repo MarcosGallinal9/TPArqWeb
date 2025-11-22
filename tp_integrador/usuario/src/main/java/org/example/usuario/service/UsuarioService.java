@@ -11,6 +11,7 @@ import org.example.usuario.feignClients.paradaFeignClient;
 import org.example.usuario.repository.UsuarioRepository;
 import org.example.usuario.feignClients.cuentaFeignClient;
 import org.example.usuario.feignClients.viajeFeignClient;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -28,23 +29,29 @@ public class UsuarioService {
     monopatinFeignClient monopatinFeignClient;
     viajeFeignClient viajeFeignClient;
     paradaFeignClient paradaFeignClient;
+    PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, cuentaFeignClient cuentaFeignClient, monopatinFeignClient monopatinFeignClient, viajeFeignClient viajeFeignClient, paradaFeignClient paradaFeignClient) {
+    public UsuarioService(UsuarioRepository usuarioRepository, cuentaFeignClient cuentaFeignClient, monopatinFeignClient monopatinFeignClient, viajeFeignClient viajeFeignClient, paradaFeignClient paradaFeignClient, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.cuentaFeignClient = cuentaFeignClient;
         this.monopatinFeignClient = monopatinFeignClient;
         this.viajeFeignClient = viajeFeignClient;
         this.paradaFeignClient = paradaFeignClient;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Usuario> getAll() {
         return usuarioRepository.findAll();
     }
 
+
     public Usuario save(Usuario usuario) {
+        // Si el usuario tiene una contraseña sin encriptar (raw), se encripta antes de guardar.
+        if (usuario.getContrasenia() != null && !usuario.getContrasenia().startsWith("$2a")) { // Verifica si no está encriptada
+            usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
+        }
         return usuarioRepository.save(usuario);
     }
-
     public void delete(Usuario usuario) {
         usuarioRepository.delete(usuario);
     }
@@ -142,5 +149,13 @@ public class UsuarioService {
     }
 
 
+    /**
+     * Método SÓLO para el Gateway: Obtiene el usuario incluyendo la contraseña y rol.
+     * @param nombreUsername El nombre de usuario.
+     * @return Usuario (con contraseña encriptada).
+     */
+    public Usuario getUsuarioParaAutenticacion(String nombreUsername) {
+        return usuarioRepository.findByNombre(nombreUsername).orElse(null);
+    }
 
 }

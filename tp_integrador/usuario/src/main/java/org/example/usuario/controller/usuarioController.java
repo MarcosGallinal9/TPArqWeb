@@ -74,6 +74,19 @@ public class usuarioController {
 
         }
 
+    /**
+     * Endpoint interno para que el Gateway obtenga datos de autenticación.
+     * URL: GET /usuarios/auth-data?username={username}
+     */
+    @GetMapping("/auth-data")
+    public ResponseEntity<Usuario> getUsuarioParaAutenticacion(@RequestParam("username") String username) {
+        Usuario usuario = usuarioService.getUsuarioParaAutenticacion(username);
+        if (usuario == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(usuario);
+    }
+
 
     }
 
