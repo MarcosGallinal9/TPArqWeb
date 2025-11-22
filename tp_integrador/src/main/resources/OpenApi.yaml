@@ -1,0 +1,373 @@
+openApi: 3.0.0
+info:
+    title: Alquiler de Monopatines
+    description: Programa dedicado a la administracion y alquiler de Monopatines.
+    version: 1.0.0
+
+#SERVIDORES
+servers:
+  -url: http://localhost:8080/
+  description: Microservicio administrador.
+  -url: http://localhost:8081/
+  description: Microservicio usuario.
+  -url: http://localhost:8082/
+  description: Microservicio monopatin.
+  -url: http://localhost:8083/
+  description: Microservicio parada.
+  -url: http://localhost:8084/
+  description: Microservicio viaje.
+  -url: http://localhost:8085/
+  description: Microservicio cuenta.
+  -url: http://localhost:8087/
+  description: Microservicio tarifa.
+
+
+tags:
+  -name: administrador
+  description: Funcionalidades de control y reportes de la aplicación.
+
+  -name: Usuario
+  description: Gestión del perfil de usuario y funcionalidades de búsqueda
+
+  -name: Monopatin
+  description:
+
+  -name: Parada
+  description:
+
+  -name: Viaje
+  description:
+
+  -name: Cuenta
+  description: administracion de cuentas vinculadas a un usuario, gestion de saldo, etc.
+
+  -name: Tarifa
+  description:
+
+paths:
+  #MICROSERVICIO ADMINISTRADOR
+
+  #4a
+  /administrador/reportes/mantenimiento-uso:
+    get:
+      tags:
+        -Administrador
+      summary: Genera el reporte de uso de monopatines por kilómetros/tiempo
+      parameters:
+        -name: conPausas
+        in: query
+        required: true
+        schema:
+         type: boolean
+        description: booleano que decide si se incluyen o no los tiempos de pausa en el total
+      responses:
+        "200":
+          description: OK. Retorna la lista de métricas por monopatín.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReporteMonopatinXKm'
+
+
+  #4b
+  /administrador/cuentas/anular/{id_cuenta}:
+    post:
+      tags:
+        -Administrador
+      summary: Anula una cuenta de un usuario dado su id
+
+      parameters:
+        -name: id_cuenta
+        in: path
+        required: true
+        schema:
+          type: string
+        description: id de la cuenta a anular
+      responses:
+       "200":
+         description: cuenta anulada exitosamente
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/CuentaDTO'
+       "404":
+         description: cuenta no encontrada
+
+
+  #4c
+  /administrador/reportes/top-monopatines:
+    get:
+      tags:
+        -Administrador
+      summary: Consulta los monopatines con más de X viajes en un cierto año.
+      parameters:
+        -name: minViajes
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: minimo de viajes para la buqueda
+        -name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: anio sobre el cual realizar la busqueda
+      responses:
+          "200":
+            description: Lista de monopatines que cumplen el criterio.
+            content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReporteMonopatinContadorViajes'
+
+#4d
+  /administrador/total-facturado:
+    get:
+      tags:
+        -Administrador
+      summary: Consulta el total facturado en un rango de meses en un cierto año
+      parameters:
+        -name: anio
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: anio sobre el cual realizar la busqueda
+        -name: mesInicio
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: mes inicial
+        -name: mesFin
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: mes final
+      responses:
+        "200":
+          description: OK. Retorna el valor Double total.
+          content:
+              application/json:
+                schema:
+                  type: number
+                  format: double
+
+#4e
+  /administrador/usuarios-que-mas-usan:
+    get:
+      tags:
+        -Administrador
+      summary: Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
+      parameters:
+        -name: rol
+        in: query
+        required: true
+        schema:
+          type: string
+        description: tipo de usuario sobre el cual realizar la busqueda
+        -name: inicio
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: fecha inicio de la busqueda
+        -name: fin
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: fecha fin de la busqueda
+
+      responses:
+        "200":
+          description: Lista de usuarios y sus kilómetros recorridos.
+          content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UsuarioUsoDTO'
+
+#4f
+  /administrador/ajuste:
+    post:
+      tags:
+         -Administrador
+      summary: realiza un ajuste de precios a partir de cierta fecha
+      parameters:
+        -name: fechaActivacion
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: fecha a partir de la cual se deben ajustar los precios
+      requestBody:
+        description: datos de la nueva tarifa
+        required: true
+        content:
+          application/json:
+            schemma:
+              $ref: '#/components/schemas/TarifaDTO'
+      responses:
+        "200":
+          description: Ajuste de tarifa registrado exitosamente.
+
+
+
+#MICROSERVICIO USUARIO
+
+#4g
+  /usuario/cercanos:
+    get:
+      tags:
+        -Usuario
+      summary: obtiene un listado de los monopatines cercanos a mi zona
+      parameters:
+        -name: lat
+        in: query
+        required: true
+        schema:
+          type: number
+          format: double
+        description: latitud en la que se encuenta el usuario
+        -name: lng
+        in: query
+        required: true
+        schema:
+          type: number
+          format: double
+        description: longitud en la que se encuenta el usuario
+        -name: radiokm
+        in: query
+        required: true
+        schema:
+          type: number
+          format: double
+        description: radio de busqueda
+      responses:
+        "200":
+          description: OK. Lista de monopatines encontrados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/monopatinDto'
+          "204":
+            description: No se encontraron monopatines disponibles en el radio.
+          "404":
+            description: Recurso no encontrado (ej., error de servicio).
+
+#4f
+  /usuario/{user_id}/reporteUso:
+    get:
+      tags:
+        -Usuario
+      summary: reporte de uso los monopatines en un período para un usuario, y opcionalmente si otros usuarios relacionados a esta cuenta los usaron.
+      parameters:
+        -name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: id del usuario
+        -name: fechaIniico
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: fecha de inicio de la busqueda
+        -name: fechaFin
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: fecha de fin de la busqueda
+        -name: otrosUsuarios
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Si se debe incluir el uso de monopatines de usuarios asociados a la cuenta.
+
+      responses:
+        "200":
+          description: OK. Reporte de uso consolidado.
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/reporteUsoDto'
+
+        "404":
+          description: Usuario no encontrado.
+
+
+
+
+components:
+  schemas:
+    CuentaDTO: # Usado en la anulación 4b
+      type: object
+      properties:
+        nroCuenta: { type: string }
+        monto: { type: number, format: double }
+        estado: { type: boolean }
+        tipoCuenta: { type: string }
+
+    TarifaDTO: # Usado en el ajuste 4f
+      type: object
+      properties:
+        valorComun: { type: integer }
+        valorPremium: { type: integer }
+        valorExtrapausa: { type: integer }
+
+    ReporteMonopatinContadorViajes: # Usado en el reporte 4c
+      type: object
+      properties:
+        idMonopatin: { type: string }
+        cantidadViajes: { type: integer, format: int64 }
+
+    ReporteMonopatinXKm: # Usado en el reporte 4a
+      type: object
+      properties:
+        id: { type: string }
+        kmRecorridos: { type: number, format: float }
+        tiempoUsoSegundos: { type: integer, format: int64 }
+
+    UsuarioUsoDTO: # Usado en el reporte 4e
+      type: object
+      properties:
+        id: { type: string }
+        nombre: { type: string }
+        rol: { type: string }
+        kmRecorridos: { type: number, format: double }
+
+    monopatinDto: # DTO de salida para /cercanos
+      type: object
+      properties:
+        id: { type: string }
+        estado: { type: string }
+        latitud: { type: number, format: float }
+        longitud: { type: number, format: float }
+        kmRecorridos: { type: number, format: float }
+        tiempoUso: { type: integer, format: int64 }
+        idParadaUbicacion: { type: string }
+
+      reporteUsoDto: # DTO de salida para /reporteUso
+        type: object
+        properties:
+          totalTiempoMinutos: { type: number, format: double }
+          totalTiempoConPausaMinutos: { type: number, format: double }
+          totalKilometros: { type: number, format: double }

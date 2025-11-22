@@ -3,8 +3,10 @@ package org.example.apigateway.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import org.springframework.web.server.ServerWebExchange;
+
 
 import java.net.http.HttpHeaders;
 import java.util.List;
