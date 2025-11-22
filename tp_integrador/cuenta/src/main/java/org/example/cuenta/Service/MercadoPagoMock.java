@@ -4,8 +4,9 @@ package org.example.cuenta.Service;
 import org.example.cuenta.feignClients.MercadoPagoClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
-@FeignClient
+@Service
 public class MercadoPagoMock implements MercadoPagoClient {
 
     @Override
