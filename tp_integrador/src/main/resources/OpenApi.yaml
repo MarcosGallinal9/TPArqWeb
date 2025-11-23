@@ -30,19 +30,19 @@ tags:
   description: Gestión del perfil de usuario y funcionalidades de búsqueda
 
   -name: Monopatin
-  description:
+  description: Gestión de la flota de monopatines
 
   -name: Parada
-  description:
+  description: Gestión de las paradas y ubicaciones.
 
   -name: Viaje
-  description:
+  description: Gestión de los viajes y pausas
 
   -name: Cuenta
   description: administracion de cuentas vinculadas a un usuario, gestion de saldo, etc.
 
   -name: Tarifa
-  description:
+  description: Gestión de precios y tarifas vigentes
 
 paths:
   #MICROSERVICIO ADMINISTRADOR
@@ -234,6 +234,12 @@ paths:
       responses:
         "200":
           description: usuarios devueltos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
 
   /usuarios/{id}:
     get:
@@ -250,6 +256,10 @@ paths:
       responses:
         "200":
           description: Usuario encontrado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
 
 
   /usuarios/registrar/:
@@ -376,6 +386,11 @@ paths:
       responses:
         "200":
           description: listado obtenido exitosamente
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Monopatin'
 
   /monopatines/{id}:
     get:
@@ -392,6 +407,11 @@ paths:
         responses:
           "200":
             description: monopatin encontrado exitosamente
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monopatin'
           "404":
             description: monopatin no encontrado
 
@@ -434,9 +454,56 @@ paths:
           description: monopatin actualizado exitosamente
         "404":
           description: monopatin no encontrado
-  ##/monopatines/{id} -- put
- ## /monopatines/{id}/evaluar-mantenimiento --put
-##/monopatines/en-paradas
+/monopatines/{id}:
+  put:
+    tags:
+      - Monopatin
+    summary: Actualiza un monopatín completo.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Monopatin'
+    responses:
+      "200":
+        description: Actualizado.
+
+  /monopatines/{id}/evaluar-mantenimiento:
+    put:
+      tags:
+        - Monopatin
+      summary: Evalúa si el monopatín necesita mantenimiento y actualiza estado.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evaluación completada.
+
+  /monopatines/en-paradas:
+    post:
+      tags:
+        - Monopatin
+      summary: Obtiene monopatines ubicados en una lista de paradas.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: Lista de monopatines en esas paradas.
 
 
 ##MICROSERVIO PARADAS
@@ -464,7 +531,11 @@ paths:
         description: id de la parada a buscar
       responses:
         "200":
-          description: Parada encontrada correctamente.
+          description: Parada encontrada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parada'
 
   /paradas:
     post:
@@ -533,6 +604,10 @@ paths:
         responses:
           "200":
             description: viaje encontrado exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Viaje'
           "404":
             description: viaje no encontrado
 
@@ -566,7 +641,7 @@ paths:
         description: id del usuario del que quiero buscar sus viajes
         responses:
           "200":
-            description: usuario encontrado exitosamente
+            description: listado devuelto.
           "404":
             description: usuario no encontrado
 
@@ -621,10 +696,6 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/ReporteUsoDTO'
-          "400":
-            description: Datos de entrada inválidos o formato de fecha incorrecto.
-          "204":
-            description: No se encontraron viajes en el período especificado para esos usuarios.
 
 /viajes/reportes/usuarios-uso:
   get:
@@ -663,10 +734,7 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/UsuariosUsoDTO'
-          "400":
-            description: Datos de entrada inválidos o formato de fecha incorrecto.
-          "204":
-            description: No se encontraron viajes en el período especificado para esos usuarios.
+
 
 #/byMonopatin/{monopatinId}
 #finalizar/
@@ -696,6 +764,10 @@ paths:
         responses:
           "200":
             description: cuenta encontrada exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Cuenta'
           "404":
             description: cuenta no encontrada
 
@@ -760,7 +832,7 @@ paths:
           "200":
             description: carga realizada con exito
           "404":
-            description: pago rechazado
+            description: pago rechazado o cuenta no encontrada
 
   cuenta/{id}/usuarios:
     get:
@@ -780,7 +852,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsuarioDTO'
+                type: array
+                items:
+                  type: string
 
 #MICROSERVICIO TARIFA
   /tarifa/:
@@ -807,6 +881,10 @@ paths:
         responses:
           "200":
             description: tarifa encontrada exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Tarifa'
           "404":
             description: tarifa no encontrada
   /tarifa:
@@ -873,57 +951,112 @@ paths:
 
 
 components:
-  schemas:
-    CuentaDTO: # Usado en la anulación 4b
-      type: object
-      properties:
-        nroCuenta: { type: string }
-        monto: { type: number, format: double }
-        estado: { type: boolean }
-        tipoCuenta: { type: string }
+  components:
+    schemas:
+      # DTOs
+      CuentaDTO:
+        type: object
+        properties:
+          nroCuenta: { type: string }
+          monto: { type: number, format: double }
+          estado: { type: boolean }
+          tipoCuenta: { type: string }
 
-    TarifaDTO: # Usado en el ajuste 4f
-      type: object
-      properties:
-        valorComun: { type: integer }
-        valorPremium: { type: integer }
-        valorExtrapausa: { type: integer }
+      TarifaDTO:
+        type: object
+        properties:
+          valorComun: { type: number, format: double }
+          valorPremium: { type: number, format: double }
+          valorExtrapausa: { type: number, format: double }
 
-    ReporteMonopatinContadorViajes: # Usado en el reporte 4c
-      type: object
-      properties:
-        idMonopatin: { type: string }
-        cantidadViajes: { type: integer, format: int64 }
+      ReporteMonopatinContadorViajes:
+        type: object
+        properties:
+          idMonopatin: { type: string }
+          cantidadViajes: { type: integer, format: int64 }
 
-    ReporteMonopatinXKm: # Usado en el reporte 4a
-      type: object
-      properties:
-        id: { type: string }
-        kmRecorridos: { type: number, format: float }
-        tiempoUsoSegundos: { type: integer, format: int64 }
+      ReporteMonopatinXKm:
+        type: object
+        properties:
+          id: { type: string }
+          kmRecorridos: { type: number, format: float }
+          tiempoUsoSegundos: { type: integer, format: int64 }
 
-    UsuarioUsoDTO: # Usado en el reporte 4e
-      type: object
-      properties:
-        id: { type: string }
-        nombre: { type: string }
-        rol: { type: string }
-        kmRecorridos: { type: number, format: double }
+      UsuarioUsoDTO:
+        type: object
+        properties:
+          id: { type: string }
+          nombre: { type: string }
+          rol: { type: string }
+          kmRecorridos: { type: number, format: double }
 
-    monopatinDto: # DTO de salida para /cercanos
-      type: object
-      properties:
-        id: { type: string }
-        estado: { type: string }
-        latitud: { type: number, format: float }
-        longitud: { type: number, format: float }
-        kmRecorridos: { type: number, format: float }
-        tiempoUso: { type: integer, format: int64 }
-        idParadaUbicacion: { type: string }
+      monopatinDto:
+        type: object
+        properties:
+          id: { type: string }
+          estado: { type: string }
+          latitud: { type: number, format: double }
+          longitud: { type: number, format: double }
+          kmRecorridos: { type: number, format: double }
+          tiempoUso: { type: integer, format: int64 }
+          idParadaUbicacion: { type: string }
 
-      reporteUsoDto: # DTO de salida para /reporteUso
+      reporteUsoDto:
         type: object
         properties:
           totalTiempoMinutos: { type: number, format: double }
           totalTiempoConPausaMinutos: { type: number, format: double }
           totalKilometros: { type: number, format: double }
+
+      # Entidades Completas (para respuestas generales)
+      Usuario:
+        type: object
+        properties:
+          id: { type: string }
+          nombre: { type: string }
+          mail: { type: string }
+          celular: { type: integer }
+          rol: { type: string }
+          cuentas: { type: array, items: { type: string } }
+
+      Cuenta:
+        type: object
+        properties:
+          nroCuenta: { type: string }
+          monto: { type: number, format: double }
+          estado: { type: boolean }
+          fechaAlta: { type: string, format: date-time }
+          tipoCuenta: { type: string }
+          usuarios: { type: array, items: { type: string } }
+
+      Monopatin:
+        type: object
+        properties:
+          id: { type: string }
+          estado: { type: string }
+          # ... otros campos
+
+      Parada:
+        type: object
+        properties:
+          id: { type: string }
+          nombre: { type: string }
+          ubicacion: { type: object } # GeoJson
+
+      Viaje:
+        type: object
+        properties:
+          id: { type: string }
+          idUsuario: { type: string }
+          idMonopatin: { type: string }
+          fechaInicio: { type: string, format: date-time }
+          fechaFin: { type: string, format: date-time }
+          kmRecorridos: { type: number, format: double }
+          valorTotal: { type: number, format: double }
+
+      Tarifa:
+        type: object
+        properties:
+          id: { type: string }
+          fechaVigencia: { type: string, format: date }
+          valor: { type: number, format: double }
