@@ -44,6 +44,7 @@ public class TarifaController {
         return ResponseEntity.ok(tarifaNew);
     }
 
+    //DUPLICAOD!
     @PutMapping("/ajuste")
     public ResponseEntity<Tarifa> update(@RequestBody Tarifa tarifa,
                                          @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
