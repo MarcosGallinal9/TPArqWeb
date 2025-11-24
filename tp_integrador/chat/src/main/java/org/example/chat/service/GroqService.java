@@ -1,7 +1,7 @@
 package org.example.chat.service;
 
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,8 +14,13 @@ public class GroqService {
                        DatosUsuarioService datosUsuarioService) {
 
         this.chatModel = chatClientBuilder
-                .defaultSystem("Eres un asistente de atención al cliente para una app de alquiler de monopatines eléctricos. " +
-                        "Responde de forma amable y concisa.")
+                .defaultSystem("Eres un asistente de la empresa de monopatines. " +
+                        "Usa las herramientas disponibles para buscar información real. " +
+                        "Si no puedes encontrar la información con las herramientas, dilo. " +
+                        "Responde siempre en español.")
+                .defaultOptions(OpenAiChatOptions.builder()
+                        .model("llama-3.3-70b-versatile")
+                        .build())
                 // Herramientas para que la IA las vea
                 .defaultTools(timeService, datosUsuarioService)
                 .build();

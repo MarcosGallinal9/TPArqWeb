@@ -45,15 +45,6 @@ public class usuarioController {
         return ResponseEntity.ok(usuarioService.save(usuario));
     }
 
-    @PostMapping("/registrar")
-    public ResponseEntity<Usuario> registrar(
-            @RequestBody Usuario usuario,
-            @RequestParam("nroCuenta") String nroCuenta) {
-
-        return ResponseEntity.ok(usuarioService.regristrarUsuario(usuario, nroCuenta));
-    }
-
-
     @GetMapping("/cercanos")
     public ResponseEntity<List<monopatinDto>> getMonopatinesCercanos(
             @RequestParam double lat,

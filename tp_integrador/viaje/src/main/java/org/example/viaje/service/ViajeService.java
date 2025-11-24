@@ -1,5 +1,5 @@
 package org.example.viaje.service;
-import feign.FeignException;
+
 import org.example.viaje.dto.*;
 import org.example.viaje.entity.Pausa;
 import org.example.viaje.entity.Viaje;

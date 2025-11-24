@@ -62,18 +62,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario regristrarUsuario(Usuario usuario, String nroCuenta) {
-        cuentaDto cuentaAsociar =  cuentaFeignClient.getCuenta(nroCuenta);
-        if (cuentaAsociar == null) {
-            throw new RuntimeException();
-        }
-        if (usuario.getCuentas() == null) {
-            usuario.setCuentas(new ArrayList<>());
-        }
-        usuario.getCuentas().add(nroCuenta);
-        return usuarioRepository.save(usuario);
-    }
-
     private double calcularDistanciaHaversine(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371;
 
