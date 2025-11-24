@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Prueba Chat Monopatines</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<main class="container">
+    <h1 class="title">Asistente Monopatines</h1>
+
+    <form th:action="@{/prueba/chat}" method="post">
+        <div class="input-row">
+            <input name="pregunta" class="input" type="text" placeholder="Ej: ¿Cuánto viajé el mes pasado?" required>
+            <button class="btn" type="submit">Enviar</button>
+        </div>
+    </form>
+
+    <section id="respuestas" class="respuestas">
+        <div th:if="${respuesta}" class="respuesta-box">
+            <h3>Respuesta:</h3>
+            <p th:text="${respuesta}"></p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

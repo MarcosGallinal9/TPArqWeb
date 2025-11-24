@@ -54,3 +54,7 @@ spring:
             - Path=/autenticacion
             - Path=/autenticacion/**
 
+        - id: chat
+          uri: http://localhost:8090
+          predicates:
+              - Path=/api/chat/**
