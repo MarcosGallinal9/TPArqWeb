@@ -5,6 +5,10 @@
       <sourceFolder url="file://$MODULE_DIR$/tp_integrador/cuenta/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tp_integrador/usuario/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tp_integrador/monopatin/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tp_integrador/apiGateway/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tp_integrador/parada/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tp_integrador/tarifa/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tp_integrador/viaje/src/main/java" isTestSource="false" />
     </content>
   </component>
 </module>
