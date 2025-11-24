@@ -519,7 +519,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fechaAlta\": \"2025-11-23\",\r\n    \"saldo\": 0,\r\n    \"estado\": true,\r\n    \"tipoCuenta\": \"BASICA\" \r\n}",
+							"raw": "{\r\n    \"fechaAlta\": \"2025-11-23\",\r\n    \"saldo\": 0,\r\n    \"estado\": true,\r\n    \"tipoCuenta\": \"PREMIUM\" \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -676,7 +676,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"nombre\": \"usuario frecuente\",\r\n  \"mail\": \"usuarioFrecuente@prueba.com\",\r\n  \"celular\": 11223344,\r\n  \"rol\": \"USER\",\r\n  \"contrasenia\": \"password123\",\r\n  \"cuentas\": [\"\"],\r\n  \"monopatines\": [],\r\n  \"viajes\": []\r\n}",
+							"raw": "{\r\n  \"nombre\": \"usuarioPrueba\",\r\n  \"mail\": \"usuario@prueba.com\",\r\n  \"celular\": 11223344,\r\n  \"rol\": \"USER\",\r\n  \"contrasenia\": \"password123\",\r\n  \"cuentas\": [\"69248cc80972a21b4e5bcf16\"],\r\n  \"monopatines\": [],\r\n  \"viajes\": []\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -684,19 +684,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/usuarios/registrar?nroCuenta=692373e865f70405be6e3636",
+							"raw": "{{baseURL}}/usuarios/crear",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"usuarios",
-								"registrar"
-							],
-							"query": [
-								{
-									"key": "nroCuenta",
-									"value": "692373e865f70405be6e3636"
-								}
+								"crear"
 							]
 						}
 					},
@@ -902,6 +896,120 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbl90ZXN0Iiwicm9sZXMiOiJBRE1JTiIsImlhdCI6MTc2MzkzNjIxNCwiZXhwIjoxNzY0NTQxMDE0fQ.9-UOBG0gpgx_AOd_Wfb2jhlcTmGeVFylnPCXXCqT_hs\",\n    \"username\": \"admin_test\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Pruebas con chat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c3VhcmlvQ29uQ3VlbnRhUHJlbWl1bSIsInJvbGVzIjoiVVNFUiIsImlhdCI6MTc2NDAwNTIzMSwiZXhwIjoxNzY0NjEwMDMxfQ.Nl25GiuFbMlit8hDWqqRhR2w1y0zV2Ue7Btf1yYOqWE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Traeme los monopatines que esten Disponibles",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/chat/consultar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"chat",
+						"consultar"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "TOKEN_PRUEBA_CHAT",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/autenticacion?username=usuarioConCuentaPremium&password=password123",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"autenticacion"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "usuarioConCuentaPremium"
+								},
+								{
+									"key": "password",
+									"value": "password123"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Authorization",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c3VhcmlvQ29uQ3VlbnRhUHJlbWl1bSIsInJvbGVzIjoiVVNFUiIsImlhdCI6MTc2NDAwNTIzMSwiZXhwIjoxNzY0NjEwMDMxfQ.Nl25GiuFbMlit8hDWqqRhR2w1y0zV2Ue7Btf1yYOqWE"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "224"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c3VhcmlvQ29uQ3VlbnRhUHJlbWl1bSIsInJvbGVzIjoiVVNFUiIsImlhdCI6MTc2NDAwNTIzMSwiZXhwIjoxNzY0NjEwMDMxfQ.Nl25GiuFbMlit8hDWqqRhR2w1y0zV2Ue7Btf1yYOqWE\",\n    \"username\": \"usuarioConCuentaPremium\"\n}"
 				}
 			]
 		}
