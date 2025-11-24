@@ -1,6 +1,7 @@
 package org.example.administrador.feingClients;
 
 
+import org.example.administrador.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturas")
+@FeignClient(name = "microservicio-facturacion", url = "http://localhost:8086/facturas", configuration = FeignClientConfig.class)
 public interface FacturacionFeingClient {
 
     /**

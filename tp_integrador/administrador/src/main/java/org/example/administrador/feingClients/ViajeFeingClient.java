@@ -1,4 +1,5 @@
 package org.example.administrador.feingClients;
+import org.example.administrador.config.FeignClientConfig;
 import org.example.administrador.dto.ReporteUsoDTO;
 import org.example.administrador.dto.ReporteMonopatinContadorViajes;
 import org.example.administrador.dto.UsuarioUsoDTO;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-@FeignClient(name = "microservicio-viaje", url = "http://localhost:8084/viajes")
+@FeignClient(name = "microservicio-viaje", url = "http://localhost:8084/viajes", configuration = FeignClientConfig.class)
 public interface ViajeFeingClient {
     /**
      * Consulta a Viaje (PausaController) para obtener el tiempo total de pausa.
@@ -47,5 +48,12 @@ public interface ViajeFeingClient {
             @RequestParam("inicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
             @RequestParam("fin") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
             @RequestParam("userIds") List<String> userIds
+    );
+
+    @GetMapping("/reportes/usuarios-uso")
+    List<UsuarioUsoDTO> obtenerUsuariosMasActivos(
+            @RequestParam("inicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
+            @RequestParam("fin") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
+            @RequestParam("userIds") String userIdsCsv
     );
 }

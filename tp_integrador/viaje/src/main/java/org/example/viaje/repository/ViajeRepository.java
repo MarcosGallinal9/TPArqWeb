@@ -70,5 +70,5 @@ public interface ViajeRepository extends MongoRepository<Viaje,String> {
 
 
     @Query("{ 'inicio': { $gte: ?0 }, 'fin': { $lte: ?1 } }")
-    List<Viaje> findByFechaBetween(Date inicio, Date fin);
+    List<Viaje> findViajesEntreFechas(Date inicio, Date fin);
 }

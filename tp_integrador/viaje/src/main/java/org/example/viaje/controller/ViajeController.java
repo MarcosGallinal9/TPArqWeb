@@ -7,9 +7,10 @@ import org.example.viaje.entity.Viaje;
 import org.example.viaje.service.ViajeService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 @RestController
@@ -63,6 +64,7 @@ public class ViajeController {
      * Inicia un viaje. Llama al Monopatín para ponerlo en uso.
      * URL: POST http://localhost:8083/viajes/iniciar
      */
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/iniciar")
     public ResponseEntity<Viaje> iniciarViaje(@RequestBody Viaje viaje) {
         try {
@@ -79,6 +81,7 @@ public class ViajeController {
      * Finaliza un viaje. Llama a Parada para validar ubicación, actualiza Monopatín y notifica a Facturación.
      * URL: PUT http://localhost:8083/viajes/finalizar/{id}
      */
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/finalizar/{id}")
     public ResponseEntity<Viaje> finalizarViaje(
             @PathVariable("id") String idViaje,
@@ -99,6 +102,7 @@ public class ViajeController {
      * Endpoint consultado por Administrador para generar el reporte de monopatines más usados.
      * URL: GET /viajes/reportes/monopatines-por-viajes?year={year}
      */
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/reportes/monopatines-por-viajes")
     public ResponseEntity<List<ReporteMonopatinContadorViajes>> getMonopatinesPorViajes(@RequestParam("year") int year) {
 
@@ -110,10 +114,13 @@ public class ViajeController {
         return ResponseEntity.ok(reporte);
     }
 
-    @GetMapping("reporte-uso")
-    public ReporteUsoDTO getReporteUso(@RequestParam("userIds") List<String> userIds,
-                                       @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaInicio,
-                                       @RequestParam("fechaFin") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE )LocalDate fechaFin) {
+    @GetMapping("/reporte-uso")
+    public ReporteUsoDTO getReporteUso(
+            @RequestParam(name = "userIds") List<String> userIds,
+
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+
         return viajeService.getReporteUsoDto(userIds, fechaInicio, fechaFin);
     }
 
@@ -125,13 +132,16 @@ public class ViajeController {
     public ResponseEntity<List<UsuarioUsoDTO>> obtenerUsuariosMasActivos(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date inicio,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fin,
-            @RequestParam("userIds") List<String> userIds) {
+            @RequestParam("userIds") String userIdsCsv) {
 
-        List<UsuarioUsoDTO> reporte = viajeService.obtenerUsuariosMasActivos(inicio, fin, userIds);
+        List<String> userIds = Arrays.asList(userIdsCsv.split(","));
 
-        if (reporte.isEmpty()) {
+        List<UsuarioUsoDTO> resultado = viajeService.obtenerUsuariosMasActivos(inicio, fin, userIds);
+
+        if (resultado.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(reporte);
+
+        return ResponseEntity.ok(resultado);
     }
 }

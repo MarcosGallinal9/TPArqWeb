@@ -1,9 +1,5 @@
 package org.example.apigateway.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,11 +13,11 @@ public class User {
 
     private String id;
 
-    private String nombre; // Usado como username
+    private String nombre;
 
-    private String contrasenia; // Debe guardar la contraseña ENCRIPTADA
+    private String contrasenia; // Encriptada
 
-    private String rol; // Nuevo campo para guardar el rol (ej. "ADMIN", "USER")
+    private String rol;
 
 
     public String getNombre() {

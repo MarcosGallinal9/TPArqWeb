@@ -13,8 +13,6 @@ import org.example.usuario.feignClients.cuentaFeignClient;
 import org.example.usuario.feignClients.viajeFeignClient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;

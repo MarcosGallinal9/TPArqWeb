@@ -19,18 +19,18 @@ public class JwtUtil {
 
     public Jws<Claims> parse(String token) {
         return Jwts.parser()
-                .setSigningKey(key) // Usa la variable Key
-                .build()           // Nuevo método obligatorio
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token);
     }
 
     public String createToken(String subject, String roles) {
         long nowMillis = System.currentTimeMillis();
-        long expMillis = nowMillis + 86400000L; // 24 horas (como en el ejemplo de la cátedra)
+        long expMillis = nowMillis + 604800000L; // 1 semana de duracion
 
         return Jwts.builder()
-                .setSubject(subject) // Nombre de usuario
-                .claim("roles", roles) // Roles/Autoridades del usuario
+                .setSubject(subject)
+                .claim("roles", roles)
                 .setIssuedAt(new Date(nowMillis))
                 .setExpiration(new Date(expMillis))
                 .signWith(key) // Firma con la clave secreta

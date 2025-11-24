@@ -12,4 +12,9 @@ public class UsuarioUsoDTO {
     private String nombre;
     private String rol;
     private Double kmRecorridos;
+
+    public UsuarioUsoDTO(String id, Double kmRecorridos) {
+        this.id = id;
+        this.kmRecorridos = kmRecorridos;
+    }
 }

@@ -133,7 +133,6 @@ public class ViajeService {
         long tiempoEnSegundos = viajeFinalizado.getFin().getTime() - viajeFinalizado.getInicio().getTime();
         long tiempoTotalMinutos = TimeUnit.MILLISECONDS.toMinutes(tiempoEnSegundos); // Incluye pausas
 
-        // Obtener pausas (PausaService)
         List<Pausa> pausas = pausaService.findByViajeId(viajeFinalizado.getId());
 
         boolean aplicaRecargoExtraPausa = pausas.stream()
@@ -194,46 +193,25 @@ public class ViajeService {
 
     public List<UsuarioUsoDTO> obtenerUsuariosMasActivos(Date inicio, Date fin, List<String> userIds) {
 
-        List<Viaje> viajes = viajeRepository.findByFechaBetween(inicio, fin);
+        List<Viaje> viajes = viajeRepository.findViajesEntreFechas(inicio, fin);
 
-        List<Viaje> viajesFiltradosPorUsuario = viajes.stream()
-                .filter(viaje -> userIds.contains(viaje.getIdUsuario()))
-                .toList();
-
-        Map<String, Double> kmPorUsuario = viajesFiltradosPorUsuario.stream()
+        // Filtrar viajes SOLO de esos usuarios
+        Map<String, Double> acumuladoPorUsuario = viajes.stream()
+                .filter(v -> userIds.contains(v.getIdUsuario()))
                 .collect(Collectors.groupingBy(
                         Viaje::getIdUsuario,
                         Collectors.summingDouble(Viaje::getKmRecorridos)
                 ));
 
-        List<UsuarioUsoDTO> lista = kmPorUsuario.entrySet().stream()
-                .map(entry -> {
-                    UsuarioUsoDTO usuario = null;
-                    try {
-                        usuario = usuarioFeignClient.getUsuarioById(entry.getKey());
-                    } catch (FeignException e) {
-                        System.err.println("Advertencia: Usuario " + entry.getKey() + " no encontrado en MS Usuario. Skipping.");
-                        return null;
-                    } catch (Exception e) {
-                        System.err.println("Error de conexión con MS Usuario para ID " + entry.getKey() + ": " + e.getMessage());
-                        return null;
-                    }
+        List<UsuarioUsoDTO> resultado = new ArrayList<>();
+        for (String userId : acumuladoPorUsuario.keySet()) {
+            resultado.add(new UsuarioUsoDTO(userId, acumuladoPorUsuario.get(userId)));
+        }
 
-                    if (usuario != null) {
-                        return new UsuarioUsoDTO(
-                                usuario.getId(),
-                                usuario.getNombre(),
-                                usuario.getRol(),
-                                entry.getValue() // Kilómetros
-                        );
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .sorted(Comparator.comparingDouble(UsuarioUsoDTO::getKmRecorridos).reversed())
-                .collect(Collectors.toList());
+        // Ordenar por km recorridos DESC
+        resultado.sort(Comparator.comparingDouble(UsuarioUsoDTO::getKmRecorridos).reversed());
 
-        return lista;
+        return resultado;
     }
 
 

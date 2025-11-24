@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -164,21 +166,40 @@ public class AdminService {
      */
     public List<UsuarioUsoDTO> getUsuariosQueMasUsanMonopatines(String rol, LocalDate inicio, LocalDate fin) {
 
-        List<UsuarioUsoDTO> todosLosUsuarios = usuarioFeingClient.getUsuarios();
+        List<UsuarioDTO> todosLosUsuarios = usuarioFeingClient.getUsuarios();
 
         List<String> userIdsFiltrados = todosLosUsuarios.stream()
                 .filter(u -> u.getRol() != null && u.getRol().equalsIgnoreCase(rol))
-                .map(UsuarioUsoDTO::getId)
+                .map(UsuarioDTO::getId)
                 .toList();
 
         if (userIdsFiltrados.isEmpty()) {
             return new ArrayList<>();
         }
 
-        Date fechaInicio = java.sql.Date.valueOf(inicio);
-        Date fechaFin = java.sql.Date.valueOf(fin);
+        LocalDateTime inicioDelDia = inicio.atStartOfDay();
+        LocalDateTime finDelDia = fin.atTime(23, 59, 59);
 
-        return viajeFeingClient.obtenerUsuariosMasActivos(fechaInicio, fechaFin, userIdsFiltrados);
+        Date fechaInicio = Date.from(inicioDelDia.atZone(ZoneId.systemDefault()).toInstant());
+        Date fechaFin = Date.from(finDelDia.atZone(ZoneId.systemDefault()).toInstant());
+
+        List<UsuarioUsoDTO> usuariosConKm = viajeFeingClient.obtenerUsuariosMasActivos(
+                fechaInicio, fechaFin, userIdsFiltrados
+        );
+
+        return usuariosConKm.stream().map(u -> {
+            UsuarioDTO datos = todosLosUsuarios.stream()
+                    .filter(x -> x.getId().equals(u.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (datos != null) {
+                u.setNombre(datos.getNombre());
+                u.setRol(datos.getRol());
+            }
+
+            return u;
+        }).toList();
     }
 
     /**

@@ -17,7 +17,7 @@ public class usuarioDto {
         private int celular;
         private String rol;
         private String contrasenia;
-        private List<String> cuentas; //me devuelve una lista con los id de esas cuentas
+        private List<String> cuentas; //devuelve una lista con los id de esas cuentas
         private List<String> monopatines;
         private List<String> viajes;
 

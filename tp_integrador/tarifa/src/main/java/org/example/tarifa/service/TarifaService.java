@@ -62,7 +62,7 @@ public class TarifaService {
                 tarifa.getValorExtrapausa(),
                 fechaActivacion // Se guarda la fecha de activación futura.
         );
-        return tarifaRepository.save(nuevaTarifa); // Guarda una nueva tarifa.
+        return tarifaRepository.save(nuevaTarifa);
     }
 
     public Tarifa findVigenteByDate(LocalDate fechaConsulta) {

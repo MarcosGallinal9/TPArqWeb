@@ -18,7 +18,7 @@ public class ParadaController {
         this.paradaService = paradaService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public ResponseEntity<List<Parada>> getAllParadas() {
         List<Parada> paradas = paradaService.getAll();
         if (paradas.isEmpty()) {

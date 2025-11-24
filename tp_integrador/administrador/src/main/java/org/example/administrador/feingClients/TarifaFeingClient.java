@@ -1,5 +1,6 @@
 package org.example.administrador.feingClients;
 
+import org.example.administrador.config.FeignClientConfig;
 import org.example.administrador.dto.TarifaDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
-@FeignClient(name = "microservicio-tarifa", url = "http://localhost:8087/tarifas")
+@FeignClient(name = "microservicio-tarifa", url = "http://localhost:8087/tarifas", configuration = FeignClientConfig.class)
 public interface TarifaFeingClient {
 
     @PostMapping("/ajuste")
-        // O mantener PUT si lo ves como 'ajustar el sistema'
     void actualizarTarifas(@RequestBody TarifaDTO tarifaDTO,
                            @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion);
 

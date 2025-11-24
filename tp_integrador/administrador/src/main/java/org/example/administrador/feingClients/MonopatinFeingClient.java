@@ -1,5 +1,6 @@
 package org.example.administrador.feingClients;
 
+import org.example.administrador.config.FeignClientConfig;
 import org.example.administrador.dto.MonopatinDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 
-@FeignClient(name = "microservicio-monopatin", url = "http://localhost:8082/monopatines")
+@FeignClient(name = "microservicio-monopatin", url = "http://localhost:8082/monopatines", configuration = FeignClientConfig.class)
 public interface MonopatinFeingClient {
 
     /**

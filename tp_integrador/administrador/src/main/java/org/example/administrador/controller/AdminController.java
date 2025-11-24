@@ -3,8 +3,8 @@ import org.example.administrador.dto.*;
 import org.example.administrador.feingClients.FacturacionFeingClient;
 import org.example.administrador.service.AdminService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -26,6 +26,7 @@ public class AdminController {
      * Genera el reporte de uso de monopatines por kilómetros/tiempo.
      * URL: GET http://localhost:8080/administrador/reportes/mantenimiento-uso
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/reportes/mantenimiento-uso")
     public ResponseEntity<List<ReporteMonopatinXKm>> getReporteMonopatines(@RequestParam("conPausas") boolean conPausas) {
         List<ReporteMonopatinXKm> reportes = adminService.generarReporteUso(conPausas);
@@ -40,7 +41,7 @@ public class AdminController {
      * Anula una cuenta de usuario.
      * URL: PUT http://localhost:8080/administrador/cuentas/anular/{id}
      */
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cuentas/anular/{idCuenta}")
     public ResponseEntity<String> anularCuenta(@PathVariable("idCuenta") String idCuenta) {
         try {
@@ -56,6 +57,7 @@ public class AdminController {
      * Consulta los monopatines con más de X viajes en un cierto año.
      * URL: GET /administrador/reportes/top-monopatines?minViajes={X}&year={Año}
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/reportes/top-monopatines")
     public ResponseEntity<List<ReporteMonopatinContadorViajes>> getMonopatinesConMasDeXViajes(
                                                             @RequestParam("minViajes") int minViajes,
@@ -74,6 +76,7 @@ public class AdminController {
      * Consulta el total facturado en un rango de meses en un cierto año-
      * URL: GET /administrador/total-facturado?anio={X}&mesInicio={X}&mesFin={X}
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/total-facturado")
     public ResponseEntity<Double> obtenerTotalFacturado(
             @RequestParam int anio,
@@ -90,7 +93,7 @@ public class AdminController {
      * URL: GET /api/admin/usuarios-que-mas-usan?rol={X}&inicio={X}&fin={X}
      */
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/usuarios-que-mas-usan")
     public ResponseEntity<List<UsuarioUsoDTO>> getUsuariosQueMasUsanMonopatines( @RequestParam String rol,
                                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
@@ -98,10 +101,9 @@ public class AdminController {
 
         List<UsuarioUsoDTO> reporte = adminService.getUsuariosQueMasUsanMonopatines(rol, inicio, fin);
 
-        if (reporte.isEmpty()) {
+        if (reporte == null || reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(reporte);
     }
 
@@ -110,6 +112,7 @@ public class AdminController {
      * Consulta los usuarios que mas usan monopatines filtrados por rol y periodo
      * URL: GET /api/admin/ajuste?fechaActivacion={X}
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/ajuste")
     public ResponseEntity<String> ajustarTarifas(   @RequestBody TarifaDTO tarifaDTO,
                                                     @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {

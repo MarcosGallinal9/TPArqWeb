@@ -44,13 +44,6 @@ public class TarifaController {
         return ResponseEntity.ok(tarifaNew);
     }
 
-    @PutMapping("/ajuste")
-    public ResponseEntity<Tarifa> update(@RequestBody Tarifa tarifa,
-                                         @RequestParam("fechaActivacion") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaActivacion) {
-        tarifaService.updateConFecha(tarifa,fechaActivacion);
-        return ResponseEntity.ok(tarifa);
-    }
-
     @GetMapping("/vigente")
     public ResponseEntity<Tarifa> getTarifaVigente(@RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaConsulta) {
         Tarifa tarifaVigente = tarifaService.findVigenteByDate(fechaConsulta);
